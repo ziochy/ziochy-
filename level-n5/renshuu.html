@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latihan N5 - Luzuno</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .category {
+      margin-bottom: 40px;
+    }
+    .category h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid #e74c3c;
+      padding-bottom: 10px;
+    }
+    .quiz {
+      background-color: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .quiz button:hover {
+      background-color: #c0392b;
+    }
+    .quiz-options {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .quiz-options button {
+      padding: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .quiz-options button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .reading-passage {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .reading-passage h3 {
+      color: #2c3e50;
+    }
+    .reading-questions {
+      margin-top: 20px;
+    }
+    .reading-questions li {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">Luzuno</h1>
+      <nav class="navbar">
+        <ul>
+          <li><a href="../index.html">Beranda</a></li>
+          <li><a href="Tata bahasa-5.html">Hiragana</a></li>
+          <li><a href="kosakata-5.html">Katakana</a></li>
+          <li><a href="kosakata-dasar.html">Kosakata Dasar</a></li>
+          <li><a href="latihan-5.html">Latihan N5</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content">
+    <div class="container">
+      <h1>Latihan N5</h1>
+      <p>Berikut adalah latihan lengkap untuk level N5, termasuk tata bahasa, kosakata, dan pemahaman bacaan.</p>
+
+      <!-- Latihan Tata Bahasa -->
+      <div class="category">
+        <h2>Latihan Tata Bahasa</h2>
+        <div class="quiz">
+          <p><strong>Soal 1:</strong> Pilih partikel yang tepat untuk melengkapi kalimat berikut:</p>
+          <p>わたし ___ 学生です。</p>
+          <div class="quiz-options">
+            <button onclick="checkAnswer('は')">は</button>
+            <button onclick="checkAnswer('を')">を</button>
+            <button onclick="checkAnswer('に')">に</button>
+            <button onclick="checkAnswer('で')">で</button>
+          </div>
+          <p class="result" id="result1"></p>
+        </div>
+
+        <div class="quiz">
+          <p><strong>Soal 2:</strong> Pilih bentuk kata kerja yang benar:</p>
+          <p>本を ___ 。</p>
+          <div class="quiz-options">
+            <button onclick="checkAnswer2('読みます')">読みます</button>
+            <button onclick="checkAnswer2('書きます')">書きます</button>
+            <button onclick="checkAnswer2('食べます')">食べます</button>
+            <button onclick="checkAnswer2('行きます')">行きます</button>
+          </div>
+          <p class="result" id="result2"></p>
+        </div>
+      </div>
+
+      <!-- Latihan Kosakata -->
+      <div class="category">
+        <h2>Latihan Kosakata</h2>
+        <div class="quiz">
+          <p><strong>Soal 3:</strong> Apa arti dari kata berikut?</p>
+          <p>学生</p>
+          <div class="quiz-options">
+            <button onclick="checkAnswer3('Guru')">Guru</button>
+            <button onclick="checkAnswer3('Pelajar')">Pelajar</button>
+            <button onclick="checkAnswer3('Dokter')">Dokter</button>
+            <button onclick="checkAnswer3('Insinyur')">Insinyur</button>
+          </div>
+          <p class="result" id="result3"></p>
+        </div>
+
+        <div class="quiz">
+          <p><strong>Soal 4:</strong> Pilih kata yang sesuai dengan arti berikut:</p>
+          <p>Makan</p>
+          <div class="quiz-options">
+            <button onclick="checkAnswer4('食べる')">食べる</button>
+            <button onclick="checkAnswer4('飲む')">飲む</button>
+            <button onclick="checkAnswer4('行く')">行く</button>
+            <button onclick="checkAnswer4('見る')">見る</button>
+          </div>
+          <p class="result" id="result4"></p>
+        </div>
+      </div>
+
+      <!-- Latihan Pemahaman Bacaan -->
+      <div class="category">
+        <h2>Latihan Pemahaman Bacaan</h2>
+        <div class="reading-passage">
+          <h3>Bacaan:</h3>
+          <p>
+            わたしは田中です。毎朝、7時に起きます。朝ご飯を食べて、学校に行きます。学校は8時半に始まります。昼ご飯は友達と食べます。午後は勉強します。夜はテレビを見て、寝ます。
+          </p>
+        </div>
+
+        <div class="reading-questions">
+          <p><strong>Soal 5:</strong>田中さんは何時に起きますか？</p>
+          <ul>
+            <li><button onclick="checkAnswer5('7時')">7時</button></li>
+            <li><button onclick="checkAnswer5('8時')">8時</button></li>
+            <li><button onclick="checkAnswer5('9時')">9時</button></li>
+            <li><button onclick="checkAnswer5('10時')">10時</button></li>
+          </ul>
+          <p class="result" id="result5"></p>
+        </div>
+
+        <div class="reading-questions">
+          <p><strong>Soal 6:</strong>田中さんは昼ご飯を誰と食べますか？</p>
+          <ul>
+            <li><button onclick="checkAnswer6('家族')">家族</button></li>
+            <li><button onclick="checkAnswer6('友達')">友達</button></li>
+            <li><button onclick="checkAnswer6('先生')">先生</button></li>
+            <li><button onclick="checkAnswer6('一人で')">一人で</button></li>
+          </ul>
+          <p class="result" id="result6"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2023 Luzuno. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Fungsi untuk mengecek jawaban
+    function checkAnswer(selectedAnswer) {
+      const result = document.getElementById('result1');
+      if (selectedAnswer === 'は') {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = 'Salah! Jawaban yang benar adalah "は".';
+        result.style.color = 'red';
+      }
+    }
+
+    function checkAnswer2(selectedAnswer) {
+      const result = document.getElementById('result2');
+      if (selectedAnswer === '読みます') {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = 'Salah! Jawaban yang benar adalah "読みます".';
+        result.style.color = 'red';
+      }
+    }
+
+    function checkAnswer3(selectedAnswer) {
+      const result = document.getElementById('result3');
+      if (selectedAnswer === 'Pelajar') {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = 'Salah! Jawaban yang benar adalah "Pelajar".';
+        result.style.color = 'red';
+      }
+    }
+
+    function checkAnswer4(selectedAnswer) {
+      const result = document.getElementById('result4');
+      if (selectedAnswer === '食べる') {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = 'Salah! Jawaban yang benar adalah "食べる".';
+        result.style.color = 'red';
+      }
+    }
+
+    function checkAnswer5(selectedAnswer) {
+      const result = document.getElementById('result5');
+      if (selectedAnswer === '7時') {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = 'Salah! Jawaban yang benar adalah "7時".';
+        result.style.color = 'red';
+      }
+    }
+
+    function checkAnswer6(selectedAnswer) {
+      const result = document.getElementById('result6');
+      if (selectedAnswer === '友達') {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = 'Salah! Jawaban yang benar adalah "友達".';
+        result.style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>
