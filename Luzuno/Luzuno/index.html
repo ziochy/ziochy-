@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* Tambahan CSS untuk navigasi */
+        nav {
+            background-color: #333;
+            color: black;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigasi -->
+    <nav>
+        <div>
+            <a href="#home">Beranda</a>
+            <a href="#about">Tentang Kami</a>
+            <a href="#contact">Kontak</a>
+            <a href="#blog">Blog</a>
+        </div>
+        <div>
+            <a href="#login">Masuk</a>
+            <a href="#signup">Daftar</a>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="animate__animated animate__fadeInDown">Selamat Datang di Luzuno</h1>
+            <p class="animate__animated animate__fadeInUp">Tempat Belajar Bahasa Jepang Terbaik untuk Semua Tingkatan</p>
+            <a href="#levels" class="btn animate__animated animate__bounceIn">Mulai Belajar</a>
+        </div>
+    </header>
+
+    <!-- Level Navigation Widget -->
+    <section id="levels" class="levels">
+         <title>Luzuno - Belajar Bahasa Jepang</title>
+        <h2>Pilih Tingkat Belajar</h2>
+        <div class="level-grid">
+            <a href="level-0/hiragana.html" class="level-card animate__animated animate__zoomIn" data-level="0">
+                <h3>Level 0</h3>
+                <p>Hiragana, Katakana, Kosakata Dasar</p>
+            </a>
+            <a href="level-n5/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n5">
+                <h3>Level N5</h3>
+                <p>Dasar Tata Bahasa dan Kosakata</p>
+            </a>
+            <a href="level-n4/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n4">
+                <h3>Level N4</h3>
+                <p>Tata Bahasa dan Kosakata Lanjutan</p>
+            </a>
+            <a href="level-n3/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n3">
+                <h3>Level N3</h3>
+                <p>Persiapan JLPT N3</p>
+            </a>
+            <a href="level-n2/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n2">
+                <h3>Level N2</h3>
+                <p>Persiapan JLPT N2</p>
+            </a>
+            <a href="level-n1/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n1">
+                <h3>Level N1</h3>
+                <p>Persiapan JLPT N1</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog" id="blog">
+        <h2>Artikel Terbaru</h2>
+        <div class="blog-grid">
+            <div class="blog-card animate__animated animate__fadeInLeft">
+                <h3>Tips Belajar Bahasa Jepang</h3>
+                <p>Pelajari cara efektif menguasai bahasa Jepang.</p>
+                <a href="blog/tips-belajar.html" class="btn">Baca Selengkapnya</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInLeft">
+                <h3>Renshuu</h3>
+                <p>latihan kanji bahasa jepang.</p>
+                <a href="blog/renshuu.html" class="btn">mulai</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInLeft">
+                <h3>Pembahasan khusus</h3>
+                <p>penjelasan seputar bahasa jepang.</p>
+                <a href="blog/penjelasan.html" class="btn">cek</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Budaya Jepang</h3>
+                <p>Kenali budaya Jepang untuk memahami bahasanya.</p>
+                <a href="blog/budaya-jepang.html" class="btn">Baca Selengkapnya</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Belajar Bertahap</h3>
+                <p>Kenali budaya Jepang untuk memahami bahasanya.</p>
+                <a href="blog/Tahapan-Belajar.html" class="btn">Baca Selengkapnya</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Permainan</h3>
+                <p>game santai.</p>
+                <a href="game/dino/dino.html" class="btn">masuk</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tentang Kami Section -->
+    <section id="about" class="about">
+        <h2>Tentang Kami</h2>
+        <p>Luzuno adalah platform pembelajaran bahasa Jepang online yang dirancang untuk membantu Anda menguasai bahasa Jepang dari tingkat dasar hingga mahir. Kami menyediakan materi pembelajaran yang komprehensif dan mudah dipahami.</p>
+    </section>
+
+    <!-- Kontak Section -->
+    <section id="contact" class="contact">
+        <h2>Kontak</h2>
+        <p>Jika Anda memiliki pertanyaan atau membutuhkan bantuan, jangan ragu untuk menghubungi kami melalui email di <a href="zuno354@gmail.com">zuno354@gmail.com</a>.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Luzuno. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
