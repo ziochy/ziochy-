@@ -1,1 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: url('wallpaper.jpg'); /* Tambahkan wallpaper di sini */
+            background-size: cover; /* Sesuaikan ukuran wallpaper */
+            background-position: center; /* Posisikan wallpaper di tengah */
+            background-repeat: no-repeat; /* Hindari pengulangan wallpaper */
+            background-attachment: fixed; /* Biarkan wallpaper tetap saat menggulir */
+        }
+        #warning {
+            display: none;
+            color: red;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        canvas {
+            background-color: #fff;
+            border: 2px solid black;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4CAF50; /* Warna hijau */
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+        }
+    </style>
+</head>
+<body>
+    <div id="warning">⚠️ Putar layar ke mode landscape untuk pengalaman terbaik!</div>
+    <canvas id="gameCanvas" width="540" height="250"></canvas>
+    <div class="controls">
+        <button id="startButton">Mulai</button>
+        <button id="jumpButton">Lompat</button>
+    </div>
 
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const warning = document.getElementById('warning');
+
+        function checkOrientation() {
+            if (window.innerWidth < 600) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+        window.addEventListener('resize', checkOrientation);
+        checkOrientation();
+
+        const dinoImg = new Image();
+        dinoImg.src = 'dino.png';
+
+        const carImgs = [
+            'mobil.png', 'mobil1.png', 'mobil2.png', 'mobil3.png', 'mobil4.png', 'mobil5.png', 'mobil6.png'
+        ]; 
+
+        const bgImg = new Image();
+        bgImg.src = 'background.png';
+
+        const heartImg = new Image();
+        heartImg.src = 'heart.png'; 
+
+        let gameRunning = false;
+        let speedMultiplier = 1;
+        let speedIncreaseInterval;
+        let score = 0;
+        let lives = 3;
+        let invincibleTime = 0;
+
+        let dino = {
+            x: 50, 
+            y: 150,  
+            width: 60, 
+            height: 60, 
+            velocityY: 0, 
+            gravity: 0.6,  
+            jumpPower: -10,  
+            isJumping: false,
+            groundY: 150,  
+        };
+
+        let obstacles = [];
+
+        function spawnObstacle() {
+            let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
+
+            let randomCar = carImgs[Math.floor(Math.random() * carImgs.length)];
+            let newObstacle = {
+                x: lastX + Math.random() * 300 + 200, 
+                y: dino.groundY + 30,  
+                width: 50,  
+                height: 30,  
+                speed: 6,  
+                carImg: randomCar
+            };
+            obstacles.push(newObstacle);
+        }
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+        document.getElementById('jumpButton').addEventListener('click', jump);
+        document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
+
+        function jump() {
+            if (!gameRunning) return;
+            if (!dino.isJumping) {
+                dino.isJumping = true;
+                dino.velocityY = dino.jumpPower;
+            }
+        }
+
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                dino.y = dino.groundY;
+                dino.velocityY = 0;
+                obstacles = [];
+                score = 0;
+                lives = 3; 
+                speedMultiplier = 1;
+                invincibleTime = 0;
+
+                clearInterval(speedIncreaseInterval);
+                speedIncreaseInterval = setInterval(increaseSpeed, 5000);
+
+                for (let i = 0; i < 3; i++) {
+                    spawnObstacle();
+                }
+
+                updateGame();
+            }
+        }
+
+        function increaseSpeed() {
+            if (speedMultiplier < 1.2) {
+                speedMultiplier += 0.02;
+            } else {
+                clearInterval(speedIncreaseInterval);
+            }
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+            moveDino();
+            moveObstacles();
+            checkCollision();
+            drawDino();
+            drawObstacles();
+            updateScore();
+            drawScore();
+            drawLives();
+
+            invincibleTime--;
+            requestAnimationFrame(updateGame);
+        }
+
+        function drawDino() {
+            ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+        }
+
+        function moveDino() {
+            dino.y += dino.velocityY;
+            dino.velocityY += dino.gravity;
+
+            if (dino.y > dino.groundY) { 
+                dino.y = dino.groundY;
+                dino.isJumping = false;
+                dino.velocityY = 0;
+            }
+        }
+
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                let carImg = new Image();
+                carImg.src = obstacle.carImg;
+                ctx.drawImage(carImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
+        }
+
+        function moveObstacles() {
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].x -= obstacles[i].speed * speedMultiplier;
+            }
+
+            if (obstacles.length > 0 && obstacles[0].x < -obstacles[0].width) {
+                obstacles.shift();
+                spawnObstacle();
+            }
+        }
+
+        function checkCollision() {
+            if (invincibleTime > 0) return; 
+
+            for (let obstacle of obstacles) {
+                let dinoHitbox = {
+                    x: dino.x + 10,
+                    y: dino.y + 10,
+                    width: 40,
+                    height: 50
+                };
+
+                let obstacleHitbox = {
+                    x: obstacle.x,
+                    y: obstacle.y,
+                    width: obstacle.width,
+                    height: obstacle.height
+                };
+
+                if (
+                    dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
+                    dinoHitbox.x + dinoHitbox.width > obstacleHitbox.x &&
+                    dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
+                    dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
+                ) {
+                    if (obstacle.carImg === 'mobil6.png') {
+                        if (lives < 3) {
+                            lives++; // Menambah nyawa jika mobil6.png
+                        }
+                    } else {
+                        lives--; // Kurangi nyawa jika kena mobil selain mobil6.png
+                    }
+
+                    invincibleTime = 60; // Tambahkan waktu kebal setelah tabrakan
+
+                    if (lives <= 0) {
+                        alert('Game Over! Skor Anda: ' + score);
+                        gameRunning = false;
+                        clearInterval(speedIncreaseInterval);
+                    }
+                    return;
+                }
+            }
+        }
+
+        function updateScore() {
+            if (gameRunning) {
+                score += 1;
+            }
+        }
+
+        function drawScore() {
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText('Skor: ' + score, canvas.width - 120, 30);
+        }
+
+        function drawLives() {
+            for (let i = 0; i < lives; i++) {
+                ctx.drawImage(heartImg, 10 + i * 35, 10, 30, 30);
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.2/dist/umd/supabase.min.js"></script>
+</body>
+</html>
