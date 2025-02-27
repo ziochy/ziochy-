@@ -45,6 +45,52 @@
         button:hover {
             background-color: #45a049; /* Warna hijau lebih gelap saat hover */
         }
+
+        /* Modal Game Over */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-content h1 {
+            font-size: 2.5em;
+            color: #e74c3c;
+        }
+        .modal-content p {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .modal-content button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -55,10 +101,27 @@
         <button id="jumpButton">Lompat</button>
     </div>
 
+    <!-- Modal Game Over -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h1>Game Over!</h1>
+            <p>Skor Anda: <span id="finalScore"></span></p>
+            <button id="restartButton">Mulai Ulang</button>
+        </div>
+    </div>
+
+    <!-- Audio untuk suara lompat, nyawa berkurang, dan game over -->
+    <audio id="jumpSound" src="jump.mp3"></audio>
+    <audio id="hurtSound" src="hurt.mp3"></audio>
+    <audio id="gameOverSound" src="gameover.mp3"></audio>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const warning = document.getElementById('warning');
+        const gameOverModal = document.getElementById('gameOverModal');
+        const finalScore = document.getElementById('finalScore');
+        const restartButton = document.getElementById('restartButton');
 
         function checkOrientation() {
             if (window.innerWidth < 600) {
@@ -89,6 +152,8 @@
         let score = 0;
         let lives = 3;
         let invincibleTime = 0;
+        let blinkTime = 0; // Waktu efek kelap-kelip
+        let lastMobil6Score = 0; // Skor terakhir saat mobil6 muncul
 
         let dino = {
             x: 50, 
@@ -107,7 +172,15 @@
         function spawnObstacle() {
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
 
-            let randomCar = carImgs[Math.floor(Math.random() * carImgs.length)];
+            // Munculkan mobil6 hanya setiap 1000 skor
+            let randomCar;
+            if (score - lastMobil6Score >= 1000) {
+                randomCar = 'mobil6.png';
+                lastMobil6Score = score;
+            } else {
+                randomCar = carImgs[Math.floor(Math.random() * (carImgs.length - 1))]; // Hindari mobil6
+            }
+
             let newObstacle = {
                 x: lastX + Math.random() * 300 + 200, 
                 y: dino.groundY + 30,  
@@ -123,11 +196,17 @@
         document.getElementById('jumpButton').addEventListener('click', jump);
         document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
 
+        restartButton.addEventListener('click', () => {
+            gameOverModal.style.display = 'none';
+            startGame();
+        });
+
         function jump() {
             if (!gameRunning) return;
             if (!dino.isJumping) {
                 dino.isJumping = true;
                 dino.velocityY = dino.jumpPower;
+                document.getElementById('jumpSound').play(); // Mainkan suara lompat
             }
         }
 
@@ -141,6 +220,8 @@
                 lives = 3; 
                 speedMultiplier = 1;
                 invincibleTime = 0;
+                blinkTime = 0;
+                lastMobil6Score = 0;
 
                 clearInterval(speedIncreaseInterval);
                 speedIncreaseInterval = setInterval(increaseSpeed, 5000);
@@ -176,10 +257,14 @@
             drawLives();
 
             invincibleTime--;
+            blinkTime--;
             requestAnimationFrame(updateGame);
         }
 
         function drawDino() {
+            if (blinkTime > 0 && Math.floor(blinkTime / 10) % 2 === 0) {
+                return; // Efek kelap-kelip saat nyawa berkurang
+            }
             ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
         }
 
@@ -243,12 +328,16 @@
                         }
                     } else {
                         lives--; // Kurangi nyawa jika kena mobil selain mobil6.png
+                        blinkTime = 55; // Aktifkan efek kelap-kelip
+                        document.getElementById('hurtSound').play(); // Mainkan suara nyawa berkurang
                     }
 
-                    invincibleTime = 60; // Tambahkan waktu kebal setelah tabrakan
+                    invincibleTime = 80; // Tambahkan waktu kebal setelah tabrakan
 
                     if (lives <= 0) {
-                        alert('Game Over! Skor Anda: ' + score);
+                        document.getElementById('gameOverSound').play(); // Mainkan suara game over
+                        finalScore.textContent = score;
+                        gameOverModal.style.display = 'flex';
                         gameRunning = false;
                         clearInterval(speedIncreaseInterval);
                     }
@@ -275,6 +364,6 @@
             }
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.2/dist/umd/supabase.min.js"></script>
+   
 </body>
 </html>
