@@ -270,6 +270,21 @@
             pointer-events: none;
             z-index: 0;
         }
+        /* Tambahkan di CSS */
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100% !important;
+            touch-action: pan-y;
+        }
+        
+        img, section, div {
+            max-width: 100% !important;
+        }
+
+        /* Nonaktifkan zoom dengan JavaScript */
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
     </style>
 </head>
 <body>
