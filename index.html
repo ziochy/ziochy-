@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-      <title>Luzuno - Belajar Bahasa Jepang</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luzuno - Belajar Bahasa Jepang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
     <style>
-        /* Base Styles */
         :root {
             --sakura-pink: #ffb7c5;
             --sakura-dark: #9f4d60;
             --sakura-bg: #fff4f7;
             --text-color: #4a2a33;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --sakura-pink: #6c5b7b;
+            --sakura-dark: #355c7d;
+            --sakura-bg: #2d3436;
+            --text-color: #dfe6e9;
+            --card-bg: rgba(45, 52, 54, 0.9);
         }
 
         * {
@@ -18,6 +28,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Sawarabi Mincho', sans-serif;
+            transition: all 0.3s ease;
         }
 
         body {
@@ -27,12 +38,29 @@
             overflow-x: hidden;
         }
 
-        /* Sakura Petal Animation */
-        @keyframes petal-fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 1; }
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            background: var(--card-bg);
+            border: 2px solid var(--sakura-pink);
+            border-radius: 30px;
+            padding: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: var(--sakura-pink);
+        }
+
+        /* Sakura Petals */
         .sakura-petal {
             position: fixed;
             width: 15px;
@@ -42,6 +70,15 @@
             animation: petal-fall 15s linear infinite;
             pointer-events: none;
             z-index: 999;
+        }
+
+        [data-theme="dark"] .sakura-petal {
+            display: none;
+        }
+
+        @keyframes petal-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 1; }
         }
 
         /* Navigation */
@@ -82,49 +119,22 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            background: linear-gradient(45deg, #fff0f4, #ffe9ec);
+            padding: 2rem;
             position: relative;
             overflow: hidden;
             margin-top: 60px;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: url('data:image/svg+xml,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20,50 C30,60 40,65 50,60 C60,65 70,60 80,50 C90,40 85,30 80,20 C70,10 60,5 50,10 C40,5 30,10 20,20 C15,30 10,40 20,50" fill="%23ffd3e0"/></svg>');
-            opacity: 0.1;
-            animation: bg-flow 20s linear infinite;
-        }
-
-        @keyframes bg-flow {
-            0% { transform: translate(-25%, -25%); }
-            100% { transform: translate(-75%, -75%); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
         .hero h1 {
-            font-size: 4rem;
-            color: var(--sakura-dark);
-            margin-bottom: 1.5rem;
+            font-size: 3.5rem;
+            color: var(--sakura-pink);
+            margin-bottom: 1rem;
             font-family: 'Kiwi Maru', serif;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            animation: title-float 3s ease-in-out infinite;
         }
 
-        @keyframes title-float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-/* Level Card Fixes */
-
-.levels {
+        /* Level Cards */
+     .levels {
     position: relative;
     z-index: 100;
 }
@@ -199,54 +209,28 @@
         }
 
         .blog-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 15px;
             padding: 1.5rem;
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
-            position: relative;
+            border: 1px solid var(--sakura-pink);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .blog-card:hover {
-            transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-                padding: 1rem;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .level-grid, .blog-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-/* Footer */
+        /* Footer */
         footer {
             background: var(--sakura-dark);
             color: white;
             padding: 3rem 5%;
-            position: relative;
-            margin-top: 5rem;
             text-align: center;
+            margin-top: 5rem;
         }
 
-        footer::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 10"><path d="M0 10 Q 25 5 50 10 Q 75 0 100 10 L100 0 L0 0" fill="%239f4d60"/></svg>');
-        }
-        /* Additional Styles */
+        /* Button */
         .btn {
             display: inline-block;
             padding: 0.8rem 2rem;
@@ -255,7 +239,6 @@
             border-radius: 30px;
             text-decoration: none;
             transition: all 0.3s ease;
-            margin-top: 1rem;
         }
 
         .btn:hover {
@@ -263,19 +246,22 @@
             transform: scale(1.05);
         }
 
-        section {
-            padding: 5rem 0;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            nav {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .level-grid, .blog-grid {
+                grid-template-columns: 1fr;
+            }
         }
-
-        h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--sakura-dark);
-            font-family: 'Kiwi Maru', serif;
-        }
-    
-        /* Dekorasi Kanji */
+      /* Dekorasi Kanji */
         .kanji-decor {
             position: fixed;
             font-family: 'Sawarabi Mincho', sans-serif;
@@ -287,25 +273,31 @@
     </style>
 </head>
 <body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </div>
+
     <!-- Sakura Petals -->
     <div class="sakura-petal" style="left: 5%; animation-delay: 0s;"></div>
     <div class="sakura-petal" style="left: 15%; animation-delay: 1s;"></div>
     <div class="sakura-petal" style="left: 25%; animation-delay: 3s;"></div>
-    <!-- Add more petals as needed -->
-    <!-- Rest of your HTML content remains the same -->
-      <!-- Dekorasi Kanji -->
-    <div class="kanji-decor" style="top: 20%; left: 10%;">日</div>
+   <div class="kanji-decor" style="top: 20%; left: 10%;">日</div>
     <div class="kanji-decor" style="top: 40%; right: 15%;">本</div>
     <div class="kanji-decor" style="bottom: 30%; left: 5%;">語</div> 
-</body>
-</html>
-</head>
-<body>
-    <!-- Header Section -->
-    <header class="hero" id="home">
+    <!-- Navigation -->
+    <nav>
+        <div>
+            <a href="#login">Masuk</a>
+            <a href="#signup">Daftar</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="hero">
         <div class="hero-content">
-            <h1 class="animate__animated animate__fadeInDown">🌸 Selamat Datang di Luzuno! 🌸 </h1>
-            <p class="animate__animated animate__fadeInUp">Tempat Belajar Bahasa Jepang Terbaik untuk Semua Tingkatan</p>
+            <h1 class="animate__animated animate__fadeInDown">🌸 Selamat Datang di Luzuno! 🌸</h1>
+            <p class="animate__animated animate__fadeInUp">Tempat Belajar Bahasa Jepang Terbaik</p>
             <a href="#levels" class="btn animate__animated animate__bounceIn">Mulai Belajar</a>
         </div>
     </header>
@@ -396,12 +388,34 @@
         <p>Jika Anda memiliki pertanyaan atau membutuhkan bantuan, jangan ragu untuk menghubungi kami melalui email di <a href="zuno354@gmail.com">zuno354@gmail.com</a>.</p>
     </section>
 
+    <!-- Footer -->
     <footer>
         <p>🌸 さくらとともに学びましょう 🌸</p>
-        <p>&copy; 2025 Luzuno. All rights reserved.</p>
+        <p>&copy; 2025 Luzuno</p>
     </footer>
-    <!-- JavaScript -->
-    <script src="js/script.js"></script>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    </script>
     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+</body>
+</html>
