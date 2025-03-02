@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -134,72 +134,36 @@
         }
 
         /* Level Cards */
-     .levels {
-    position: relative;
-    z-index: 100;
-}
+        .levels {
+            position: relative;
+            z-index: 100;
+        }
 
-.level-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    padding: 2rem 5%;
-}
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem 5%;
+        }
 
-.level-card {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    padding: 2rem;
-    text-align: center;
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 183, 197, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+        .level-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--sakura-pink);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-.level-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, 
-        rgba(255, 183, 197, 0.1) 0%, 
-        rgba(255, 255, 255, 0.3) 100%);
-    z-index: -1;
-}
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
 
-.level-card h3 {
-    color: #9f4d60;
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 2;
-}
-
-.level-card p {
-    color: #6d3d4a;
-    font-size: 0.95rem;
-    position: relative;
-    z-index: 2;
-}
-
-.level-card:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* Animation Fix */
-.level-card.animate__animated {
-    animation-duration: 0.8s;
-}
         /* Blog Cards */
         .blog-grid {
             display: grid;
@@ -246,6 +210,16 @@
             transform: scale(1.05);
         }
 
+        /* Dekorasi Kanji */
+        .kanji-decor {
+            position: fixed;
+            font-family: 'Sawarabi Mincho', sans-serif;
+            font-size: 8rem;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero h1 {
@@ -261,16 +235,7 @@
                 grid-template-columns: 1fr;
             }
         }
-      /* Dekorasi Kanji */
-        .kanji-decor {
-            position: fixed;
-            font-family: 'Sawarabi Mincho', sans-serif;
-            font-size: 8rem;
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 0;
-        }
-        /* Tambahkan di CSS */
+    /* Tambahkan di CSS */
         html, body {
             overflow-x: hidden !important;
             max-width: 100% !important;
@@ -297,9 +262,12 @@
     <div class="sakura-petal" style="left: 5%; animation-delay: 0s;"></div>
     <div class="sakura-petal" style="left: 15%; animation-delay: 1s;"></div>
     <div class="sakura-petal" style="left: 25%; animation-delay: 3s;"></div>
-   <div class="kanji-decor" style="top: 20%; left: 10%;">日</div>
+
+    <!-- Kanji Decor -->
+    <div class="kanji-decor" style="top: 20%; left: 10%;">日</div>
     <div class="kanji-decor" style="top: 40%; right: 15%;">本</div>
-    <div class="kanji-decor" style="bottom: 30%; left: 5%;">語</div> 
+    <div class="kanji-decor" style="bottom: 30%; left: 5%;">語</div>
+
     <!-- Navigation -->
     <nav>
         <div>
@@ -317,32 +285,31 @@
         </div>
     </header>
 
-    <!-- Level Navigation Widget -->
+    <!-- Level Section -->
     <section id="levels" class="levels">
-         <title>Luzuno - Belajar Bahasa Jepang</title>
         <h2>Pilih Tingkat Belajar</h2>
         <div class="level-grid">
-            <a href="level-0/hiragana.html" class="level-card animate__animated animate__zoomIn" data-level="0">
+            <a href="level-0/hiragana.html" class="level-card animate__animated animate__zoomIn">
                 <h3>Level 0</h3>
                 <p>Hiragana, Katakana, Kosakata Dasar</p>
             </a>
-            <a href="level-n5/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n5">
+            <a href="level-n5/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
                 <h3>Level N5</h3>
                 <p>Dasar Tata Bahasa dan Kosakata</p>
             </a>
-            <a href="level-n4/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n4">
+            <a href="level-n4/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
                 <h3>Level N4</h3>
                 <p>Tata Bahasa dan Kosakata Lanjutan</p>
             </a>
-            <a href="level-n3/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n3">
+            <a href="level-n3/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
                 <h3>Level N3</h3>
                 <p>Persiapan JLPT N3</p>
             </a>
-            <a href="level-n2/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n2">
+            <a href="level-n2/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
                 <h3>Level N2</h3>
                 <p>Persiapan JLPT N2</p>
             </a>
-            <a href="level-n1/tata-bahasa.html" class="level-card animate__animated animate__zoomIn" data-level="n1">
+            <a href="level-n1/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
                 <h3>Level N1</h3>
                 <p>Persiapan JLPT N1</p>
             </a>
@@ -386,21 +353,21 @@
             <div class="blog-card animate__animated animate__fadeInRight">
                 <h3>Permainan</h3>
                 <p>game santai.</p>
-                <a href="game/dino/dino.html" class="btn">masuk</a>
+                <a href="game/dino/index.html" class="btn">masuk</a>
             </div>
         </div>
     </section>
 
-    <!-- Tentang Kami Section -->
+    <!-- Tentang Kami -->
     <section id="about" class="about">
         <h2>Tentang Kami</h2>
         <p>Luzuno adalah platform pembelajaran bahasa Jepang online yang dirancang untuk membantu Anda menguasai bahasa Jepang dari tingkat dasar hingga mahir. Kami menyediakan materi pembelajaran yang komprehensif dan mudah dipahami.</p>
     </section>
 
-    <!-- Kontak Section -->
+    <!-- Kontak -->
     <section id="contact" class="contact">
         <h2>Kontak</h2>
-        <p>Jika Anda memiliki pertanyaan atau membutuhkan bantuan, jangan ragu untuk menghubungi kami melalui email di <a href="zuno354@gmail.com">zuno354@gmail.com</a>.</p>
+        <p>Jika Anda memiliki pertanyaan atau membutuhkan bantuan, jangan ragu untuk menghubungi kami melalui email di <a href="mailto:zuno354@gmail.com">zuno354@gmail.com</a>.</p>
     </section>
 
     <!-- Footer -->
