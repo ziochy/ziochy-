@@ -3,26 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta charset="UTF-8">
+    <meta name="viewport" 
+          content="width=device-width, 
+                   initial-scale=1.0, 
+                   maximum-scale=1.0, 
+                   user-scalable=no,
+                   shrink-to-fit=no">
     <title>Luzuno - Belajar Bahasa Jepang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
     <style>
+        /* Variabel Tema */
         :root {
-            --sakura-pink: #ffb7c5;
-            --sakura-dark: #9f4d60;
-            --sakura-bg: #fff4f7;
-            --text-color: #4a2a33;
-            --card-bg: rgba(255, 255, 255, 0.9);
+            /* Light Theme */
+            --light-bg: #fff4f7;
+            --light-text: #4a2a33;
+            --light-card: rgba(255, 255, 255, 0.9);
+            --light-accent: #ffb7c5;
+            --level-card-bg: #ffe6eb;
+            --level-card-accent: #ffd1dc;
+            --level-card-text: #7a3b4d;
+
+            /* Dark Theme */
+            --dark-bg: #2d3436;
+            --dark-text: #dfe6e9;
+            --dark-card: rgba(45, 52, 54, 0.9);
+            --dark-accent: #6c5b7b;
+            --dark-level-card-bg: #4a2a33;
+            --dark-level-card-accent: #9f4d60;
+            --dark-level-card-text: #ffd3e0;
+
+            /* Anime Theme */
+            --anime-bg: #1a1a2e;
+            --anime-text: #ffd3e0;
+            --anime-card: rgba(26, 26, 46, 0.95);
+            --anime-accent: #e94584;
+            --anime-secondary: #8a4fff;
+        }
+
+        /* Terapkan Tema */
+        [data-theme="light"] {
+            --bg-color: var(--light-bg);
+            --text-color: var(--light-text);
+            --card-bg: var(--light-card);
+            --accent-color: var(--light-accent);
+            --current-level-card-bg: var(--level-card-bg);
+            --current-level-card-accent: var(--level-card-accent);
+            --current-level-card-text: var(--level-card-text);
         }
 
         [data-theme="dark"] {
-            --sakura-pink: #6c5b7b;
-            --sakura-dark: #355c7d;
-            --sakura-bg: #2d3436;
-            --text-color: #dfe6e9;
-            --card-bg: rgba(45, 52, 54, 0.9);
+            --bg-color: var(--dark-bg);
+            --text-color: var(--dark-text);
+            --card-bg: var(--dark-card);
+            --accent-color: var(--dark-accent);
+            --current-level-card-bg: var(--dark-level-card-bg);
+            --current-level-card-accent: var(--dark-level-card-accent);
+            --current-level-card-text: var(--dark-level-card-text);
         }
 
+        [data-theme="anime"] {
+            --bg-color: var(--anime-bg);
+            --text-color: var(--anime-text);
+            --card-bg: var(--anime-card);
+            --accent-color: var(--anime-secondary);
+            --current-level-card-bg: #2a1a3a;
+            --current-level-card-accent: #8a4fff;
+            --current-level-card-text: #ffd3e0;
+            
+            background-image: 
+                linear-gradient(45deg, 
+                    rgba(233, 69, 132, 0.1) 25%, 
+                    transparent 25%,
+                    transparent 75%,
+                    rgba(233, 69, 132, 0.1) 75%),
+                linear-gradient(45deg, 
+                    rgba(233, 69, 132, 0.1) 25%, 
+                    transparent 25%,
+                    transparent 75%,
+                    rgba(233, 69, 132, 0.1) 75%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+        }
+
+        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -32,10 +97,11 @@
         }
 
         body {
-            background: var(--sakura-bg);
+            background: var(--bg-color);
             color: var(--text-color);
             line-height: 1.7;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         /* Theme Toggle */
@@ -45,45 +111,49 @@
             right: 20px;
             z-index: 2000;
             background: var(--card-bg);
-            border: 2px solid var(--sakura-pink);
-            border-radius: 30px;
-            padding: 10px;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--accent-color);
         }
 
         .theme-toggle i {
             font-size: 1.5rem;
-            color: var(--sakura-pink);
+            color: var(--accent-color);
         }
 
-        /* Sakura Petals */
-        .sakura-petal {
+        /* Karakter Anime */
+        .anime-character {
             position: fixed;
-            width: 15px;
-            height: 15px;
-            background: linear-gradient(45deg, #ffd3e0, #ffb7c5);
-            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-            animation: petal-fall 15s linear infinite;
-            pointer-events: none;
+            bottom: -50px;
+            width: 300px;
+            opacity: 0;
+            transition: all 1s ease;
             z-index: 999;
         }
 
-        [data-theme="dark"] .sakura-petal {
-            display: none;
+        [data-theme="anime"] .anime-character {
+            opacity: 1;
+            bottom: 0;
         }
 
-        @keyframes petal-fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 1; }
+        .anime-character.left {
+            left: -50px;
+            transform: scaleX(-1);
+        }
+
+        .anime-character.right {
+            right: -50px;
         }
 
         /* Navigation */
         nav {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--card-bg);
             backdrop-filter: blur(5px);
             padding: 1rem 5%;
             display: flex;
@@ -97,7 +167,7 @@
         }
 
         nav a {
-            color: var(--sakura-dark);
+            color: var(--text-color);
             text-decoration: none;
             margin: 0 1.5rem;
             padding: 0.5rem 1rem;
@@ -107,7 +177,7 @@
         }
 
         nav a:hover {
-            background: var(--sakura-pink);
+            background: var(--accent-color);
             transform: translateY(-2px);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
@@ -127,18 +197,13 @@
 
         .hero h1 {
             font-size: 3.5rem;
-            color: var(--sakura-pink);
+            color: var(--accent-color);
             margin-bottom: 1rem;
             font-family: 'Kiwi Maru', serif;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Level Cards */
-        .levels {
-            position: relative;
-            z-index: 100;
-        }
-
         .level-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -147,16 +212,19 @@
         }
 
         .level-card {
-            background: var(--card-bg);
+            background: linear-gradient(145deg, 
+                var(--current-level-card-bg) 0%, 
+                var(--current-level-card-accent) 100%);
             border-radius: 20px;
             padding: 2rem;
             text-align: center;
-            border: 1px solid var(--sakura-pink);
+            border: 1px solid var(--accent-color);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             min-height: 180px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            color: var(--current-level-card-text);
         }
 
         .level-card:hover {
@@ -176,7 +244,7 @@
             background: var(--card-bg);
             border-radius: 15px;
             padding: 1.5rem;
-            border: 1px solid var(--sakura-pink);
+            border: 1px solid var(--accent-color);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
@@ -187,7 +255,7 @@
 
         /* Footer */
         footer {
-            background: var(--sakura-dark);
+            background: var(--accent-color);
             color: white;
             padding: 3rem 5%;
             text-align: center;
@@ -198,7 +266,7 @@
         .btn {
             display: inline-block;
             padding: 0.8rem 2rem;
-            background: var(--sakura-dark);
+            background: var(--accent-color);
             color: white;
             border-radius: 30px;
             text-decoration: none;
@@ -206,18 +274,8 @@
         }
 
         .btn:hover {
-            background: var(--sakura-pink);
             transform: scale(1.05);
-        }
-
-        /* Dekorasi Kanji */
-        .kanji-decor {
-            position: fixed;
-            font-family: 'Sawarabi Mincho', sans-serif;
-            font-size: 8rem;
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 0;
+            opacity: 0.9;
         }
 
         /* Responsive Design */
@@ -235,38 +293,17 @@
                 grid-template-columns: 1fr;
             }
         }
-    /* Tambahkan di CSS */
-        html, body {
-            overflow-x: hidden !important;
-            max-width: 100% !important;
-            touch-action: pan-y;
-        }
-        
-        img, section, div {
-            max-width: 100% !important;
-        }
-
-        /* Nonaktifkan zoom dengan JavaScript */
-        document.addEventListener('gesturestart', function(e) {
-            e.preventDefault();
-        });
     </style>
 </head>
 <body>
     <!-- Theme Toggle -->
     <div class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
+        <i class="fas fa-palette"></i>
     </div>
 
-    <!-- Sakura Petals -->
-    <div class="sakura-petal" style="left: 5%; animation-delay: 0s;"></div>
-    <div class="sakura-petal" style="left: 15%; animation-delay: 1s;"></div>
-    <div class="sakura-petal" style="left: 25%; animation-delay: 3s;"></div>
-
-    <!-- Kanji Decor -->
-    <div class="kanji-decor" style="top: 20%; left: 10%;">日</div>
-    <div class="kanji-decor" style="top: 40%; right: 15%;">本</div>
-    <div class="kanji-decor" style="bottom: 30%; left: 5%;">語</div>
+    <!-- Karakter Anime -->
+    <img src="assets/images/k.png" class="anime-character left animate__animated animate__bounceInUp">
+    <img src="assets/images/r.png" class="anime-character right animate__animated animate__bounceInUp">
 
     <!-- Navigation -->
     <nav>
@@ -316,6 +353,7 @@
         </div>
     </section>
 
+    
     <!-- Blog Section -->
     <section class="blog" id="blog">
         <h2>Artikel Terbaru</h2>
@@ -377,27 +415,53 @@
     </footer>
 
     <script>
-        // Theme Toggle
+        const themes = ['light', 'dark', 'anime'];
+        let currentTheme = 0;
+
         function toggleTheme() {
-            const html = document.documentElement;
-            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
+            currentTheme = (currentTheme + 1) % themes.length;
+            const theme = themes[currentTheme];
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+            if(theme === 'anime') addAnimeEffects();
         }
 
         function updateThemeIcon(theme) {
             const icon = document.querySelector('.theme-toggle i');
-            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            const icons = {
+                'light': 'fa-sun',
+                'dark': 'fa-moon',
+                'anime': 'fa-palette'
+            };
+            icon.className = `fas ${icons[theme]}`;
         }
 
-        // Load saved theme
+        function addAnimeEffects() {
+            for(let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.style.cssText = `
+                    position: fixed;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    width: ${Math.random() * 3}px;
+                    height: ${Math.random() * 3}px;
+                    background: rgba(255,255,255,${Math.random()});
+                    border-radius: 50%;
+                    animation: sparkle ${Math.random() * 3 + 1}s infinite;
+                    pointer-events: none;
+                    z-index: -1;
+                `;
+                document.body.appendChild(star);
+            }
+        }
+
+        // Muat tema awal
         const savedTheme = localStorage.getItem('theme') || 'light';
+        currentTheme = themes.indexOf(savedTheme);
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
     </script>
-    
-    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
 </body>
 </html>
