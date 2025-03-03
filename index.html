@@ -293,6 +293,11 @@
                 grid-template-columns: 1fr;
             }
         }
+      .anime-character {
+  mix-blend-mode: screen;
+  filter: brightness(1.1) contrast(1);
+  background: transparent !important;
+}
     </style>
 </head>
 <body>
@@ -302,10 +307,30 @@
     </div>
 
     <!-- Karakter Anime -->
-    <img src="assets/images/k.png" class="anime-character left animate__animated animate__bounceInUp">
-    <img src="assets/images/r.png" class="anime-character right animate__animated animate__bounceInUp">
+      <!-- Setelah edit background transparan -->
+     class="anime-character right"
+     style="background: transparent;">
+         <button onclick="playSound('greeting')" class="voice-button">
+      <img src="assets/images/el.gif" class="anime-character right animate__animated animate__bounceInUp">
+         </button>     
+   <!-- Contoh implementasi -->
 
-    <!-- Navigation -->
+      <img src="el.gif" alt="Karakter">
+   
+
+   <audio id="greeting" src="assets/images/el.mp3"></audio>
+
+   <script>
+   function playSound(id) {
+     const audio = document.getElementById(id);
+     audio.currentTime = 0;
+     audio.play().catch(() => {
+       // Handle autoplay restrictions
+       document.body.addEventListener('click', () => audio.play(), { once: true });
+     });
+   }
+   </script>
+      <!-- Navigation -->
     <nav>
         <div>
             <a href="#login">Masuk</a>
@@ -399,7 +424,7 @@
     <!-- Tentang Kami -->
     <section id="about" class="about">
         <h2>Tentang Kami</h2>
-        <p>Luzuno adalah platform pembelajaran bahasa Jepang online yang dirancang untuk membantu Anda menguasai bahasa Jepang dari tingkat dasar hingga mahir. Kami menyediakan materi pembelajaran yang komprehensif dan mudah dipahami.</p>
+        <p>Luzuno adalah platform pembelajaran bahasa Jepang online yang dirancang untuk membantu Anda menguasai bahasa Jepang dari tingkat dasar. Kami menyediakan materi pembelajaran yang komprehensif dan mudah dipahami. dibuat oleh ziochy </p>
     </section>
 
     <!-- Kontak -->
