@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tes Bahasa Jepang N5</title>
+    <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+    }
+    
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.2em;
+        border-bottom: 3px solid #3498db;
+        padding-bottom: 10px;
+    }
+
+    .question {
+        margin-bottom: 25px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        transition: transform 0.2s;
+    }
+
+    .question:hover {
+        transform: translateX(5px);
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .question p {
+        font-size: 1.1em;
+        margin-bottom: 15px;
+        color: #34495e;
+        font-weight: 500;
+    }
+
+    .question label {
+        display: block;
+        margin: 8px 0;
+        padding: 12px;
+        background-color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    .question label:hover {
+        background-color: #f0f8ff;
+        border-color: #3498db;
+    }
+
+    .question input[type="radio"] {
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    button[type="button"] {
+        background-color: #3498db;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        display: block;
+        margin: 30px auto 0;
+        transition: background-color 0.3s;
+    }
+
+    button[type="button"]:hover {
+        background-color: #2980b9;
+    }
+
+    .result {
+        text-align: center;
+        font-size: 1.2em;
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+        .container {
+            padding: 15px;
+            margin: 10px;
+        }
+        
+        h1 {
+            font-size: 1.8em;
+        }
+        
+        .question {
+            padding: 15px;
+        }
+    }
+    </style>
+    
+</head>
+<body>
+    <h1>Tes Bahasa Jepang N5</h1>
+    <form id="quizForm"></form>
+    
+    <div id="result" class="result"></div>
+
+    <script>
+        const allQuestions = [
+            // Soal 1-20
+            { id: 1, question: "これは<u>山</u>です。", options: ["やま", "かわ", "いえ", "みち"], answer: "a" },
+            { id: 2, question: "あの<u>人</u>はだれですか。", options: ["にん", "じん", "ひと", "もの"], answer: "c" },
+            { id: 3, question: "<u>日</u>よう日です。", options: ["にち", "ひ", "び", "か"], answer: "b" },
+            { id: 4, question: "<u>火</u>よう日です。", options: ["か", "ひ", "け", "ほ"], answer: "a" },
+            { id: 5, question: "<u>水</u>を飲みます。", options: ["みず", "き", "つち", "はな"], answer: "a" },
+            { id: 6, question: "<u>木</u>が大きいです。", options: ["もく", "き", "こ", "は"], answer: "b" },
+            { id: 7, question: "<u>金</u>よう日です。", options: ["かね", "きん", "ごん", "こん"], answer: "b" },
+            { id: 8, question: "<u>土</u>よう日です。", options: ["と", "ど", "つち", "はたけ"], answer: "b" },
+            { id: 9, question: "<u>車</u>を運転します。", options: ["しゃ", "くるま", "じどうしゃ", "じてんしゃ"], answer: "b" },
+            { id: 10, question: "<u>雨</u>が降っています。", options: ["あめ", "ゆき", "くも", "かぜ"], answer: "a" },
+            
+            // Soal 21-40 (tambahan baru)
+            { id: 11, question: "<u>月</u>がきれいです。", options: ["つき", "がつ", "げつ", "ぽん"], answer: "a" },
+            { id: 12, question: "<u>川</u>で遊びます。", options: ["かわ", "いけ", "うみ", "みず"], answer: "a" },
+            { id: 13, question: "<u>田</u>さんは日本人です。", options: ["た", "だ", "でん", "たん"], answer: "a" },
+            { id: 14, question: "<u>町</u>がにぎやかです。", options: ["まち", "ちょう", "とし", "むら"], answer: "a" },
+            { id: 15, question: "<u>駅</u>で会います。", options: ["えき", "いえ", "みせ", "まち"], answer: "a" },
+            { id: 16, question: "<u>新</u>しいかばん", options: ["あたら", "しん", "あら", "にい"], answer: "b" },
+            { id: 17, question: "<u>古</u>い本", options: ["ふる", "こ", "ひさ", "くろ"], answer: "a" },
+            { id: 18, question: "<u>男</u>の子", options: ["おとこ", "だん", "なん", "おう"], answer: "a" },
+            { id: 19, question: "<u>女</u>の子", options: ["おんな", "じょ", "にょ", "め"], answer: "a" },
+            { id: 20, question: "<u>口</u>を開けて", options: ["くち", "こう", "ぐち", "ちゅう"], answer: "a" },
+            { id: 21, question: "<u>耳</u>が痛い", options: ["みみ", "じ", "み", "みい"], answer: "a" },
+            { id: 22, question: "<u>目</u>が大きい", options: ["め", "もく", "まなこ", "じゅん"], answer: "a" },
+            { id: 23, question: "<u>友</u>達と話す", options: ["とも", "ゆう", "ども", "いと"], answer: "b" },
+            { id: 24, question: "<u>先</u>生、おはよう", options: ["せん", "さき", "せんせい", "さき"], answer: "a" },
+            { id: 25, question: "<u>父</u>の仕事", options: ["ちち", "ふ", "とう", "ぱぱ"], answer: "a" },
+            { id: 26, question: "<u>母</u>の料理", options: ["はは", "ぼ", "かあ", "まま"], answer: "a" },
+            { id: 27, question: "<u>北</u>の方角", options: ["きた", "ほく", "ぺき", "にし"], answer: "a" },
+            { id: 28, question: "<u>南</u>の国", options: ["みなみ", "なん", "なみ", "みな"], answer: "a" },
+            { id: 29, question: "<u>東</u>京都", options: ["とう", "ひがし", "あずま", "とうきょう"], answer: "b" },
+            { id: 30, question: "<u>西</u>日本", options: ["にし", "さい", "いし", "せい"], answer: "a" },
+            { id: 31, question: "<u>赤</u>いりんご", options: ["あか", "せき", "しゃく", "あけ"], answer: "a" },
+            { id: 32, question: "<u>白</u>い紙", options: ["しろ", "はく", "びゃく", "しら"], answer: "a" },
+            { id: 33, question: "<u>青</u>空", options: ["あお", "せい", "しょう", "じょう"], answer: "a" },
+            { id: 34, question: "<u>右</u>に曲がる", options: ["みぎ", "う", "ゆう", "よう"], answer: "a" },
+            { id: 35, question: "<u>左</u>の手", options: ["ひだり", "さ", "しゃ", "じょう"], answer: "a" },
+            { id: 36, question: "<u>上</u>を見る", options: ["うえ", "じょう", "かみ", "あが"], answer: "a" },
+            { id: 37, question: "<u>下</u>に置く", options: ["した", "か", "げ", "しも"], answer: "a" },
+            { id: 38, question: "<u>中</u>に入る", options: ["なか", "ちゅう", "じゅう", "うち"], answer: "a" },
+            { id: 39, question: "<u>外</u>で遊ぶ", options: ["そと", "がい", "ほか", "げ"], answer: "a" },
+            { id: 40, question: "<u>毎日</u>勉強する", options: ["まいにち", "まいび", "まいじつ", "まいか"], answer: "a" }
+        ];
+
+        // Acak dan pilih 20 soal
+        const shuffledQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 20);
+        let correctAnswers = {};
+
+        const form = document.getElementById('quizForm');
+        shuffledQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <p>${index+1}. ${q.question}</p>
+                ${q.options.map((opt, i) => `
+                    <label>
+                        <input type="radio" name="q${q.id}" value="${String.fromCharCode(97+i)}">
+                        ${opt}
+                    </label>
+                `).join('')}
+            `;
+            form.appendChild(questionDiv);
+            correctAnswers[`q${q.id}`] = q.answer;
+        });
+
+        // Tombol submit
+        const submitButton = document.createElement('button');
+        submitButton.type = 'button';
+        submitButton.textContent = 'Kirim Jawaban';
+        submitButton.onclick = calculateScore;
+        form.appendChild(submitButton);
+
+        function calculateScore() {
+            let score = 0;
+            const inputs = document.querySelectorAll('input[type="radio"]:checked');
+            
+            inputs.forEach(input => {
+                const questionName = input.name;
+                if(correctAnswers[questionName] === input.value) {
+                    score++;
+                }
+            });
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `Nilai Anda: ${score}/20 (${(score/20*100).toFixed(1)}%)`;
+        }
+    </script>
+</body>
+</html>
+    
+        
