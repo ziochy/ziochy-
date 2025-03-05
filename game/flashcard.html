@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Kanji - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
+    <style>
+    :root {
+            --sakura-pink: #ffb7c5;
+            --sakura-dark: #9f4d60;
+            --sakura-bg: #fff4f7;
+            --text-color: #4a2a33;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --sakura-pink: #6c5b7b;
+            --sakura-dark: #355c7d;
+            --sakura-bg: #2d3436;
+            --text-color: #dfe6e9;
+            --card-bg: rgba(45, 52, 54, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sawarabi Mincho', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--sakura-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .level-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .level-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Kiwi Maru', serif;
+            background: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .level-btn.n5::before { background: #ff6b6b; }
+        .level-btn.n4::before { background: #ff9f43; }
+        .level-btn.n3::before { background: #54a0ff; }
+        .level-btn.n2::before { background: #2ecc71; }
+        .level-btn.n1::before { background: #a55eea; }
+
+        .level-btn.active {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .flashcard-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 2rem auto;
+            min-height: 400px;
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard.swipe-right {
+            transform: translateX(150%) rotate(15deg);
+        }
+
+        .flashcard.swipe-left {
+            transform: translateX(-150%) rotate(-15deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .kanji {
+            font-size: 8rem;
+            text-align: center;
+            margin: 2rem 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .details {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        .strokes {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 0.9rem;
+            color: var(--sakura-dark);
+        }
+
+        .progress-container {
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--sakura-pink);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .control-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            background: var(--sakura-dark);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hint-text {
+            text-align: center;
+            margin: 2rem 0;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .kanji {
+                font-size: 6rem;
+            }
+            
+            .flashcard {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+   <!-- Elemen Audio -->
+    <audio id="flipSound" src="flip.mp3" preload="auto"></audio>
+    <audio id="swipeLeftSound" src="card.mp3" preload="auto"></audio>
+    <audio id="swipeRightSound" src="card.mp3" preload="auto"></audio>
+    <audio id="levelChangeSound" src="#" preload="auto"></audio>
+    <audio id="completeSound" src="#" preload="auto"></audio>
+    <audio id="resetSound" src="#" preload="auto"></audio>
+
+    <div class="container">
+        <div class="level-selector">
+            <button class="level-btn n5" data-level="n5">JLPT N5</button>
+            <button class="level-btn n4" data-level="n4">JLPT N4</button>
+            <button class="level-btn n3" data-level="n3">JLPT N3</button>
+            <button class="level-btn n2" data-level="n2">JLPT N2</button>
+            <button class="level-btn n1" data-level="n1">JLPT N1</button>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="flashcard-wrapper" id="flashcardWrapper"></div>
+
+        <div class="hint-text">Geser ke kiri jika sudah hafal ❤️ | Geser ke kanan untuk belajar lagi 💡 | Klik untuk melihat arti</div>
+
+        <div class="controls">
+            <button class="control-btn" id="resetBtn">⟳ Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi Audio
+        const audio = {
+            flip: document.getElementById('flipSound'),
+            swipeLeft: document.getElementById('swipeLeftSound'),
+            swipeRight: document.getElementById('swipeRightSound'),
+            levelChange: document.getElementById('levelChangeSound'),
+            complete: document.getElementById('completeSound'),
+            reset: document.getElementById('resetSound')
+        };
+
+        const kanjiData = {
+            n5: [
+                { kanji: '一', onyomi: 'イチ', kunyomi: 'ひと', meaning: 'Satu', example: '一人 (Hitori)', strokes: 1 },
+                { kanji: '二', onyomi: 'ニ', kunyomi: 'ふた', meaning: 'Dua', example: '二日 (Futsuka)', strokes: 2 },
+                { kanji: '三', onyomi: 'サン', kunyomi: 'み', meaning: 'Tiga', example: '三日 (Mikka)', strokes: 3 },
+                { kanji: '四', onyomi: 'シ', kunyomi: 'よん', meaning: 'Empat', example: '四時 (Yoji)', strokes: 5 },
+                { kanji: '五', onyomi: 'ゴ', kunyomi: 'いつ', meaning: 'Lima', example: '五日 (Itsuka)', strokes: 4 },
+                { kanji: '六', onyomi: 'ロク', kunyomi: 'む', meaning: 'Enam', example: '六日 (Muika)', strokes: 4 },
+                { kanji: '七', onyomi: 'シチ', kunyomi: 'なな', meaning: 'Tujuh', example: '七日 (Nanoka)', strokes: 2 },
+                { kanji: '八', onyomi: 'ハチ', kunyomi: 'や', meaning: 'Delapan', example: '八日 (Yōka)', strokes: 2 },
+                { kanji: '九', onyomi: 'キュウ', kunyomi: 'ここの', meaning: 'Sembilan', example: '九日 (Kokonoka)', strokes: 2 },
+                { kanji: '十', onyomi: 'ジュウ', kunyomi: 'とお', meaning: 'Sepuluh', example: '十日 (Tōka)', strokes: 2 },
+                { kanji: '百', onyomi: 'ヒャク', kunyomi: 'もも', meaning: 'Ratus', example: '百円 (Hyakuen)', strokes: 6 },
+                { kanji: '千', onyomi: 'セン', kunyomi: 'ち', meaning: 'Ribu', example: '千円 (Sen’en)', strokes: 3 },
+                { kanji: '万', onyomi: 'マン', kunyomi: 'よろず', meaning: 'Sepuluh Ribu', example: '一万 (Ichiman)', strokes: 3 },
+                { kanji: '日', onyomi: 'ニチ', kunyomi: 'ひ', meaning: 'Hari/Matahari', example: '日曜日 (Nichiyōbi)', strokes: 4 },
+                { kanji: '月', onyomi: 'ゲツ', kunyomi: 'つき', meaning: 'Bulan', example: '月曜日 (Getsuyōbi)', strokes: 4 },
+                { kanji: '火', onyomi: 'カ', kunyomi: 'ひ', meaning: 'Api', example: '火曜日 (Kayōbi)', strokes: 4 },
+                { kanji: '水', onyomi: 'スイ', kunyomi: 'みず', meaning: 'Air', example: '水曜日 (Suiyōbi)', strokes: 4 },
+                { kanji: '木', onyomi: 'モク', kunyomi: 'き', meaning: 'Pohon', example: '木曜日 (Mokuyōbi)', strokes: 4 },
+                { kanji: '金', onyomi: 'キン', kunyomi: 'かね', meaning: 'Uang', example: '金曜日 (Kinyōbi)', strokes: 8 },
+                { kanji: '土', onyomi: 'ド', kunyomi: 'つち', meaning: 'Tanah', example: '土曜日 (Doyōbi)', strokes: 3 },
+                { kanji: '年', onyomi: 'ネン', kunyomi: 'とし', meaning: 'Tahun', example: '今年 (Kotoshi)', strokes: 6 },
+                { kanji: '時', onyomi: 'ジ', kunyomi: 'とき', meaning: 'Waktu', example: '時間 (Jikan)', strokes: 10 },
+                { kanji: '分', onyomi: 'ブン', kunyomi: 'わ', meaning: 'Menit', example: '五分 (Gofun)', strokes: 4 },
+                { kanji: '間', onyomi: 'カン', kunyomi: 'あいだ', meaning: 'Interval', example: '時間 (Jikan)', strokes: 12 },
+                { kanji: '毎', onyomi: 'マイ', kunyomi: 'ごと', meaning: 'Setiap', example: '毎日 (Mainichi)', strokes: 6 },
+                { kanji: '人', onyomi: 'ジン', kunyomi: 'ひと', meaning: 'Orang', example: '日本人 (Nihonjin)', strokes: 2 },
+                { kanji: '男', onyomi: 'ダン', kunyomi: 'おとこ', meaning: 'Laki-laki', example: '男子 (Danshi)', strokes: 7 },
+                { kanji: '女', onyomi: 'ジョ', kunyomi: 'おんな', meaning: 'Perempuan', example: '女子 (Joshi)', strokes: 3 },
+                { kanji: '子', onyomi: 'シ', kunyomi: 'こ', meaning: 'Anak', example: '子供 (Kodomo)', strokes: 3 },
+                { kanji: '父', onyomi: 'フ', kunyomi: 'ちち', meaning: 'Ayah', example: '父親 (Chichioya)', strokes: 4 },
+                { kanji: '母', onyomi: 'ボ', kunyomi: 'はは', meaning: 'Ibu', example: '母親 (Hahaoya)', strokes: 5 },
+                { kanji: '上', onyomi: 'ジョウ', kunyomi: 'うえ', meaning: 'Atas', example: '上る (Noboru)', strokes: 3 },
+                { kanji: '下', onyomi: 'カ', kunyomi: 'した', meaning: 'Bawah', example: '下さい (Kudasai)', strokes: 3 },
+                { kanji: '中', onyomi: 'チュウ', kunyomi: 'なか', meaning: 'Tengah', example: '中国 (Chūgoku)', strokes: 4 },
+                { kanji: '大', onyomi: 'ダイ', kunyomi: 'おお', meaning: 'Besar', example: '大きい (Ōkii)', strokes: 3 },
+                { kanji: '小', onyomi: 'ショウ', kunyomi: 'ちい', meaning: 'Kecil', example: '小さい (Chiisai)', strokes: 3 },
+                { kanji: '行', onyomi: 'コウ', kunyomi: 'い', meaning: 'Pergi', example: '行く (Iku)', strokes: 6 },
+                { kanji: '来', onyomi: 'ライ', kunyomi: 'く', meaning: 'Datang', example: '来る (Kuru)', strokes: 7 },
+                { kanji: '見', onyomi: 'ケン', kunyomi: 'み', meaning: 'Lihat', example: '見る (Miru)', strokes: 7 },
+                { kanji: '聞', onyomi: 'ブン', kunyomi: 'き', meaning: 'Dengar', example: '聞く (Kiku)', strokes: 14 },
+                { kanji: '食', onyomi: 'ショク', kunyomi: 'た', meaning: 'Makan', example: '食べる (Taberu)', strokes: 9 },
+                { kanji: '飲', onyomi: 'イン', kunyomi: 'の', meaning: 'Minum', example: '飲む (Nomu)', strokes: 12 },
+                { kanji: '読', onyomi: 'ドク', kunyomi: 'よ', meaning: 'Baca', example: '読む (Yomu)', strokes: 14 },
+                { kanji: '書', onyomi: 'ショ', kunyomi: 'か', meaning: 'Tulis', example: '書く (Kaku)', strokes: 10 },
+                { kanji: '雨', onyomi: 'ウ', kunyomi: 'あめ', meaning: 'Hujan', example: '雨天 (Uten)', strokes: 8 },
+                { kanji: '電', onyomi: 'デン', kunyomi: '-', meaning: 'Listrik', example: '電気 (Denki)', strokes: 13 },
+                { kanji: '車', onyomi: 'シャ', kunyomi: 'くるま', meaning: 'Mobil', example: '電車 (Densha)', strokes: 7 },
+                { kanji: '語', onyomi: 'ゴ', kunyomi: 'かた', meaning: 'Bahasa', example: '日本語 (Nihongo)', strokes: 14 },
+                { kanji: '田', onyomi: 'デン', kunyomi: 'た', meaning: 'Sawah', example: '田んぼ (Tanbo)', strokes: 5 },
+                { kanji: '山', onyomi: 'サン', kunyomi: 'やま', meaning: 'Gunung', example: '山 (Yama)', strokes: 3 },
+                { kanji: '川', onyomi: 'セン', kunyomi: 'かわ', meaning: 'Sungai', example: '川 (Kawa)', strokes: 3 },
+                { kanji: '天', onyomi: 'テン', kunyomi: 'あま', meaning: 'Langit', example: '天気 (Tenki)', strokes: 4 },
+                { kanji: '休', onyomi: 'キュウ', kunyomi: 'やす', meaning: 'Istirahat', example: '休む (Yasumu)', strokes: 6 },
+                { kanji: '学', onyomi: 'ガク', kunyomi: 'まな', meaning: 'Belajar', example: '学校 (Gakkō)', strokes: 8 },
+                { kanji: '校', onyomi: 'コウ', kunyomi: '-', meaning: 'Sekolah', example: '学校 (Gakkō)', strokes: 10 },
+                { kanji: '先', onyomi: 'セン', kunyomi: 'さき', meaning: 'Sebelum', example: '先週 (Senshū)', strokes: 6 },
+                { kanji: '生', onyomi: 'セイ', kunyomi: 'い', meaning: 'Hidup', example: '学生 (Gakusei)', strokes: 5 },
+                { kanji: '会', onyomi: 'カイ', kunyomi: 'あ', meaning: 'Bertemu', example: '会う (Au)', strokes: 6 },
+                { kanji: '社', onyomi: 'シャ', kunyomi: 'やしろ', meaning: 'Perusahaan', example: '会社 (Kaisha)', strokes: 7 },
+                { kanji: '店', onyomi: 'テン', kunyomi: 'みせ', meaning: 'Toko', example: '店長 (Tenchō)', strokes: 8 },
+                { kanji: '駅', onyomi: 'エキ', kunyomi: '-', meaning: 'Stasiun', example: '駅前 (Ekimae)', strokes: 14 },
+                { kanji: '目', onyomi: 'モク', kunyomi: 'め', meaning: 'Mata', example: '目次 (Mokuji)', strokes: 5 },
+                { kanji: '耳', onyomi: 'ジ', kunyomi: 'みみ', meaning: 'Telinga', example: '耳 (Mimi)', strokes: 6 },
+                { kanji: '口', onyomi: 'コウ', kunyomi: 'くち', meaning: 'Mulut', example: '口 (Kuchi)', strokes: 3 },
+                { kanji: '手', onyomi: 'シュ', kunyomi: 'て', meaning: 'Tangan', example: '手紙 (Tegami)', strokes: 4 },
+                { kanji: '足', onyomi: 'ソク', kunyomi: 'あし', meaning: 'Kaki', example: '足 (Ashi)', strokes: 7 },
+                { kanji: '白', onyomi: 'ハク', kunyomi: 'しろ', meaning: 'Putih', example: '白い (Shiroi)', strokes: 5 },
+                { kanji: '赤', onyomi: 'セキ', kunyomi: 'あか', meaning: 'Merah', example: '赤い (Akai)', strokes: 7 },
+                { kanji: '青', onyomi: 'セイ', kunyomi: 'あお', meaning: 'Biru', example: '青い (Aoi)', strokes: 8 },
+                { kanji: '黒', onyomi: 'コク', kunyomi: 'くろ', meaning: 'Hitam', example: '黒い (Kuroi)', strokes: 11 }
+            ],
+            n4: [
+                { kanji: '旅', onyomi: 'リョ', kunyomi: 'たび', meaning: 'Perjalanan', example: '旅行 (Ryoukou)', strokes: 10 },
+            ],
+            n3: [
+                { kanji: '議', onyomi: 'ギ', kunyomi: '-', meaning: 'Diskusi', example: '会議 (Kaigi)', strokes: 20 },
+            ],
+            n2: [
+                { kanji: '懸', onyomi: 'ケン', kunyomi: 'か', meaning: 'Tergantung', example: '懸念 (Kenen)', strokes: 20 },
+            ],
+            n1: [
+                { kanji: '鬱', onyomi: 'ウツ', kunyomi: 'うっ', meaning: 'Depresi', example: '鬱病 (Utsubyou)', strokes: 29 },
+            ]
+        };
+  let currentLevel = 'n5';
+        let currentCards = [];
+        let knownCards = [];
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        // Fungsi untuk menyimpan progres ke localStorage
+        function saveProgress() {
+            const progress = {
+                currentLevel,
+                currentCards,
+                knownCards
+            };
+            localStorage.setItem('kanjiProgress', JSON.stringify(progress));
+        }
+
+        // Fungsi untuk memuat progres dari localStorage
+        function loadProgress() {
+            const progress = JSON.parse(localStorage.getItem('kanjiProgress'));
+            if (progress) {
+                currentLevel = progress.currentLevel;
+                currentCards = progress.currentCards;
+                knownCards = progress.knownCards;
+                updateLevelButtons();
+                updateProgress();
+                showNextCard();
+            } else {
+                initializeDeck();
+            }
+        }
+
+        // Fungsi untuk mengupdate tombol level yang aktif
+        function updateLevelButtons() {
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.level === currentLevel) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Fungsi untuk memuat ulang kartu berdasarkan level yang dipilih
+        function loadDeckForLevel(level) {
+            currentLevel = level;
+            const savedProgress = JSON.parse(localStorage.getItem('kanjiProgress'));
+            if (savedProgress && savedProgress.currentLevel === level) {
+                // Jika ada progres yang tersimpan untuk level ini, gunakan progres tersebut
+                currentCards = savedProgress.currentCards;
+                knownCards = savedProgress.knownCards;
+            } else {
+                // Jika tidak ada progres yang tersimpan, inisialisasi deck baru
+                currentCards = [...kanjiData[currentLevel]];
+                knownCards = [];
+            }
+            updateLevelButtons();
+            updateProgress();
+            showNextCard();
+            saveProgress();
+        }
+
+        function initializeDeck() {
+            currentCards = [...kanjiData[currentLevel]];
+            knownCards = [];
+            updateProgress();
+            showNextCard();
+            saveProgress();
+        }
+
+        function createFlashcard(kanji) {
+            const card = document.createElement('div');
+            card.className = 'flashcard';
+            card.innerHTML = `
+                <div class="card-front">
+                    <div class="kanji">${kanji.kanji}</div>
+                    <div class="strokes">✍️ ${kanji.strokes} Stroke</div>
+                </div>
+                <div class="card-back">
+                    <div class="details">
+                        <p>📖 On: ${kanji.onyomi}</p>
+                        <p>📖 Kun: ${kanji.kunyomi}</p>
+                        <p>🎯 Arti: ${kanji.meaning}</p>
+                        <p>🌰 Contoh: ${kanji.example}</p>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function handleSwipe(direction) {
+            const currentCard = document.querySelector('.flashcard');
+            currentCard.classList.add(`swipe-${direction}`);
+            
+            // Play sound effect
+            direction === 'left' ? audio.swipeLeft.play() : audio.swipeRight.play();
+
+            setTimeout(() => {
+                if (direction === 'left') {
+                    knownCards.push(currentCards.shift());
+                } else {
+                    currentCards.push(currentCards.shift());
+                }
+                updateProgress();
+                showNextCard();
+                saveProgress(); // Simpan progres setelah swipe
+            }, 600);
+        }
+
+        function showNextCard() {
+            const wrapper = document.getElementById('flashcardWrapper');
+            wrapper.innerHTML = '';
+            
+            if (currentCards.length > 0) {
+                const card = createFlashcard(currentCards[0]);
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                    audio.flip.play();
+                });
+                addSwipeListeners(card);
+                wrapper.appendChild(card);
+            } else {
+                audio.complete.play();
+                wrapper.innerHTML = `<div class="flashcard" style="display: flex; align-items: center; justify-content: center;">
+                    <h2>🎉 Sudah selesai! 🎉</h2>
+                </div>`;
+            }
+        }
+
+        function addSwipeListeners(element) {
+            element.addEventListener('mousedown', startDrag);
+            element.addEventListener('touchstart', startDrag);
+            element.addEventListener('mousemove', duringDrag);
+            element.addEventListener('touchmove', duringDrag);
+            element.addEventListener('mouseup', endDrag);
+            element.addEventListener('touchend', endDrag);
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            currentX = startX;
+        }
+
+        function duringDrag(e) {
+            if (!isDragging) return;
+            const x = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const delta = x - currentX;
+            currentX = x;
+            
+            const card = document.querySelector('.flashcard');
+            const rotate = delta * 0.1;
+            card.style.transform = `translateX(${delta}px) rotate(${rotate}deg)`;
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const card = document.querySelector('.flashcard');
+            const delta = currentX - startX;
+            
+            if (Math.abs(delta) > 100) {
+                handleSwipe(delta > 0 ? 'right' : 'left');
+            } else {
+                card.style.transform = '';
+            }
+        }
+
+        function updateProgress() {
+            const total = kanjiData[currentLevel].length;
+            const known = knownCards.length;
+            const progress = (known / total) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                audio.levelChange.play();
+                document.querySelector('.level-btn.active').classList.remove('active');
+                this.classList.add('active');
+                loadDeckForLevel(this.dataset.level); // Muat ulang kartu untuk level yang dipilih
+            });
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            audio.reset.play();
+            initializeDeck(); // Reset progres untuk level yang sedang dipelajari
+        });
+
+        // Muat progres saat halaman dimuat
+        loadProgress();
+    </script>
+</body>
+</html>g
