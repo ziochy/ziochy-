@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Sesuaikan dengan file CSS Anda -->
+    <style>
+    :root {
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --accent-color: #6c5ce7;
+    --text-color: #2d3436;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-color: #a29bfe;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+}
+
+.profile-container, .settings-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-container:hover, .settings-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.profile-info {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.avatar-container {
+    text-align: center;
+}
+
+.avatar-container img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.avatar-container img:hover {
+    transform: scale(1.05);
+    border-color: var(--hover-color);
+}
+
+.avatar-container button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.avatar-container button:hover {
+    background: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--hover-color);
+    box-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
+    outline: none;
+}
+
+.btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn:hover {
+    background: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+}
+
+.btn-danger:hover {
+    background: #e60000;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .avatar-container img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-details {
+        width: 100%;
+    }
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Kembali ke Beranda</a>
+        <div id="navAuth"></div>
+    </nav>
+
+    <main class="profile-container">
+        <h1>Profil Saya</h1>
+        <div class="profile-info">
+            <div class="avatar-container">
+                <img src="assets/images/default-avatar.png" alt="Avatar" id="profileAvatar">
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                <button onclick="document.getElementById('avatarInput').click()" class="btn">
+                    <i class="fas fa-upload"></i> Unggah Avatar
+                </button>
+            </div>
+            <div class="profile-details">
+                <div class="form-group">
+                    <label for="username">Nama Pengguna:</label>
+                    <input type="text" id="username" placeholder="Nama Pengguna">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" disabled>
+                </div>
+                <button onclick="updateProfile()" class="btn">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from './firebase-config.js';
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Muat data profil saat halaman dimuat
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                if (docSnap.exists()) {
+                    document.getElementById('username').value = docSnap.data().username;
+                    document.getElementById('email').value = user.email;
+                    if (docSnap.data().avatar) {
+                        document.getElementById('profileAvatar').src = docSnap.data().avatar;
+                    }
+                }
+            } else {
+                window.location.href = 'login.html'; // Redirect jika belum login
+            }
+        });
+
+        // Handle avatar upload
+        document.getElementById('avatarInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('profileAvatar').src = e.target.result;
+                };
+                reader.readAsDataURL(file); // Konversi gambar ke Base64
+            }
+        });
+
+        // Update profil
+        window.updateProfile = async () => {
+            const user = auth.currentUser;
+            const username = document.getElementById('username').value;
+            const avatarFile = document.getElementById('avatarInput').files[0];
+
+            try {
+                let avatarBase64 = null;
+
+                // Jika ada file avatar, konversi ke Base64
+                if (avatarFile) {
+                    avatarBase64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = (error) => reject(error);
+                        reader.readAsDataURL(avatarFile);
+                    });
+                }
+
+                // Update data di Firestore
+                await updateDoc(doc(db, "users", user.uid), {
+                    username: username,
+                    ...(avatarBase64 && { avatar: avatarBase64 }) // Hanya update avatar jika ada Base64
+                });
+
+                // Update tampilan avatar
+                if (avatarBase64) {
+                    document.getElementById('profileAvatar').src = avatarBase64;
+                }
+
+                alert('Profil berhasil diperbarui!');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Gagal memperbarui profil.');
+            }
+        };
+    </script>
+</body>
+</html>
