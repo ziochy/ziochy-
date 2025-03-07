@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="light">
 <head>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta charset="UTF-8">
@@ -298,6 +299,148 @@
   filter: brightness(1.1) contrast(1);
   background: transparent !important;
 }
+      
+      /* Profil Menu */
+.profile-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.profile-trigger:hover {
+    background: var(--accent-color);
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color);
+    object-fit: cover;
+}
+
+.profile-menu .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 240px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    padding: 1rem;
+    z-index: 1000;
+}
+
+.profile-menu:hover .dropdown-content {
+    display: block;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 1rem;
+    border-bottom: 1px solid var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.profile-username {
+    font-weight: bold;
+    color: var(--text-color);
+    display: block;
+}
+
+.profile-email {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+}
+
+.profile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.profile-link {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    color: var(--text-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.profile-link:hover {
+    background: var(--accent-color);
+    transform: translateX(5px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-menu .dropdown-content {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        width: 90%;
+        margin: 0 auto;
+    }
+}
+      /* Dropdown Menu */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 240px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    z-index: 1000;
+    margin-top: 10px;
+}
+
+.profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-trigger:hover {
+    background: var(--accent-color);
+}
+
+.profile-trigger i {
+    transition: transform 0.3s ease;
+}
+
+/* Tampilkan dropdown saat aktif */
+.profile-menu.active .dropdown-content {
+    display: block;
+}
+
+/* Rotate arrow saat dropdown aktif */
+.profile-menu.active .profile-trigger i {
+    transform: rotate(180deg);
+}
     </style>
 </head>
 <body>
@@ -330,14 +473,101 @@
      });
    }
    </script>
-      <!-- Navigation -->
-    <nav>
-        <div>
-            <a href="#login">Masuk</a>
-            <a href="#signup">Daftar</a>
-        </div>
-    </nav>
+<nav>
+    <div id="navAuth">
+        <!-- Link akan diisi oleh JavaScript -->
+        <a href="login.html">Masuk</a>
+        <a href="signup.html">Daftar</a>
+    </div>
+    <!-- ... elemen lainnya ... -->
+    
+    <div id="navAuth">
+        <!-- Konten akan diisi oleh JavaScript -->
+    </div>
 
+    <!-- Menu Profil -->
+    <div class="profile-menu" id="profileMenu" style="display: none;">
+        <div class="profile-trigger" onclick="toggleProfileMenu()">
+            <img src="assets/images/default-avatar.png" class="profile-avatar" id="profileAvatar">
+            <span id="profileUsername"></span>
+            <i class="fas fa-chevron-down" id="profileArrow"></i>
+        </div>
+        <div class="dropdown-content" id="profileDropdown">
+            <div class="profile-header">
+                <img src="assets/images/default-avatar.png" class="profile-avatar" id="profileAvatar">
+                <div>
+                    <span class="profile-username" id="profileUsername"></span>
+                    <span class="profile-email" id="profileEmail"></span>
+                </div>
+            </div>
+            <div class="profile-links">
+                <a href="profile.html" class="profile-link">
+                    <i class="fas fa-user"></i> Profil Saya
+                </a>
+                <a href="settings.html" class="profile-link">
+                    <i class="fas fa-cog"></i> Pengaturan
+                </a>
+                <a href="#" class="profile-link" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Tambahkan script ini di akhir body index.html -->
+<script>
+    // Cek status login
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            // Ambil data user dari Firestore
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            const userData = userDoc.data();
+            
+            document.getElementById('userGreeting').style.display = 'inline';
+            document.getElementById('username').textContent = userData.username;
+            document.getElementById('loginLink').style.display = 'none';
+            document.getElementById('signupLink').style.display = 'none';
+        }
+    });
+</script>
+<!-- Tambahkan script ini sebelum penutup </body> -->
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+    import { app } from './firebase-config.js';
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+        const navAuth = document.getElementById('navAuth');
+        
+        if (user) {
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            if (docSnap.exists()) {
+                navAuth.innerHTML = `
+                    <span style="margin-right: 1rem;">👋 ${docSnap.data().username}</span>
+                    <a href="#" onclick="logout()">Keluar</a>
+                `;
+            }
+        } else {
+            navAuth.innerHTML = `
+                <a href="login.html">Masuk</a>
+                <a href="signup.html">Daftar</a>
+            `;
+        }
+    });
+
+    window.logout = async () => {
+        try {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error(error);
+        }
+    };
+</script>
     <!-- Header -->
     <header class="hero">
         <div class="hero-content">
@@ -345,6 +575,7 @@
             <p class="animate__animated animate__fadeInUp">Tempat Belajar Bahasa Jepang Terbaik</p>
             <a href="#levels" class="btn animate__animated animate__bounceIn">Mulai Belajar</a>
         </div>
+          
     </header>
 
     <!-- Level Section -->
@@ -417,6 +648,11 @@
                 <p>game santai.</p>
                 <a href="game/dino/index.html" class="btn">masuk</a>
             </div>
+              <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Forum</h3>
+                <p>Sampaikan</p>
+                <a href="forum/forum.html" class="btn">masuk</a>
+            </div>
         </div>
     </section>
 
@@ -438,7 +674,7 @@
         <p>&copy; 2025 Luzuno</p>
     </footer>
 
-    <script>
+   <script>
         const themes = ['light', 'dark', 'anime'];
         let currentTheme = 0;
 
@@ -448,7 +684,7 @@
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
             updateThemeIcon(theme);
-            if(theme === 'anime') addAnimeEffects();
+            if(theme ==='anime') addAnimeEffects();
         }
 
         function updateThemeIcon(theme) {
@@ -486,6 +722,105 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
     </script>
+      <script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+    
+    const auth = getAuth();
+    const db = getFirestore();
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            if (docSnap.exists()) {
+                document.getElementById('welcomeUser').textContent = `Selamat datang, ${docSnap.data().username}!`;
+            }
+            // Sembunyikan menu login/daftar
+            document.querySelector('nav div').innerHTML = `
+                <span id="welcomeUser" style="margin-right: 1rem;"></span>
+                <a href="#" onclick="logout()">Keluar</a>
+            `;
+        }
+    });
+
+    window.logout = async () => {
+        await signOut(auth);
+        window.location.reload();
+    };
+</script>
     <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+<!-- Tambahkan sebelum </body> -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+    authDomain: "luzuno-web.firebaseapp.com",
+    projectId: "luzuno-web",
+    storageBucket: "luzuno-web.firebasestorage.app",
+    messagingSenderId: "728661935868",
+    appId: "1:728661935868:web:859ebff3a63b1210acb979"
+  };
+  
+  const app = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+      <!-- Di akhir index.html -->
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+    import { app } from './firebase-config.js';
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Handle auth state changes
+    onAuthStateChanged(auth, async (user) => {
+        const navAuth = document.getElementById('navAuth');
+        const profileMenu = document.getElementById('profileMenu');
+
+        if (user) {
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            if (docSnap.exists()) {
+                // Update UI
+                document.getElementById('profileUsername').textContent = docSnap.data().username;
+                document.getElementById('profileEmail').textContent = user.email;
+                if(docSnap.data().avatar) {
+                    document.getElementById('profileAvatar').src = docSnap.data().avatar;
+                }
+
+                // Show profile menu
+                profileMenu.style.display = 'block';
+                
+                // Update navigation
+                navAuth.innerHTML = `
+                    <div class="profile-trigger">
+                        <img src="${docSnap.data().avatar || 'assets/images/default-avatar.png'}" 
+                             class="profile-avatar">
+                        <span>${docSnap.data().username}</span>
+                    </div>
+                `;
+            }
+        } else {
+            profileMenu.style.display = 'none';
+            navAuth.innerHTML = `
+                <a href="login.html">Masuk</a>
+                <a href="signup.html">Daftar</a>
+            `;
+        }
+    });
+
+    // Logout function
+    window.logout = async () => {
+        try {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+</script>
 </body>
 </html>
