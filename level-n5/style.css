@@ -1,0 +1,217 @@
+/* style.css */
+
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Kanji Container Styles */
+.kanji-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kanji-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.kanji-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 15px;
+    animation: slideInLeft 0.5s ease-in-out;
+}
+
+.kanji-gif img {
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.kanji-gif img:hover {
+    transform: scale(1.1);
+}
+
+.kanji-info {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.kanji-info p {
+    margin: 10px 0;
+}
+
+.kanji-info ul {
+    list-style-type: disc;
+    margin: 10px 0 10px 20px;
+}
+
+.kanji-info ul li {
+    margin-bottom: 5px;
+}
+
+.onyomi, .kunyomi {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.composition {
+    font-style: italic;
+    color: #27ae60;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .kanji-title {
+        font-size: 1.5rem;
+    }
+
+    .kanji-gif img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .kanji-info {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .kanji-title {
+        font-size: 1.2rem;
+    }
+
+    .kanji-gif img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .kanji-info {
+        font-size: 0.9rem;
+    }
+}
+
+/* Additional Styling for Interactive Elements */
+.kanji-container:nth-child(odd) .kanji-title {
+    color: #e67e22;
+}
+
+.kanji-container:nth-child(even) .kanji-title {
+    color: #9b59b6;
+}
+
+.kanji-container:nth-child(3n) .kanji-title {
+    color: #1abc9c;
+}
+
+.kanji-container:nth-child(4n) .kanji-title {
+    color: #d35400;
+}
+
+/* Hover Effects */
+.kanji-container:hover .kanji-title {
+    color: #2c3e50;
+}
+
+.kanji-container:hover .kanji-gif img {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Gradient Background for Header */
+.header {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Footer Styles */
+.footer {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+

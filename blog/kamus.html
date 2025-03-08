@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Bahasa Jepang</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --hover-color: #2980b9;
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-menu {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            color: var(--hover-color);
+            background: #f8f9fa;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            padding: 0.5rem 0;
+            display: none;
+            min-width: 200px;
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1rem;
+            display: block;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+        }
+
+        .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+
+        .search-box {
+            position: relative;
+            margin-left: 2rem;
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 2px solid #eee;
+            border-radius: 25px;
+            width: 200px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            width: 250px;
+        }
+
+        /* Mobile Menu */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            background-color: var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        /* Content Styles */
+        .content {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .vocab-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .vocab-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .vocab-japanese {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .vocab-reading {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .vocab-meaning {
+            color: #444;
+        }
+
+        .search-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        #vocabSearch {
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: white;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                padding: 1rem 0;
+            }
+
+            .nav-item {
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .dropdown-menu {
+                position: static;
+                display: none;
+                box-shadow: none;
+                width: 100%;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .search-box {
+                margin-left: 0;
+                width: 80%;
+                margin: 1rem auto;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .content {
+                margin-top: 80px;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-container">
+        <div class="nav-menu">
+            <a href="#" class="logo">日本語学習</a>
+            
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Beranda</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Tes Bahasa Jepang</a>
+                    <div class="dropdown-menu">
+                        <a href="n5.html" class="dropdown-item">N5</a>
+                        <a href="#" class="dropdown-item">N4</a>
+                        <a href="#" class="dropdown-item">N3</a>
+                        <a href="#" class="dropdown-item">N2</a>
+                        <a href="#" class="dropdown-item">N1</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Tentang</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Kontak</a>
+                </li>
+              
+            </ul>
+
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="search-container">
+            <input type="text" id="vocabSearch" placeholder="Cari kosakata (日本語, romaji, atau arti)...">
+        </div>
+        
+        <div class="vocab-list" id="vocabList"></div>
+    </div>
+
+    <script>
+        // Navigation Script
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+
+        const dropdownItems = document.querySelectorAll('.nav-item');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    const dropdown = item.querySelector('.dropdown-menu');
+                    if (dropdown) dropdown.classList.toggle('active');
+                }
+            });
+        });
+
+        // Vocabulary Script
+        const vocabulary = [
+            {word: "食べ物", reading: "たべもの", meaning: "makanan"},
+            {word: "飲み物", reading: "のみもの", meaning: "minuman"},
+            {word: "本", reading: "ほん", meaning: "buku"},
+            {word: "犬", reading: "いぬ", meaning: "anjing"},
+            {word: "猫", reading: "ねこ", meaning: "kucing"},
+            {word: "学校", reading: "がっこう", meaning: "sekolah"},
+            {word: "先生", reading: "せんせい", meaning: "guru"},
+            {word: "学生", reading: "がくせい", meaning: "siswa/mahasiswa"},
+            {word: "友達", reading: "ともだち", meaning: "teman"},
+            {word: "家族", reading: "かぞく", meaning: "keluarga"},
+            {word: "時間", reading: "じかん", meaning: "waktu"},
+            {word: "今日", reading: "きょう", meaning: "hari ini"},
+            {word: "明日", reading: "あした", meaning: "besok"},
+            {word: "昨日", reading: "きのう", meaning: "kemarin"},
+            {word: "天気", reading: "てんき", meaning: "cuaca"},
+            {word: "元気", reading: "げんき", meaning: "sehat/bersemangat"},
+            {word: "旅行", reading: "りょこう", meaning: "perjalanan"},
+            {word: "映画", reading: "えいが", meaning: "film"},
+            {word: "音楽", reading: "おんがく", meaning: "musik"},
+            {word: "料理", reading: "りょうり", meaning: "masakan"},
+        ];
+
+        function renderVocabList(searchTerm = '') {
+            const vocabList = document.getElementById('vocabList');
+            const filtered = vocabulary.filter(item => {
+                const lowerTerm = searchTerm.toLowerCase();
+                return item.word.toLowerCase().includes(lowerTerm) ||
+                       item.reading.toLowerCase().includes(lowerTerm) ||
+                       item.meaning.toLowerCase().includes(lowerTerm);
+            });
+
+            vocabList.innerHTML = filtered.map(item => `
+                <div class="vocab-card">
+                    <div class="vocab-japanese">${item.word}</div>
+                    <div class="vocab-reading">${item.reading}</div>
+                    <div class="vocab-meaning">${item.meaning}</div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('vocabSearch').addEventListener('input', (e) => {
+            renderVocabList(e.target.value);
+        });
+
+        renderVocabList();
+    </script>
+</body>
+</html>

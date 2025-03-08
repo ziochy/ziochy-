@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Sesuaikan dengan file CSS Anda -->
+  <style>
+/* Pengaturan Akun */
+:root {
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --accent-color: #6c5ce7;
+    --text-color: #2d3436;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-color: #a29bfe;
+    --danger-color: #ff4d4d;
+    --danger-hover-color: #e60000;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+}
+
+.settings-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.settings-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--hover-color);
+    box-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
+    outline: none;
+}
+
+.btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    background: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-danger:hover {
+    background: var(--danger-hover-color);
+    transform: translateY(-2px);
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: var(--accent-color);
+    margin: 2rem 0;
+    opacity: 0.2;
+}
+
+h2 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+p {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 1.5rem;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Kembali ke Beranda</a>
+        <div id="navAuth"></div>
+    </nav>
+
+    <main class="settings-container">
+        <h1>Pengaturan Akun</h1>
+        <div class="settings-form">
+            <div class="form-group">
+                <label for="currentPassword">Password Saat Ini:</label>
+                <input type="password" id="currentPassword" placeholder="Password saat ini">
+            </div>
+            <div class="form-group">
+                <label for="newPassword">Password Baru:</label>
+                <input type="password" id="newPassword" placeholder="Password baru">
+            </div>
+            <button onclick="updatePassword()" class="btn">
+                <i class="fas fa-key"></i> Ubah Password
+            </button>
+
+            <hr>
+
+            <h2>Hapus Akun</h2>
+            <p>Hati-hati! Menghapus akun akan menghapus semua data Anda secara permanen.</p>
+            <button onclick="deleteAccount()" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Hapus Akun
+            </button>
+        </div>
+    </main>
+
+    <script type="module">
+        import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from './firebase-config.js';
+
+        const auth = getAuth(app);
+
+        // Ubah password
+        window.updatePassword = async () => {
+            const user = auth.currentUser;
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            try {
+                // Reautentikasi pengguna
+                const credential = EmailAuthProvider.credential(user.email, currentPassword);
+                await reauthenticateWithCredential(user, credential);
+
+                // Update password
+                await updatePassword(user, newPassword);
+                alert('Password berhasil diubah!');
+            } catch (error) {
+                console.error('Error updating password:', error);
+                alert('Gagal mengubah password. Pastikan password saat ini benar.');
+            }
+        };
+
+        // Hapus akun
+        window.deleteAccount = async () => {
+            const user = auth.currentUser;
+            const currentPassword = document.getElementById('currentPassword').value;
+
+            if (confirm('Apakah Anda yakin ingin menghapus akun ini? Tindakan ini tidak dapat dibatalkan.')) {
+                try {
+                    // Reautentikasi pengguna
+                    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+                    await reauthenticateWithCredential(user, credential);
+
+                    // Hapus akun
+                    await deleteUser(user);
+                    alert('Akun berhasil dihapus.');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Error deleting account:', error);
+                    alert('Gagal menghapus akun. Pastikan password saat ini benar.');
+                }
+            }
+        };
+    </script>
+</body>
+</html>

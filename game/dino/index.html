@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Permainan - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sakura-pink: #ffb7c5;
+            --sakura-dark: #9f4d60;
+            --sakura-bg: #fff4f7;
+            --text-color: #4a2a33;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --sakura-pink: #6c5b7b;
+            --sakura-dark: #355c7d;
+            --sakura-bg: #2d3436;
+            --text-color: #dfe6e9;
+            --card-bg: rgba(45, 52, 54, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sawarabi Mincho', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--sakura-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            background: var(--card-bg);
+            border: 2px solid var(--sakura-pink);
+            border-radius: 30px;
+            padding: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: var(--sakura-pink);
+        }
+
+        /* Game Menu */
+        .game-menu {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 20px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--sakura-dark);
+        }
+
+        .game-title {
+            font-family: 'Kiwi Maru', serif;
+            color: var(--sakura-dark);
+            margin-bottom: 1rem;
+        }
+
+        .game-description {
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .play-button {
+            background: var(--sakura-dark);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+
+        .play-button:hover {
+            background: var(--sakura-pink);
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--sakura-dark);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: var(--sakura-pink);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--sakura-dark);
+            color: white;
+            padding: 3rem 5%;
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        @media (max-width: 768px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-container animate__animated animate__fadeInDown">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Beranda</a></li>
+     </ul>
+    </nav>
+
+    <!-- Game Menu -->
+    <main class="game-menu">
+        <h1 class="animate__animated animate__fadeIn">🎮 Permainan</h1>
+        
+        <div class="game-grid">
+            <!-- Game 1 -->
+            <div class="game-card animate__animated animate__fadeInUp">
+                <div class="game-icon">🎴</div>
+                <h2 class="game-title">flashcard kanji</h2>
+                <p class="game-description">menghafal kanji dengan flashcard</p>
+                <a href="../flashcard.html" class="play-button">Mainkan</a>
+            </div>
+
+            <!-- Game 2 -->
+            <div class="game-card animate__animated animate__fadeInUp">
+                <div class="game-icon">🧩</div>
+                <h2 class="game-title">Puzzle Kata</h2>
+                <p class="game-description">Susun potongan kata menjadi kalimat Jepang yang benar</p>
+                <a href="game-puzzle-kata.html" class="play-button">Mainkan</a>
+            </div>
+
+            <!-- Game 3 -->
+            <div class="game-card animate__animated animate__fadeInUp">
+                <div class="game-icon">🎮</div>
+                <h2 class="game-title">Dino gabut</h2>
+                <p class="game-description">hindari mobil yang datang dengan melompat</p>
+                <a href="dino.html" class="play-button">Mainkan</a>
+            </div>
+
+            <!-- Game 4 -->
+            <div class="game-card animate__animated animate__fadeInUp">
+                <div class="game-icon">🎧</div>
+                <h2 class="game-title">Dengarkan & Tebak</h2>
+                <p class="game-description">Tebak huruf Hiragana berdasarkan pengucapan</p>
+                <a href="game-dengarkan-tebak.html" class="play-button">Mainkan</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer animate__animated animate__fadeInUp">
+        <p>🌸 楽しく学びましょう - Belajar dengan Menyenangkan 🌸</p>
+        <p>&copy; 2024 Luzuno. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    </script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+</body>
+</html>
