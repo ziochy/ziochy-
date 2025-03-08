@@ -91,11 +91,71 @@
         .modal-content button:hover {
             background-color: #2980b9;
         }
+
+        /* Leaderboard */
+        .leaderboard {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .leaderboard-item .rank {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .leaderboard-item .name {
+            flex: 1;
+            margin: 0 10px;
+        }
+        .leaderboard-item .score {
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        /* Input Nama */
+        #nameInput {
+            margin: 20px 0;
+        }
+        #playerName {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+        }
+        #submitScore {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #submitScore:hover {
+            background-color: #2980b9;
+        }
+        /* CSS tetap sama seperti sebelumnya */
+        #usernameDisplay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            color: black;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
+    <div id="usernameDisplay">Selamat datang, <span id="username"></span>!</div>
     <div id="warning">⚠️ Putar layar ke mode landscape untuk pengalaman terbaik!</div>
-    <canvas id="gameCanvas" width="640" height="250"></canvas>
+    <canvas id="gameCanvas" width="430" height="250"></canvas>
     <div class="controls">
         <button id="startButton">Mulai</button>
         <button id="jumpButton">Lompat</button>
@@ -106,6 +166,8 @@
         <div class="modal-content">
             <h1>Game Over!</h1>
             <p>Skor Anda: <span id="finalScore"></span></p>
+            <h2>Leaderboard</h2>
+            <div id="leaderboardList" class="leaderboard"></div>
             <button id="restartButton">Mulai Ulang</button>
         </div>
     </div>
@@ -115,36 +177,22 @@
     <audio id="hurtSound" src="hurt.mp3"></audio>
     <audio id="gameOverSound" src="gameover.mp3"></audio>
 
-    <script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from '../firebase-config.js';
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const warning = document.getElementById('warning');
         const gameOverModal = document.getElementById('gameOverModal');
         const finalScore = document.getElementById('finalScore');
         const restartButton = document.getElementById('restartButton');
-
-        function checkOrientation() {
-            if (window.innerWidth < 600) {
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
-        }
-        window.addEventListener('resize', checkOrientation);
-        checkOrientation();
-
-        const dinoImg = new Image();
-        dinoImg.src = 'dino.png';
-
-        const carImgs = [
-            'mobil.png', 'mobil1.png', 'mobil2.png', 'mobil3.png', 'mobil4.png', 'mobil5.png', 'mobil6.png'
-        ]; 
-
-        const bgImg = new Image();
-        bgImg.src = 'background.png';
-
-        const heartImg = new Image();
-        heartImg.src = 'heart.png'; 
+        const leaderboardList = document.getElementById('leaderboardList');
+        const usernameDisplay = document.getElementById('username');
 
         let gameRunning = false;
         let speedMultiplier = 1;
@@ -152,19 +200,32 @@
         let score = 0;
         let lives = 3;
         let invincibleTime = 0;
-        let blinkTime = 0; // Waktu efek kelap-kelip
-        let lastMobil6Score = 0; // Skor terakhir saat mobil6 muncul
+        let blinkTime = 0;
+        let lastMobil6Score = 0;
+
+        const dinoImg = new Image();
+        dinoImg.src = 'dino.png';
+
+        const carImgs = [
+            'mobil.png', 'mobil1.png', 'mobil2.png', 'mobil3.png', 'mobil4.png', 'mobil5.png', 'mobil6.png'
+        ];
+
+        const bgImg = new Image();
+        bgImg.src = 'background.png';
+
+        const heartImg = new Image();
+        heartImg.src = 'heart.png';
 
         let dino = {
-            x: 50, 
-            y: 150,  
-            width: 60, 
-            height: 60, 
-            velocityY: 0, 
-            gravity: 0.6,  
-            jumpPower: -10,  
+            x: 50,
+            y: 150,
+            width: 60,
+            height: 60,
+            velocityY: 0,
+            gravity: 0.6,
+            jumpPower: -10,
             isJumping: false,
-            groundY: 150,  
+            groundY: 150,
         };
 
         let obstacles = [];
@@ -172,21 +233,20 @@
         function spawnObstacle() {
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
 
-            // Munculkan mobil6 hanya setiap 1000 skor
             let randomCar;
             if (score - lastMobil6Score >= 1000) {
                 randomCar = 'mobil6.png';
                 lastMobil6Score = score;
             } else {
-                randomCar = carImgs[Math.floor(Math.random() * (carImgs.length - 1))]; // Hindari mobil6
+                randomCar = carImgs[Math.floor(Math.random() * (carImgs.length - 1))];
             }
 
             let newObstacle = {
-                x: lastX + Math.random() * 300 + 200, 
-                y: dino.groundY + 30,  
-                width: 50,  
-                height: 30,  
-                speed: 6,  
+                x: lastX + Math.random() * 300 + 200,
+                y: dino.groundY + 30,
+                width: 50,
+                height: 30,
+                speed: 6,
                 carImg: randomCar
             };
             obstacles.push(newObstacle);
@@ -206,7 +266,7 @@
             if (!dino.isJumping) {
                 dino.isJumping = true;
                 dino.velocityY = dino.jumpPower;
-                document.getElementById('jumpSound').play(); // Mainkan suara lompat
+                document.getElementById('jumpSound').play();
             }
         }
 
@@ -217,7 +277,7 @@
                 dino.velocityY = 0;
                 obstacles = [];
                 score = 0;
-                lives = 3; 
+                lives = 3;
                 speedMultiplier = 1;
                 invincibleTime = 0;
                 blinkTime = 0;
@@ -263,7 +323,7 @@
 
         function drawDino() {
             if (blinkTime > 0 && Math.floor(blinkTime / 10) % 2 === 0) {
-                return; // Efek kelap-kelip saat nyawa berkurang
+                return;
             }
             ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
         }
@@ -272,7 +332,7 @@
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            if (dino.y > dino.groundY) { 
+            if (dino.y > dino.groundY) {
                 dino.y = dino.groundY;
                 dino.isJumping = false;
                 dino.velocityY = 0;
@@ -299,7 +359,7 @@
         }
 
         function checkCollision() {
-            if (invincibleTime > 0) return; 
+            if (invincibleTime > 0) return;
 
             for (let obstacle of obstacles) {
                 let dinoHitbox = {
@@ -324,20 +384,19 @@
                 ) {
                     if (obstacle.carImg === 'mobil6.png') {
                         if (lives < 3) {
-                            lives++; // Menambah nyawa jika mobil6.png
+                            lives++;
                         }
                     } else {
-                        lives--; // Kurangi nyawa jika kena mobil selain mobil6.png
-                        blinkTime = 55; // Aktifkan efek kelap-kelip
-                        document.getElementById('hurtSound').play(); // Mainkan suara nyawa berkurang
+                        lives--;
+                        blinkTime = 55;
+                        document.getElementById('hurtSound').play();
                     }
 
-                    invincibleTime = 80; // Tambahkan waktu kebal setelah tabrakan
+                    invincibleTime = 80;
 
                     if (lives <= 0) {
-                        document.getElementById('gameOverSound').play(); // Mainkan suara game over
-                        finalScore.textContent = score;
-                        gameOverModal.style.display = 'flex';
+                        document.getElementById('gameOverSound').play();
+                        showGameOverModal(score);
                         gameRunning = false;
                         clearInterval(speedIncreaseInterval);
                     }
@@ -348,7 +407,7 @@
 
         function updateScore() {
             if (gameRunning) {
-                score += 1;
+                score += 1; // Tambahkan 1 poin setiap frame
             }
         }
 
@@ -363,7 +422,82 @@
                 ctx.drawImage(heartImg, 10 + i * 35, 10, 30, 30);
             }
         }
+
+        // Simpan skor ke Firestore
+        async function saveScore(score) {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error('Pengguna belum login.');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'scores'), {
+                    name: user.displayName || "Gati", // Gunakan "Gati" jika displayName tidak ada
+                    score: score,
+                    createdAt: serverTimestamp(),
+                    userId: user.uid // Simpan userId untuk referensi
+                });
+                console.log('Skor berhasil disimpan!');
+            } catch (error) {
+                console.error('Gagal menyimpan skor:', error);
+            }
+        }
+
+        // Tampilkan leaderboard
+        async function loadLeaderboard() {
+            leaderboardList.innerHTML = '';
+
+            try {
+                const q = query(collection(db, 'scores'), orderBy('score', 'desc'), limit(10));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    leaderboardList.innerHTML = '<p>Tidak ada data skor.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    leaderboardList.innerHTML += `
+                        <div class="leaderboard-item">
+                            <span class="rank">${index + 1}</span>
+                            <span class="name">${data.name}</span>
+                            <span class="score">${data.score}</span>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                leaderboardList.innerHTML = '<p>Gagal memuat leaderboard.</p>';
+            }
+        }
+
+        // Saat game over, tampilkan modal dan simpan skor
+        function showGameOverModal(score) {
+            finalScore.textContent = score;
+            gameOverModal.style.display = 'flex';
+
+            // Simpan skor otomatis
+            saveScore(score);
+
+            // Tampilkan leaderboard
+            loadLeaderboard();
+        }
+
+        // Muat leaderboard saat halaman dimuat
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Tampilkan nama pengguna
+                usernameDisplay.textContent = user.displayName || "Gati"; // Gunakan "Gati" jika displayName tidak ada
+
+                // Muat leaderboard
+                loadLeaderboard();
+            } else {
+                window.location.href = 'login.html'; // Redirect ke halaman login jika belum login
+            }
+        });
     </script>
-   
 </body>
 </html>
+ 
