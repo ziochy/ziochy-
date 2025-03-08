@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Belajar Bahasa Jepang - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Sesuaikan dengan file CSS Anda -->
+</head>
+<body>
+    <nav>
+        <a href="../index.html">Kembali ke Beranda</a>
+        <div id="navAuth"></div>
+    </nav>
 
+    <main class="forum-container">
+        <h1>Forum Belajar Bahasa Jepang</h1>
+        <button onclick="createForum()" class="btn">
+            <i class="fas fa-plus"></i> Buat Forum Baru
+        </button>
+        <div id="forumList" class="forum-list"></div>
+    </main>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, collection, getDocs, addDoc, serverTimestamp, updateDoc, doc, increment, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from '../firebase-config.js';
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Muat daftar forum
+        const loadForums = async () => {
+            const forumList = document.getElementById('forumList');
+            forumList.innerHTML = ''; // Kosongkan daftar forum
+
+            const querySnapshot = await getDocs(collection(db, 'forums'));
+            const forums = [];
+
+            querySnapshot.forEach((doc) => {
+                const forum = doc.data();
+                forums.push({ id: doc.id, ...forum });
+            });
+
+            // Urutkan forum: terbaru dan sering dibuka di atas
+            forums.sort((a, b) => {
+                if (b.views === a.views) {
+                    return b.createdAt?.toMillis() - a.createdAt?.toMillis(); // Jika views sama, urutkan berdasarkan waktu pembuatan
+                }
+                return (b.views || 0) - (a.views || 0); // Urutkan berdasarkan views
+            });
+
+            // Tampilkan forum
+            forums.forEach((forum) => {
+                const isAdmin = auth.currentUser?.email === 'riskiziochy@gmail.com';
+                forumList.innerHTML += `
+                    <div class="forum-item">
+                        <h2>${forum.title}</h2>
+                        <p>${forum.description}</p>
+                        <small>Dilihat: ${forum.views || 0} kali</small>
+                        <a href="threads.html?forumId=${forum.id}" class="btn" onclick="incrementViews('${forum.id}')">
+                            <i class="fas fa-comments"></i> Lihat Thread
+                        </a>
+                        ${isAdmin ? `
+                            <button onclick="deleteForum('${forum.id}')" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Hapus Forum
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            });
+        };
+
+        // Tambahkan jumlah pembukaan (views)
+        window.incrementViews = async (forumId) => {
+            try {
+                const forumRef = doc(db, 'forums', forumId);
+                await updateDoc(forumRef, {
+                    views: increment(1) // Gunakan increment dari Firebase v9
+                });
+            } catch (error) {
+                console.error('Error incrementing views:', error);
+            }
+        };
+
+        // Hapus forum
+        window.deleteForum = async (forumId) => {
+            if (confirm('Apakah Anda yakin ingin menghapus forum ini?')) {
+                try {
+                    await deleteDoc(doc(db, 'forums', forumId));
+                    alert('Forum berhasil dihapus!');
+                    loadForums(); // Muat ulang daftar forum
+                } catch (error) {
+                    console.error('Error deleting forum:', error);
+                    alert('Gagal menghapus forum.');
+                }
+            }
+        };
+
+        // Buat forum baru
+        window.createForum = async () => {
+            const title = prompt('Masukkan judul forum:');
+            const description = prompt('Masukkan deskripsi forum:');
+
+            if (title && description) {
+                await addDoc(collection(db, 'forums'), {
+                    title: title,
+                    description: description,
+                    createdAt: serverTimestamp(),
+                    createdBy: auth.currentUser.uid,
+                    views: 0 // Inisialisasi views dengan 0
+                });
+                alert('Forum berhasil dibuat!');
+                loadForums();
+            }
+        };
+
+        // Muat forum saat halaman dimuat
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadForums();
+            } else {
+                window.location.href = 'login.html'; // Redirect jika belum login
+            }
+        });
+    </script>
+</body>
+</html>
