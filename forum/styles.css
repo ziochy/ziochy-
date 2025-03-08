@@ -1,0 +1,31 @@
+
+.forum-container, .thread-container, .comment-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.forum-list, .thread-list, .comment-list {
+    margin-top: 2rem;
+}
+
+.forum-item, .thread-item, .comment-item {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
