@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .leaderboard {
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+        .rank {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .name {
+            flex: 1;
+            margin: 0 10px;
+            color: #333;
+        }
+        .score {
+            font-weight: bold;
+            color: #2ecc71;
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Leaderboard</h1>
+    <div class="leaderboard" id="leaderboardList">
+        <!-- Leaderboard items will be inserted here -->
+    </div>
+    <button class="back-button" onclick="window.location.href = 'index.html';">Kembali ke Beranda</button>
+
+    <script type="module">
+        import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from '../firebase-config.js';
+
+        const db = getFirestore(app);
+
+        // Muat leaderboard
+        async function loadLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            leaderboardList.innerHTML = ''; // Kosongkan daftar leaderboard
+
+            try {
+                // Query untuk mengambil 10 skor tertinggi
+                const q = query(collection(db, 'scores'), orderBy('score', 'desc'), limit(10));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    leaderboardList.innerHTML = '<p>Tidak ada data skor.</p>';
+                    return;
+                }
+
+                // Tampilkan data skor
+                querySnapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    leaderboardList.innerHTML += `
+                        <div class="leaderboard-item">
+                            <span class="rank">${index + 1}</span>
+                            <span class="name">${data.name}</span>
+                            <span class="score">${data.score}</span>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                leaderboardList.innerHTML = '<p>Gagal memuat leaderboard.</p>';
+            }
+        }
+
+        // Muat leaderboard saat halaman dimuat
+        loadLeaderboard();
+    </script>
+</body>
+</html>

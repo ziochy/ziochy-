@@ -92,31 +92,6 @@
             background-color: #2980b9;
         }
 
-        /* Leaderboard */
-        .leaderboard {
-            margin-top: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-        }
-        .leaderboard-item .rank {
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        .leaderboard-item .name {
-            flex: 1;
-            margin: 0 10px;
-        }
-        .leaderboard-item .score {
-            font-weight: bold;
-            color: #2ecc71;
-        }
-
         /* Input Nama */
         #nameInput {
             margin: 20px 0;
@@ -159,15 +134,15 @@
     <div class="controls">
         <button id="startButton">Mulai</button>
         <button id="jumpButton">Lompat</button>
-    </div>
+            </div>
 
     <!-- Modal Game Over -->
     <div id="gameOverModal" class="modal">
         <div class="modal-content">
             <h1>Game Over!</h1>
             <p>Skor Anda: <span id="finalScore"></span></p>
-            <h2>Leaderboard</h2>
-            <div id="leaderboardList" class="leaderboard"></div>
+            <button id="leaderboardButton">Lihat Leaderboard</button> <!-- Tombol Leaderboard -->
+
             <button id="restartButton">Mulai Ulang</button>
         </div>
     </div>
@@ -179,7 +154,7 @@
 
     <script type="module">
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
         import { app } from '../firebase-config.js';
 
         const auth = getAuth(app);
@@ -191,7 +166,7 @@
         const gameOverModal = document.getElementById('gameOverModal');
         const finalScore = document.getElementById('finalScore');
         const restartButton = document.getElementById('restartButton');
-        const leaderboardList = document.getElementById('leaderboardList');
+        const leaderboardButton = document.getElementById('leaderboardButton'); // Tombol Leaderboard
         const usernameDisplay = document.getElementById('username');
 
         let gameRunning = false;
@@ -242,7 +217,7 @@
             }
 
             let newObstacle = {
-                x: lastX + Math.random() * 300 + 200,
+                x: lastX + Math.random() * 300 + 250,
                 y: dino.groundY + 30,
                 width: 50,
                 height: 30,
@@ -255,6 +230,10 @@
         document.getElementById('startButton').addEventListener('click', startGame);
         document.getElementById('jumpButton').addEventListener('click', jump);
         document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
+
+        leaderboardButton.addEventListener('click', () => {
+            window.location.href = 'leaderboard.html'; // Arahkan ke halaman leaderboard
+        });
 
         restartButton.addEventListener('click', () => {
             gameOverModal.style.display = 'none';
@@ -444,35 +423,6 @@
             }
         }
 
-        // Tampilkan leaderboard
-        async function loadLeaderboard() {
-            leaderboardList.innerHTML = '';
-
-            try {
-                const q = query(collection(db, 'scores'), orderBy('score', 'desc'), limit(10));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    leaderboardList.innerHTML = '<p>Tidak ada data skor.</p>';
-                    return;
-                }
-
-                querySnapshot.forEach((doc, index) => {
-                    const data = doc.data();
-                    leaderboardList.innerHTML += `
-                        <div class="leaderboard-item">
-                            <span class="rank">${index + 1}</span>
-                            <span class="name">${data.name}</span>
-                            <span class="score">${data.score}</span>
-                        </div>
-                    `;
-                });
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
-                leaderboardList.innerHTML = '<p>Gagal memuat leaderboard.</p>';
-            }
-        }
-
         // Saat game over, tampilkan modal dan simpan skor
         function showGameOverModal(score) {
             finalScore.textContent = score;
@@ -480,9 +430,6 @@
 
             // Simpan skor otomatis
             saveScore(score);
-
-            // Tampilkan leaderboard
-            loadLeaderboard();
         }
 
         // Muat leaderboard saat halaman dimuat
@@ -490,9 +437,6 @@
             if (user) {
                 // Tampilkan nama pengguna
                 usernameDisplay.textContent = user.displayName || "Gati"; // Gunakan "Gati" jika displayName tidak ada
-
-                // Muat leaderboard
-                loadLeaderboard();
             } else {
                 window.location.href = 'login.html'; // Redirect ke halaman login jika belum login
             }
@@ -500,4 +444,3 @@
     </script>
 </body>
 </html>
- 
