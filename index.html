@@ -299,94 +299,7 @@
   filter: brightness(1.1) contrast(1);
   background: transparent !important;
 }
-      
-      /* Profil Menu */
-.profile-menu {
-    position: relative;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.profile-trigger {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-}
-
-.profile-trigger:hover {
-    background: var(--accent-color);
-}
-
-.profile-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--accent-color);
-    object-fit: cover;
-}
-
-.profile-menu .dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    min-width: 240px;
-    background: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    padding: 1rem;
-    z-index: 1000;
-}
-
-.profile-menu:hover .dropdown-content {
-    display: block;
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 1rem;
-    border-bottom: 1px solid var(--accent-color);
-    margin-bottom: 1rem;
-}
-
-.profile-username {
-    font-weight: bold;
-    color: var(--text-color);
-    display: block;
-}
-
-.profile-email {
-    font-size: 0.8rem;
-    color: var(--accent-color);
-}
-
-.profile-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.profile-link {
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    color: var(--text-color);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
-
-.profile-link:hover {
-    background: var(--accent-color);
-    transform: translateX(5px);
-}
+    
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -441,6 +354,38 @@
 .profile-menu.active .profile-trigger i {
     transform: rotate(180deg);
 }
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .bottom-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bottom-nav a i {
+            font-size: 18px;
+        }
+
+        .bottom-nav a:hover {
+            color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -643,12 +588,12 @@
                 <p>pengenalan singkat tentang wilayah jepang.</p>
                 <a href="perfektur/jepang.html" class="btn">masuk</a>
             </div>
-            <div class="blog-card animate__animated animate__fadeInRight">
+         <div class="blog-card animate__animated animate__fadeInRight">
                 <h3>Permainan</h3>
                 <p>game santai.</p>
                 <a href="game/dino/index.html" class="btn">masuk</a>
             </div>
-              <div class="blog-card animate__animated animate__fadeInRight">
+            <div class="blog-card animate__animated animate__fadeInRight">
                 <h3>Forum</h3>
                 <p>Sampaikan</p>
                 <a href="forum/forum.html" class="btn">masuk</a>
@@ -659,13 +604,13 @@
     <!-- Tentang Kami -->
     <section id="about" class="about">
         <h2>Tentang Kami</h2>
-        <p>Luzuno adalah platform pembelajaran bahasa Jepang online yang dirancang untuk membantu Anda menguasai bahasa Jepang dari tingkat dasar. Kami menyediakan materi pembelajaran yang komprehensif dan mudah dipahami. dibuat oleh ziochy </p>
+        <p>Luzuno adalah platform pembelajaran nihongo online yang aku tsukuru untuk membantu anata menguasai nihongo dari tingkat dasar. Kono materi pembelajaran bersubmer belajar otodidak kara, jadi gomen jika aru yang machigaeta 😺. Ziochy ga tsukutta</p>
     </section>
 
     <!-- Kontak -->
     <section id="contact" class="contact">
         <h2>Kontak</h2>
-        <p>Jika Anda memiliki pertanyaan atau membutuhkan bantuan, jangan ragu untuk menghubungi kami melalui email di <a href="mailto:zuno354@gmail.com">zuno354@gmail.com</a>.</p>
+        <p>Moshi Anda memiliki shitsumon atau membutuhkan onegai, jangan ragu untuk renraku suru kami melalui email di <a href="mailto:zuno354@gmail.com">zuno354@gmail.com</a>.</p>
     </section>
 
     <!-- Footer -->
@@ -674,7 +619,29 @@
         <p>&copy; 2025 Luzuno</p>
     </footer>
 
-   <script>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="#blog">
+            <i class="fas fa-search"></i>
+            <span>Pencarian</span>
+        </a>
+        <a href="profile.html">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+        </a>
+        <a href="settings.html">
+            <i class="fas fa-cog"></i>
+            <span>Pengaturan</span>
+        </a>
+    </div>
+    
+</script>
+     
+    <script>
         const themes = ['light', 'dark', 'anime'];
         let currentTheme = 0;
 
@@ -722,105 +689,45 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
     </script>
-      <script type="module">
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-    
-    const auth = getAuth();
-    const db = getFirestore();
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const docSnap = await getDoc(doc(db, "users", user.uid));
-            if (docSnap.exists()) {
-                document.getElementById('welcomeUser').textContent = `Selamat datang, ${docSnap.data().username}!`;
-            }
-            // Sembunyikan menu login/daftar
-            document.querySelector('nav div').innerHTML = `
-                <span id="welcomeUser" style="margin-right: 1rem;"></span>
-                <a href="#" onclick="logout()">Keluar</a>
-            `;
-        }
-    });
-
-    window.logout = async () => {
-        await signOut(auth);
-        window.location.reload();
-    };
-</script>
-    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
-<!-- Tambahkan sebelum </body> -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
-    authDomain: "luzuno-web.firebaseapp.com",
-    projectId: "luzuno-web",
-    storageBucket: "luzuno-web.firebasestorage.app",
-    messagingSenderId: "728661935868",
-    appId: "1:728661935868:web:859ebff3a63b1210acb979"
-  };
   
-  const app = firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
-      <!-- Di akhir index.html -->
-<script type="module">
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-    import { app } from './firebase-config.js';
 
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+            authDomain: "luzuno-web.firebaseapp.com",
+            projectId: "luzuno-web",
+            storageBucket: "luzuno-web.firebasestorage.app",
+            messagingSenderId: "728661935868",
+            appId: "1:728661935868:web:859ebff3a63b1210acb979"
+        };
+        
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
 
-    // Handle auth state changes
-    onAuthStateChanged(auth, async (user) => {
-        const navAuth = document.getElementById('navAuth');
-        const profileMenu = document.getElementById('profileMenu');
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from './firebase-config.js';
 
-        if (user) {
-            const docSnap = await getDoc(doc(db, "users", user.uid));
-            if (docSnap.exists()) {
-                // Update UI
-                document.getElementById('profileUsername').textContent = docSnap.data().username;
-                document.getElementById('profileEmail').textContent = user.email;
-                if(docSnap.data().avatar) {
-                    document.getElementById('profileAvatar').src = docSnap.data().avatar;
-                }
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-                // Show profile menu
-                profileMenu.style.display = 'block';
-                
-                // Update navigation
-                navAuth.innerHTML = `
-                    <div class="profile-trigger">
-                        <img src="${docSnap.data().avatar || 'assets/images/default-avatar.png'}" 
-                             class="profile-avatar">
-                        <span>${docSnap.data().username}</span>
-                    </div>
-                `;
+        // Logout function
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error logging out:', error);
             }
-        } else {
-            profileMenu.style.display = 'none';
-            navAuth.innerHTML = `
-                <a href="login.html">Masuk</a>
-                <a href="signup.html">Daftar</a>
-            `;
-        }
-    });
-
-    // Logout function
-    window.logout = async () => {
-        try {
-            await signOut(auth);
-            window.location.href = 'login.html';
-        } catch (error) {
-            console.error('Error logging out:', error);
-        }
-    };
-</script>
+        };
+    </script>
 </body>
 </html>
