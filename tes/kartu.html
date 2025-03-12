@@ -1,1 +1,734 @@
-tes
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hafal Kosakata Jepang dengan Gambar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .card {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card.active {
+            display: flex;
+        }
+
+        .card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Daftar Gambar Kosakata -->
+        <div class="card active" data-index="0">
+    <img src="1.jpg">
+</div>
+<div class="card" data-index="1">
+    <img src="2.jpg">
+</div>
+<div class="card" data-index="2">
+    <img src="3.jpg">
+</div>
+<div class="card" data-index="3">
+    <img src="4.jpg">
+</div>
+<div class="card" data-index="4">
+    <img src="5.jpg">
+</div>
+<div class="card" data-index="5">
+    <img src="6.jpg">
+</div>
+<div class="card" data-index="6">
+    <img src="7.jpg">
+</div>
+<div class="card" data-index="7">
+    <img src="8.jpg">
+</div>
+<div class="card" data-index="8">
+    <img src="9.jpg">
+</div>
+<div class="card" data-index="9">
+    <img src="10.jpg">
+</div>
+<div class="card" data-index="10">
+    <img src="11.jpg">
+</div>
+<div class="card" data-index="11">
+    <img src="12.jpg">
+</div>
+<div class="card" data-index="12">
+    <img src="13.jpg">
+</div>
+<div class="card" data-index="13">
+    <img src="14.jpg">
+</div>
+<div class="card" data-index="14">
+    <img src="15.jpg">
+</div>
+<div class="card" data-index="15">
+    <img src="16.jpg">
+</div>
+<div class="card" data-index="16">
+    <img src="17.jpg">
+</div>
+<div class="card" data-index="17">
+    <img src="18.jpg">
+</div>
+<div class="card" data-index="18">
+    <img src="19.jpg">
+</div>
+<div class="card" data-index="19">
+    <img src="20.jpg">
+</div>
+<div class="card" data-index="20">
+    <img src="21.jpg">
+</div>
+<div class="card" data-index="21">
+    <img src="22.jpg">
+</div>
+<div class="card" data-index="22">
+    <img src="23.jpg">
+</div>
+<div class="card" data-index="23">
+    <img src="24.jpg">
+</div>
+<div class="card" data-index="24">
+    <img src="25.jpg">
+</div>
+<div class="card" data-index="25">
+    <img src="26.jpg">
+</div>
+<div class="card" data-index="26">
+    <img src="27.jpg">
+</div>
+<div class="card" data-index="27">
+    <img src="28.jpg">
+</div>
+<div class="card" data-index="28">
+    <img src="29.jpg">
+</div>
+<div class="card" data-index="29">
+    <img src="30.jpg">
+</div>
+<div class="card" data-index="30">
+    <img src="31.jpg">
+</div>
+<div class="card" data-index="31">
+    <img src="32.jpg">
+</div>
+<div class="card" data-index="32">
+    <img src="33.jpg">
+</div>
+<div class="card" data-index="33">
+    <img src="34.jpg">
+</div>
+<div class="card" data-index="34">
+    <img src="35.jpg">
+</div>
+<div class="card" data-index="35">
+    <img src="36.jpg">
+</div>
+<div class="card" data-index="36">
+    <img src="37.jpg">
+</div>
+<div class="card" data-index="37">
+    <img src="38.jpg">
+</div>
+<div class="card" data-index="38">
+    <img src="39.jpg">
+</div>
+<div class="card" data-index="39">
+    <img src="40.jpg">
+</div>
+<div class="card" data-index="40">
+    <img src="41.jpg">
+</div>
+<div class="card" data-index="41">
+    <img src="42.jpg">
+</div>
+<div class="card" data-index="42">
+    <img src="43.jpg">
+</div>
+<div class="card" data-index="43">
+    <img src="44.jpg">
+</div>
+<div class="card" data-index="44">
+    <img src="45.jpg">
+</div>
+<div class="card" data-index="45">
+    <img src="46.jpg">
+</div>
+<div class="card" data-index="46">
+    <img src="47.jpg">
+</div>
+<div class="card" data-index="47">
+    <img src="48.jpg">
+</div>
+<div class="card" data-index="48">
+    <img src="49.jpg">
+</div>
+<div class="card" data-index="49">
+    <img src="50.jpg">
+</div>
+<div class="card" data-index="50">
+    <img src="51.jpg">
+</div>
+<div class="card" data-index="51">
+    <img src="52.jpg">
+</div>
+<div class="card" data-index="52">
+    <img src="53.jpg">
+</div>
+<div class="card" data-index="53">
+    <img src="54.jpg">
+</div>
+<div class="card" data-index="54">
+    <img src="55.jpg">
+</div>
+<div class="card" data-index="55">
+    <img src="56.jpg">
+</div>
+<div class="card" data-index="56">
+    <img src="57.jpg">
+</div>
+<div class="card" data-index="57">
+    <img src="58.jpg">
+</div>
+<div class="card" data-index="58">
+    <img src="59.jpg">
+</div>
+<div class="card" data-index="59">
+    <img src="60.jpg">
+</div>
+<div class="card" data-index="60">
+    <img src="61.jpg">
+</div>
+<div class="card" data-index="61">
+    <img src="62.jpg">
+</div>
+<div class="card" data-index="62">
+    <img src="63.jpg">
+</div>
+<div class="card" data-index="63">
+    <img src="64.jpg">
+</div>
+<div class="card" data-index="64">
+    <img src="65.jpg">
+</div>
+<div class="card" data-index="65">
+    <img src="66.jpg">
+</div>
+<div class="card" data-index="66">
+    <img src="67.jpg">
+</div>
+<div class="card" data-index="67">
+    <img src="68.jpg">
+</div>
+<div class="card" data-index="68">
+    <img src="69.jpg">
+</div>
+<div class="card" data-index="69">
+    <img src="70.jpg">
+</div>
+<div class="card" data-index="70">
+    <img src="71.jpg">
+</div>
+<div class="card" data-index="71">
+    <img src="72.jpg">
+</div>
+<div class="card" data-index="72">
+    <img src="73.jpg">
+</div>
+<div class="card" data-index="73">
+    <img src="74.jpg">
+</div>
+<div class="card" data-index="74">
+    <img src="75.jpg">
+</div>
+<div class="card" data-index="75">
+    <img src="76.jpg">
+</div>
+<div class="card" data-index="76">
+    <img src="77.jpg">
+</div>
+<div class="card" data-index="77">
+    <img src="78.jpg">
+</div>
+<div class="card" data-index="78">
+    <img src="79.jpg">
+</div>
+<div class="card" data-index="79">
+    <img src="80.jpg">
+</div>
+<div class="card" data-index="80">
+    <img src="81.jpg">
+</div>
+<div class="card" data-index="81">
+    <img src="82.jpg">
+</div>
+<div class="card" data-index="82">
+    <img src="83.jpg">
+</div>
+<div class="card" data-index="83">
+    <img src="84.jpg">
+</div>
+<div class="card" data-index="84">
+    <img src="85.jpg">
+</div>
+<div class="card" data-index="85">
+    <img src="86.jpg">
+</div>
+<div class="card" data-index="86">
+    <img src="87.jpg">
+</div>
+<div class="card" data-index="87">
+    <img src="88.jpg">
+</div>
+<div class="card" data-index="88">
+    <img src="89.jpg">
+</div>
+<div class="card" data-index="89">
+    <img src="90.jpg">
+</div>
+<div class="card" data-index="90">
+    <img src="91.jpg">
+</div>
+<div class="card" data-index="91">
+    <img src="92.jpg">
+</div>
+<div class="card" data-index="92">
+    <img src="93.jpg">
+</div>
+<div class="card" data-index="93">
+    <img src="94.jpg">
+</div>
+<div class="card" data-index="94">
+    <img src="95.jpg">
+</div>
+<div class="card" data-index="95">
+    <img src="96.jpg">
+</div>
+<div class="card" data-index="96">
+    <img src="97.jpg">
+</div>
+<div class="card" data-index="97">
+    <img src="98.jpg">
+</div>
+<div class="card" data-index="98">
+    <img src="99.jpg">
+</div>
+<div class="card" data-index="99">
+    <img src="100.jpg">
+</div>
+<div class="card" data-index="100">
+    <img src="101.jpg">
+</div>
+<div class="card" data-index="101">
+    <img src="102.jpg">
+</div>
+<div class="card" data-index="102">
+    <img src="103.jpg">
+</div>
+<div class="card" data-index="103">
+    <img src="104.jpg">
+</div>
+<div class="card" data-index="104">
+    <img src="105.jpg">
+</div>
+<div class="card" data-index="105">
+    <img src="106.jpg">
+</div>
+<div class="card" data-index="106">
+    <img src="107.jpg">
+</div>
+<div class="card" data-index="107">
+    <img src="108.jpg">
+</div>
+<div class="card" data-index="108">
+    <img src="109.jpg">
+</div>
+<div class="card" data-index="109">
+    <img src="110.jpg">
+</div>
+<div class="card" data-index="110">
+    <img src="111.jpg">
+</div>
+<div class="card" data-index="111">
+    <img src="112.jpg">
+</div>
+<div class="card" data-index="112">
+    <img src="113.jpg">
+</div>
+<div class="card" data-index="113">
+    <img src="114.jpg">
+</div>
+<div class="card" data-index="114">
+    <img src="115.jpg">
+</div>
+<div class="card" data-index="115">
+    <img src="116.jpg">
+</div>
+<div class="card" data-index="116">
+    <img src="117.jpg">
+</div>
+<div class="card" data-index="117">
+    <img src="118.jpg">
+</div>
+<div class="card" data-index="118">
+    <img src="119.jpg">
+</div>
+<div class="card" data-index="119">
+    <img src="120.jpg">
+</div>
+<div class="card" data-index="120">
+    <img src="121.jpg">
+</div>
+<div class="card" data-index="121">
+    <img src="122.jpg">
+</div>
+<div class="card" data-index="122">
+    <img src="123.jpg">
+</div>
+<div class="card" data-index="123">
+    <img src="124.jpg">
+</div>
+<div class="card" data-index="124">
+    <img src="125.jpg">
+</div>
+<div class="card" data-index="125">
+    <img src="126.jpg">
+</div>
+<div class="card" data-index="126">
+    <img src="127.jpg">
+</div>
+<div class="card" data-index="127">
+    <img src="128.jpg">
+</div>
+<div class="card" data-index="128">
+    <img src="129.jpg">
+</div>
+<div class="card" data-index="129">
+    <img src="130.jpg">
+</div>
+<div class="card" data-index="130">
+    <img src="131.jpg">
+</div>
+<div class="card" data-index="131">
+    <img src="132.jpg">
+</div>
+<div class="card" data-index="132">
+    <img src="133.jpg">
+</div>
+<div class="card" data-index="133">
+    <img src="134.jpg">
+</div>
+<div class="card" data-index="134">
+    <img src="135.jpg">
+</div>
+<div class="card" data-index="135">
+    <img src="136.jpg">
+</div>
+<div class="card" data-index="136">
+    <img src="137.jpg">
+</div>
+<div class="card" data-index="137">
+    <img src="138.jpg">
+</div>
+<div class="card" data-index="138">
+    <img src="139.jpg">
+</div>
+<div class="card" data-index="139">
+    <img src="140.jpg">
+</div>
+<div class="card" data-index="140">
+    <img src="141.jpg">
+</div>
+<div class="card" data-index="141">
+    <img src="142.jpg">
+</div>
+<div class="card" data-index="142">
+    <img src="143.jpg">
+</div>
+<div class="card" data-index="143">
+    <img src="144.jpg">
+</div>
+<div class="card" data-index="144">
+    <img src="145.jpg">
+</div>
+<div class="card" data-index="145">
+    <img src="146.jpg">
+</div>
+<div class="card" data-index="146">
+    <img src="147.jpg">
+</div>
+<div class="card" data-index="147">
+    <img src="148.jpg">
+</div>
+<div class="card" data-index="148">
+    <img src="149.jpg">
+</div>
+<div class="card" data-index="149">
+    <img src="150.jpg">
+</div>
+<div class="card" data-index="150">
+    <img src="151.jpg">
+</div>
+<div class="card" data-index="151">
+    <img src="152.jpg">
+</div>
+<div class="card" data-index="152">
+    <img src="153.jpg">
+</div>
+<div class="card" data-index="153">
+    <img src="154.jpg">
+</div>
+<div class="card" data-index="154">
+    <img src="155.jpg">
+</div>
+<div class="card" data-index="155">
+    <img src="156.jpg">
+</div>
+<div class="card" data-index="156">
+    <img src="157.jpg">
+</div>
+<div class="card" data-index="157">
+    <img src="158.jpg">
+</div>
+<div class="card" data-index="158">
+    <img src="159.jpg">
+</div>
+<div class="card" data-index="159">
+    <img src="160.jpg">
+</div>
+<div class="card" data-index="160">
+    <img src="161.jpg">
+</div>
+<div class="card" data-index="161">
+    <img src="162.jpg">
+</div>
+<div class="card" data-index="162">
+    <img src="163.jpg">
+</div>
+<div class="card" data-index="163">
+    <img src="164.jpg">
+</div>
+<div class="card" data-index="164">
+    <img src="165.jpg">
+</div>
+<div class="card" data-index="165">
+    <img src="166.jpg">
+</div>
+<div class="card" data-index="166">
+    <img src="167.jpg">
+</div>
+<div class="card" data-index="167">
+    <img src="168.jpg">
+</div>
+<div class="card" data-index="168">
+    <img src="169.jpg">
+</div>
+<div class="card" data-index="169">
+    <img src="170.jpg">
+</div>
+<div class="card" data-index="170">
+    <img src="171.jpg">
+</div>
+<div class="card" data-index="171">
+    <img src="172.jpg">
+</div>
+<div class="card" data-index="172">
+    <img src="173.jpg">
+</div>
+<div class="card" data-index="173">
+    <img src="174.jpg">
+</div>
+<div class="card" data-index="174">
+    <img src="175.jpg">
+</div>
+<div class="card" data-index="175">
+    <img src="176.jpg">
+</div>
+<div class="card" data-index="176">
+    <img src="177.jpg">
+</div>
+<div class="card" data-index="177">
+    <img src="178.jpg">
+</div>
+<div class="card" data-index="178">
+    <img src="179.jpg">
+</div>
+<div class="card" data-index="179">
+    <img src="180.jpg">
+</div>
+<div class="card" data-index="180">
+    <img src="181.jpg">
+</div>
+<div class="card" data-index="181">
+    <img src="182.jpg">
+</div>
+<div class="card" data-index="182">
+    <img src="183.jpg">
+</div>
+<div class="card" data-index="183">
+    <img src="184.jpg">
+</div>
+<div class="card" data-index="184">
+    <img src="185.jpg">
+</div>
+
+        <!-- Kontrol Navigasi -->
+        <div class="controls">
+            <button id="prevBtn">Sebelumnya</button>
+            <button id="nextBtn">Selanjutnya</button>
+        </div>
+    </div>
+
+    <!-- Elemen Audio -->
+    <audio id="clickSound" src="click.mp3" preload="auto"></audio>
+
+    <script>
+        // Daftar kartu
+        const cards = Array.from(document.querySelectorAll('.card'));
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentIndex = 0;
+        let shownCards = []; // Menyimpan indeks kartu yang sudah ditampilkan
+        let autoPlayInterval; // Untuk menyimpan interval auto-play
+
+        // Acak urutan kartu
+        function shuffleCards() {
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            cards.forEach((card, index) => {
+                card.setAttribute('data-index', index);
+            });
+        }
+
+        // Fungsi untuk menampilkan kartu aktif
+        function showCard(index) {
+            cards.forEach((card, i) => {
+                if (i === index) {
+                    card.classList.add('active');
+                    if (!shownCards.includes(index)) {
+                        shownCards.push(index); // Tambahkan ke daftar yang sudah ditampilkan
+                    }
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+        }
+
+        // Fungsi untuk memainkan suara
+        function playSound() {
+            const audio = document.getElementById('clickSound');
+            audio.currentTime = 0; // Reset audio ke awal
+            audio.play();
+        }
+
+        // Fungsi untuk pindah ke kartu berikutnya
+        function nextCard() {
+            if (shownCards.length < cards.length) {
+                currentIndex = (currentIndex + 1) % cards.length;
+                while (shownCards.includes(currentIndex)) {
+                    currentIndex = (currentIndex + 1) % cards.length;
+                }
+            } else {
+                // Jika semua kartu sudah ditampilkan, reset daftar shownCards
+                shownCards = [];
+                currentIndex = 0;
+            }
+            showCard(currentIndex);
+            playSound(); // Mainkan suara
+        }
+
+        // Fungsi untuk pindah ke kartu sebelumnya
+        function prevCard() {
+            const currentShownIndex = shownCards.indexOf(currentIndex);
+            if (currentShownIndex > 0) {
+                currentIndex = shownCards[currentShownIndex - 1];
+            } else {
+                // Jika sudah di awal, kembali ke akhir
+                currentIndex = shownCards[shownCards.length - 1];
+            }
+            showCard(currentIndex);
+            playSound(); // Mainkan suara
+        }
+
+        // Tombol Sebelumnya
+        prevBtn.addEventListener('click', prevCard);
+
+        // Tombol Selanjutnya
+        nextBtn.addEventListener('click', nextCard);
+
+        // Auto-play: Otomatis pindah kartu setiap 10 detik
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                nextCard();
+            }, 10000); // Ganti kartu setiap 10 detik
+        }
+
+        // Hentikan auto-play saat tombol navigasi ditekan
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+
+        // Mulai auto-play saat halaman dimuat
+        startAutoPlay();
+
+        // Hentikan auto-play saat tombol navigasi ditekan
+        prevBtn.addEventListener('click', stopAutoPlay);
+        nextBtn.addEventListener('click', stopAutoPlay);
+
+        // Acak kartu saat halaman dimuat
+        shuffleCards();
+        showCard(currentIndex); // Tampilkan kartu pertama
+    </script>
+</body>
+</html>
