@@ -3,55 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard - Luzuno</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Leaderboard</title>
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            background-image: url('wallpaper.jpg'); /* Tambahkan wallpaper di sini */
+            background-size: cover; /* Sesuaikan ukuran wallpaper */
+            background-position: center; /* Posisikan wallpaper di tengah */
+            background-repeat: no-repeat; /* Hindari pengulangan wallpaper */
+            background-attachment: fixed; /* Biarkan wallpaper tetap saat menggulir */
+            font-family: Arial, sans-serif;
         }
-        h1 {
-            color: #333;
+        .leaderboard-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .leaderboard-container h1 {
+            font-size: 2em;
+            color: #e74c3c;
             margin-bottom: 20px;
         }
         .leaderboard {
-            width: 80%;
-            max-width: 600px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
         }
         .leaderboard-item {
             display: flex;
             justify-content: space-between;
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #ccc;
         }
-        .leaderboard-item:last-child {
-            border-bottom: none;
-        }
-        .rank {
+        .leaderboard-item .rank {
             font-weight: bold;
             color: #e74c3c;
         }
-        .name {
+        .leaderboard-item .name {
             flex: 1;
             margin: 0 10px;
-            color: #333;
         }
-        .score {
+        .leaderboard-item .score {
             font-weight: bold;
             color: #2ecc71;
         }
         .back-button {
-            margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
             background-color: #3498db;
@@ -66,25 +71,26 @@
     </style>
 </head>
 <body>
-    <h1>Leaderboard</h1>
-    <div class="leaderboard" id="leaderboardList">
-        <!-- Leaderboard items will be inserted here -->
+    <div class="leaderboard-container">
+        <h1>Leaderboard</h1>
+        <div id="leaderboardList" class="leaderboard"></div>
+        <button class="back-button" onclick="window.location.href = 'dino.html'">Kembali ke Game</button>
     </div>
-    <button class="back-button" onclick="window.location.href = 'index.html';">Kembali ke Beranda</button>
 
     <script type="module">
-        import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, query, collection, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
         import { app } from '../firebase-config.js';
 
+        const auth = getAuth(app);
         const db = getFirestore(app);
+        const leaderboardList = document.getElementById('leaderboardList');
 
-        // Muat leaderboard
+        // Tampilkan leaderboard
         async function loadLeaderboard() {
-            const leaderboardList = document.getElementById('leaderboardList');
-            leaderboardList.innerHTML = ''; // Kosongkan daftar leaderboard
+            leaderboardList.innerHTML = '';
 
             try {
-                // Query untuk mengambil 10 skor tertinggi
                 const q = query(collection(db, 'scores'), orderBy('score', 'desc'), limit(10));
                 const querySnapshot = await getDocs(q);
 
@@ -93,7 +99,6 @@
                     return;
                 }
 
-                // Tampilkan data skor
                 querySnapshot.forEach((doc, index) => {
                     const data = doc.data();
                     leaderboardList.innerHTML += `
@@ -111,7 +116,13 @@
         }
 
         // Muat leaderboard saat halaman dimuat
-        loadLeaderboard();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadLeaderboard();
+            } else {
+                window.location.href = 'login.html'; // Redirect ke halaman login jika belum login
+            }
+        });
     </script>
 </body>
 </html>

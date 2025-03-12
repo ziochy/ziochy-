@@ -134,17 +134,17 @@
     <div class="controls">
         <button id="startButton">Mulai</button>
         <button id="jumpButton">Lompat</button>
-            </div>
+          </div>
 
     <!-- Modal Game Over -->
     <div id="gameOverModal" class="modal">
         <div class="modal-content">
             <h1>Game Over!</h1>
             <p>Skor Anda: <span id="finalScore"></span></p>
-            <button id="leaderboardButton">Lihat Leaderboard</button> <!-- Tombol Leaderboard -->
-
             <button id="restartButton">Mulai Ulang</button>
-        </div>
+             <button id="leaderboardButton">Leaderboard</button>
+            <button class="back-button" onclick="window.location.href = 'index.html'">Menu</button>
+            </div>
     </div>
 
     <!-- Audio untuk suara lompat, nyawa berkurang, dan game over -->
@@ -154,7 +154,16 @@
 
     <script type="module">
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            serverTimestamp, 
+            query, 
+            where, 
+            getDocs, 
+            updateDoc 
+        } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
         import { app } from '../firebase-config.js';
 
         const auth = getAuth(app);
@@ -166,7 +175,7 @@
         const gameOverModal = document.getElementById('gameOverModal');
         const finalScore = document.getElementById('finalScore');
         const restartButton = document.getElementById('restartButton');
-        const leaderboardButton = document.getElementById('leaderboardButton'); // Tombol Leaderboard
+        const leaderboardButton = document.getElementById('leaderboardButton');
         const usernameDisplay = document.getElementById('username');
 
         let gameRunning = false;
@@ -217,7 +226,7 @@
             }
 
             let newObstacle = {
-                x: lastX + Math.random() * 300 + 250,
+                x: lastX + Math.random() * 300 + 200,
                 y: dino.groundY + 30,
                 width: 50,
                 height: 30,
@@ -232,7 +241,7 @@
         document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
 
         leaderboardButton.addEventListener('click', () => {
-            window.location.href = 'leaderboard.html'; // Arahkan ke halaman leaderboard
+            window.location.href = 'leaderboard.html';
         });
 
         restartButton.addEventListener('click', () => {
@@ -411,13 +420,41 @@
             }
 
             try {
-                await addDoc(collection(db, 'scores'), {
-                    name: user.displayName || "Gati", // Gunakan "Gati" jika displayName tidak ada
-                    score: score,
-                    createdAt: serverTimestamp(),
-                    userId: user.uid // Simpan userId untuk referensi
-                });
-                console.log('Skor berhasil disimpan!');
+                // Ambil nama pengguna dari Firebase Authentication
+                const displayName = user.displayName || "Gati"; // Default jika displayName tidak ada
+
+                // Cek apakah pengguna sudah memiliki skor
+                const scoresRef = collection(db, 'scores');
+                const q = query(scoresRef, where('userId', '==', user.uid));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    // Jika sudah ada skor
+                    const doc = querySnapshot.docs[0];
+                    const existingScore = doc.data().score;
+
+                    if (score > existingScore) {
+                        // Update skor jika skor baru lebih tinggi
+                        await updateDoc(doc.ref, {
+                            name: displayName, // Simpan nama pengguna
+                            score: score,
+                            updatedAt: serverTimestamp()
+                        });
+                        console.log('Skor diperbarui!');
+                    } else {
+                        console.log('Skor baru lebih rendah, tidak diperbarui.');
+                    }
+                } else {
+                    // Jika belum ada skor, tambahkan skor baru
+                    await addDoc(scoresRef, {
+                        name: displayName, // Simpan nama pengguna
+                        score: score,
+                        userId: user.uid,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    });
+                    console.log('Skor baru disimpan!');
+                }
             } catch (error) {
                 console.error('Gagal menyimpan skor:', error);
             }
@@ -436,7 +473,8 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Tampilkan nama pengguna
-                usernameDisplay.textContent = user.displayName || "Gati"; // Gunakan "Gati" jika displayName tidak ada
+                const displayName = user.displayName || "Gati"; // Default jika displayName tidak ada
+                usernameDisplay.textContent = displayName;
             } else {
                 window.location.href = 'login.html'; // Redirect ke halaman login jika belum login
             }
