@@ -123,6 +123,23 @@
                 window.location.href = 'login.html'; // Redirect jika belum login
             }
         });
+    function checkAccessTime() {
+    const now = new Date(); // Ambil waktu saat ini
+    const currentHour = now.getHours(); // Ambil jam saat ini
+
+    // Tentukan rentang waktu yang diizinkan (20:00 - 21:00)
+    const startHour = 20; // Jam 20:00
+    const endHour = 21; // Jam 21:00
+
+    // Periksa apakah waktu saat ini berada di luar rentang yang diizinkan
+    if (currentHour < startHour || currentHour >= endHour) {
+        // Jika di luar rentang, arahkan pengguna ke halaman lain atau tampilkan pesan
+        window.location.href = "access-denied.html"; // Ganti dengan halaman yang sesuai
+    }
+}
+
+// Panggil fungsi saat halaman dimuat
+window.onload = checkAccessTime;
     </script>
 </body>
 </html>
