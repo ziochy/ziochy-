@@ -6,125 +6,125 @@
     <title>Blog Pembahasan Bahasa Jepang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
    <style>
-    /* Reset CSS */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+   /* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-    body {
-        background-color: #f8f9fa;
-        line-height: 1.6;
-        color: #2a3b4d;
-    }
+body {
+    background-color: #f0f4f8; /* Light Blue-Gray */
+    line-height: 1.6;
+    color: #2a3b4d;
+}
 
-    header {
-        background-color: #2a55b2; /* Navy Blue */
-        color: white;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+header {
+    background-color: #4a90e2; /* Bright Blue */
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-    nav {
-        background-color: #3a6ee6; /* Modern Blue */
-        padding: 1rem;
-    }
+nav {
+    background-color: #6aa9f4; /* Lighter Blue */
+    padding: 1rem;
+}
 
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    color: #d1e0ff;
+    transform: translateY(-2px);
+}
+
+.content {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 15px rgba(42, 59, 77, 0.08);
+    transition: all 0.3s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(42, 59, 77, 0.1);
+}
+
+button {
+    background-color: #6aa9f4; /* Lighter Blue */
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+button:hover {
+    background-color: #4a90e2; /* Bright Blue */
+    transform: scale(1.05);
+}
+
+footer {
+    background-color: #6aa9f4; /* Lighter Blue */
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
     nav ul {
-        list-style: none;
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-    }
-
-    nav a {
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    nav a:hover {
-        color: #d1e0ff;
-        transform: translateY(-2px);
-    }
-
-    .content {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-    }
-
-    .blog-card {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        margin: 1.5rem 0;
-        box-shadow: 0 4px 15px rgba(42, 59, 77, 0.08);
-        transition: all 0.3s ease;
-    }
-
-    .blog-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(42, 59, 77, 0.1);
-    }
-
-    button {
-        background-color: #3a6ee6;
-        color: white;
-        border: none;
-        padding: 0.8rem 1.5rem;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-    }
-
-    button:hover {
-        background-color: #2a55b2;
-        transform: scale(1.05);
-    }
-
-    footer {
-        background-color: #3a6ee6;
-        color: white;
+        flex-direction: column;
         text-align: center;
-        padding: 1rem;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
+        gap: 1rem;
     }
+    
+    .blog-card {
+        margin: 1rem;
+    }
+}
 
-    @media (max-width: 768px) {
-        nav ul {
-            flex-direction: column;
-            text-align: center;
-            gap: 1rem;
-        }
-        
-        .blog-card {
-            margin: 1rem;
-        }
-    }
+/* Animasi Kustom */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
 
-    /* Animasi Kustom */
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0px); }
-    }
-
-    h1 {
-        animation: float 3s ease-in-out infinite;
-    }
+h1 {
+    animation: float 3s ease-in-out infinite;
+}
 </style>
 </head>
 <body>
     <header>
-        <h1 class="animate__animated animate__bounce">🌸 Blog Pembahasan Bahasa Jepang 🌸</h1>
+        <h1 class=" ">🇯🇵 Blog Pembahasan Bahasa Jepang 🇯🇵</h1>
         <p>Belajar bahasa Jepang dengan mudah dan menyenangkan!</p>
     </header>
 
@@ -168,8 +168,79 @@
                 <a href="penjelasan/wa.html" class="btn">Baca Selengkapnya 🎌</a>
             </button>
         </div>
+        
+           <div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Kata kerja kelompok 1</h3>
+            <p>Cara ubah bentuk kata kerja kelompok 1.</p>
+            <button>
+                <a href="penjelasan/bentuk1.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+        </div>
+           <div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Kata kerja kelompok 2</h3>
+            <p>Cara ubah bentuk kata kerja kelompok 2.</p>
+            <button>
+                <a href="penjelasan/bentuk2.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
     </div>
-
+           <div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Kata kerja kelompok 3</h3>
+            <p>Cara ubah bentuk kata kerja kelompok 3.</p>
+            <button>
+                <a href="penjelasan/bentuk3.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+    </div>
+<div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Jam dalam bahasa jepang</h3>
+            <p>Pelajari cara menyatakan waktu.</p>
+            <button>
+                <a href="penjelasan/jam.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+    </div>
+<div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Dore, dono dalam bahasa jepang</h3>
+            <p>Pelajari cara mengunakan dore dan dono.</p>
+            <button>
+                <a href="penjelasan/dore.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+    </div>
+<div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>ko-so-a-do dalam bahasa jepang</h3>
+            <p>Pelajari cara menunjukan tempat dalam bahasa jepang.</p>
+            <button>
+                <a href="penjelasan/koko.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+    </div>
+<div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Cara menanyakan waktu dalam bahasa jepang</h3>
+            <p>Pelajari cara menanyakan waktu dalam bahasa jepang.</p>
+            <button>
+                <a href="penjelasan/menanyakan waktu.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+    </div>
+<div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Angka jepang</h3>
+            <p>Pelajari cara membaca angka dalam bahasa jepang.</p>
+            <button>
+                <a href="penjelasan/angkat.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+    </div>
+<div class="blog-card animate__animated animate__fadeInLeft">
+            <h3>Bentuk kata kerja dasar dalam bahasa jepang</h3>
+            <p>Pelajari macam bentuk kata kerja dalam bahasa jepang.</p>
+            <button>
+                <a href="penjelasan/bentuk kata kerja.html" class="btn">Baca Selengkapnya 🎌</a>
+            </button>
+        </div>
+    </div>
     <footer>
         <p>&copy; 2025 Blog Pembahasan Bahasa Jepang</p>
     </footer>
