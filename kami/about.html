@@ -1,1 +1,229 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luzuno - Tentang Kami</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
+    <style>
+        /* Variabel Tema */
+        :root {
+            --bg-color: #fff4f7;
+            --text-color: #4a2a33;
+            --accent-color: #ffb7c5;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
 
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sawarabi Mincho', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-toggle i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Menu Items */
+        .menu-items {
+            text-align: center;
+        }
+
+        .menu-items a {
+            display: block;
+            color: white;
+            font-size: 2rem;
+            margin: 1.5rem 0;
+            text-decoration: none;
+            font-family: 'Kiwi Maru', serif;
+            transition: all 0.3s ease;
+        }
+
+        .menu-items a:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        /* Tentang Kami Section */
+        .about-section {
+            padding: 5rem 10%;
+            text-align: center;
+        }
+
+        .about-section h1 {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 2rem;
+            font-family: 'Kiwi Maru', serif;
+            animation: fadeInDown 1s ease;
+        }
+
+        .about-section p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .contact-info a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .contact-info a:hover {
+            color: var(--accent-color);
+            transform: translateX(10px);
+        }
+
+        /* Animasi */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle animate__animated animate__bounceInLeft" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay">
+        <div class="menu-items">
+              <a href="../index.html" class="animate__animated animate__fadeInDown" onclick="toggleMenu()">Beranda</a>
+        </div>
+    </div>
+
+    <!-- Tentang Kami Section -->
+    <section id="about" class="about-section">
+        <h1 class="animate__animated animate__fadeInDown">Tentang Kami</h1>
+        <p class="animate__animated animate__fadeInUp">
+            Luzuno adalah platform pembelajaran bahasa Jepang yang dirancang untuk membantu Anda menguasai bahasa Jepang dengan mudah dan menyenangkan. Kami menyediakan materi pembelajaran dari tingkat dasar hingga lanjutan.
+        </p>
+        <div class="contact-info">
+            <a href="mailto:zuno354@gmail.com" class="animate__animated animate__fadeIn">
+                <i class="fas fa-envelope"></i> zuno354@gmail.com
+            </a>
+            <a href="https://wa.me/6282136040557" target="_blank" class="animate__animated animate__fadeIn">
+                <i class="fas fa-phone"></i> 082136040557
+            </a>
+            <a href="https://www.instagram.com/luzuno354" target="_blank" class="animate__animated animate__fadeIn">
+                <i class="fab fa-instagram"></i> @luzuno354
+            </a>
+            <a href="https://www.tiktok.com/@luzuno.ya" target="_blank" class="animate__animated animate__fadeIn">
+                <i class="fab fa-tiktok"></i> @luzuno.ya
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // Fungsi untuk menampilkan/menyembunyikan menu
+        function toggleMenu() {
+            const menuOverlay = document.querySelector('.menu-overlay');
+            menuOverlay.classList.toggle('active');
+        }
+
+        // Animasi saat halaman dimuat
+        window.onload = () => {
+            const menuToggle = document.querySelector('.menu-toggle');
+            menuToggle.classList.add('animate__bounceInLeft');
+
+            const aboutSection = document.querySelector('.about-section');
+            aboutSection.classList.add('animate__fadeIn');
+        };
+    </script>
+</body>
+</html>
