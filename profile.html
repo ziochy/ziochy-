@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - Luzuno</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css"> <!-- Sesuaikan dengan file CSS Anda -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
+        
     :root {
     --bg-color: #f4f7f6;
     --card-bg: #ffffff;
@@ -152,14 +155,43 @@ body {
         width: 100%;
     }
 }
+            /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .bottom-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bottom-nav a i {
+            font-size: 18px;
+        }
+
+        .bottom-nav a:hover {
+            color: var(--accent-color);
+        }
+    
     </style>
 </head>
 <body>
-    <nav>
-        <a href="index.html">Kembali ke Beranda</a>
-        <div id="navAuth"></div>
-    </nav>
-
+  
     <main class="profile-container">
         <h1>Profil Saya</h1>
         <div class="profile-info">
@@ -186,8 +218,30 @@ body {
         </div>
     </main>
 
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="#blog">
+            <i class="fas fa-search"></i>
+            <span>Pencarian</span>
+        </a>
+        <a href="profile.html">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+        </a>
+        <a href="settings.html">
+            <i class="fas fa-cog"></i>
+            <span>Pengaturan</span>
+        </a>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module">
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
         import { app } from './firebase-config.js';
 
@@ -197,10 +251,19 @@ body {
         // Muat data profil saat halaman dimuat
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // Ambil displayName dari Firebase Authentication
+                const displayName = user.displayName || "Pengguna"; // Default jika displayName tidak ada
+
+                // Set nilai input username
+                document.getElementById('username').value = displayName;
+
+                // Set email
+                document.getElementById('email').value = user.email;
+
+                // Ambil data tambahan dari Firestore (jika diperlukan)
                 const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
-                    document.getElementById('username').value = docSnap.data().username;
-                    document.getElementById('email').value = user.email;
+                    // Jika ada avatar di Firestore, tampilkan
                     if (docSnap.data().avatar) {
                         document.getElementById('profileAvatar').src = docSnap.data().avatar;
                     }
@@ -222,40 +285,72 @@ body {
             }
         });
 
-        // Update profil
+        // Update profil dengan modal konfirmasi
         window.updateProfile = async () => {
             const user = auth.currentUser;
             const username = document.getElementById('username').value;
             const avatarFile = document.getElementById('avatarInput').files[0];
 
-            try {
-                let avatarBase64 = null;
+            // Tampilkan modal konfirmasi
+            const { isConfirmed } = await Swal.fire({
+                title: 'Simpan Perubahan?',
+                text: 'Apakah Anda yakin ingin menyimpan perubahan profil?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#6c5ce7',
+                cancelButtonColor: '#ff4d4d'
+            });
 
-                // Jika ada file avatar, konversi ke Base64
-                if (avatarFile) {
-                    avatarBase64 = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = (error) => reject(error);
-                        reader.readAsDataURL(avatarFile);
+            if (isConfirmed) {
+                try {
+                    let avatarBase64 = null;
+
+                    // Jika ada file avatar, konversi ke Base64
+                    if (avatarFile) {
+                        avatarBase64 = await new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => resolve(reader.result);
+                            reader.onerror = (error) => reject(error);
+                            reader.readAsDataURL(avatarFile);
+                        });
+                    }
+
+                    // Update displayName di Firebase Authentication
+                    await updateProfile(user, {
+                        displayName: username
+                    });
+
+                    // Update data di Firestore
+                    await updateDoc(doc(db, "users", user.uid), {
+                        username: username,
+                        ...(avatarBase64 && { avatar: avatarBase64 }) // Hanya update avatar jika ada Base64
+                    });
+
+                    // Update tampilan avatar
+                    if (avatarBase64) {
+                        document.getElementById('profileAvatar').src = avatarBase64;
+                    }
+
+                    // Tampilkan modal sukses
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Profil berhasil diperbarui.',
+                        confirmButtonText: 'OK'
+                    });
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+
+                    // Tampilkan modal error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Gagal memperbarui profil. Silakan coba lagi.',
+                        confirmButtonText: 'OK'
                     });
                 }
-
-                // Update data di Firestore
-                await updateDoc(doc(db, "users", user.uid), {
-                    username: username,
-                    ...(avatarBase64 && { avatar: avatarBase64 }) // Hanya update avatar jika ada Base64
-                });
-
-                // Update tampilan avatar
-                if (avatarBase64) {
-                    document.getElementById('profileAvatar').src = avatarBase64;
-                }
-
-                alert('Profil berhasil diperbarui!');
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                alert('Gagal memperbarui profil.');
             }
         };
     </script>
