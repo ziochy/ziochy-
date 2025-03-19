@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk ke Luzuno</title>
+    <title>Verifikasi Email - Luzuno</title>
     <style>
-        /* Login Page */
+        /* Verifikasi Email Page */
         :root {
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
@@ -13,8 +13,6 @@
             --text-color: #2d3436;
             --shadow-color: rgba(0, 0, 0, 0.1);
             --hover-color: #a29bfe;
-            --google-blue: #4285F4;
-            --google-hover-blue: #357ABD;
         }
 
         body {
@@ -28,7 +26,7 @@
             margin: 0;
         }
 
-        .auth-container {
+        .verify-container {
             max-width: 400px;
             width: 100%;
             padding: 2rem;
@@ -39,7 +37,7 @@
             text-align: center;
         }
 
-        .auth-container:hover {
+        .verify-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
@@ -88,30 +86,6 @@
             transform: translateY(-2px);
         }
 
-        .google-btn {
-            background: var(--google-blue);
-            color: white;
-            padding: 0.8rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 1rem;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        .google-btn:hover {
-            background: var(--google-hover-blue);
-            transform: translateY(-2px);
-        }
-
-        .google-btn img {
-            width: 24px;
-            height: 24px;
-        }
-
         p {
             margin-top: 1.5rem;
             color: var(--text-color);
@@ -129,7 +103,7 @@
 
         /* Responsive Design */
         @media (max-width: 480px) {
-            .auth-container {
+            .verify-container {
                 padding: 1.5rem;
             }
 
@@ -137,30 +111,24 @@
                 font-size: 1.5rem;
             }
 
-            .btn, .google-btn {
+            .btn {
                 padding: 0.7rem;
                 font-size: 0.9rem;
             }
         }
     </style>
+    <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
-    <div class="auth-container">
-        <h2>Masuk ke Luzuno</h2>
+    <div class="verify-container">
+        <h2>Verifikasi Email</h2>
         <form id="loginForm">
             <input type="email" placeholder="Email" required>
             <input type="password" placeholder="Password" required>
-            <button type="submit" class="btn">Masuk</button>
+            <button type="submit" class="btn">Masuk & Verifikasi</button>
         </form>
-        
-        <div class="google-btn" id="googleLogin">
-            <img src="https://img.icons8.com/color/48/000000/google-logo.png" width="24"/>
-            Masuk dengan Google
-        </div>
-        
-        <p>Belum punya akun? <a href="signup.html">Daftar disini</a></p>
-        <p>Belum menerima email verifikasi? <a href="menu.html">klik disini</a></p>
+        <p>Sudah verifikasi akun? <a href="login.html">Masuk disini</a></p>
     </div>
 
     <!-- SweetAlert2 JS -->
@@ -168,99 +136,73 @@
     <script type="module">
         import { 
             getAuth, 
-            signInWithEmailAndPassword, 
-            GoogleAuthProvider, 
-            signInWithPopup 
+            signInWithEmailAndPassword,
+            sendEmailVerification,
+            onAuthStateChanged
         } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
         import { app } from './firebase-config.js';
 
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
 
-        // Fungsi untuk menerjemahkan pesan error Firebase
-        const translateFirebaseError = (errorCode) => {
-            switch (errorCode) {
-                case 'auth/wrong-password':
-                    return 'Password yang Anda masukkan salah.';
-                case 'auth/user-not-found':
-                    return 'Email tidak terdaftar.';
-                case 'auth/invalid-email':
-                    return 'Format email tidak valid.';
-                case 'auth/too-many-requests':
-                    return 'Terlalu banyak percobaan login. Silakan coba lagi nanti.';
-                case 'auth/user-disabled':
-                    return 'Akun ini dinonaktifkan. Silakan hubungi administrator.';
-                case 'auth/email-already-in-use':
-                    return 'Email sudah digunakan.';
-                case 'auth/weak-password':
-                    return 'Password terlalu lemah. Gunakan password yang lebih kuat.';
-                case 'auth/operation-not-allowed':
-                    return 'Metode login ini tidak diizinkan.';
-                default:
-                    return 'pasword atau email anda salah. Silakan coba lagi.';
-            }
-        };
-
-        // Handle email/password login
+        // Handle login dan verifikasi email
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = e.target[0].value;
             const password = e.target[1].value;
 
             try {
+                // Login pengguna
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
                 // Periksa apakah email sudah diverifikasi
                 if (!user.emailVerified) {
+                    // Kirim email verifikasi
+                    await sendEmailVerification(user);
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Verifikasi Email',
-                        text: 'Email Anda belum diverifikasi. Silakan periksa email Anda untuk verifikasi.',
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Email verifikasi telah dikirim. Silakan periksa email Anda.',
                         confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Logout pengguna setelah mengirim email verifikasi
+                        auth.signOut();
+                        window.location.href = 'login.html'; // Arahkan ke halaman login
                     });
-                    return;
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Email Sudah Diverifikasi',
+                        text: 'Email Anda sudah diverifikasi. Silakan login kembali.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Logout pengguna dan arahkan ke halaman login
+                        auth.signOut();
+                        window.location.href = 'login.html';
+                    });
                 }
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Anda berhasil masuk.',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = 'index.html';
-                });
-            } catch (error) {
-                // Terjemahkan pesan error
-                const errorMessage = translateFirebaseError(error.code);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: errorMessage,
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
-
-        // Handle Google login
-        document.getElementById('googleLogin').addEventListener('click', async () => {
-            try {
-                const result = await signInWithPopup(auth, provider);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Anda berhasil masuk dengan Google.',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = 'index.html';
-                });
             } catch (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
                     text: error.message,
                     confirmButtonText: 'OK'
+                });
+            }
+        });
+
+        // Pantau status login pengguna
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.emailVerified) {
+                // Jika pengguna sudah login dan email sudah diverifikasi, arahkan ke halaman login
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Email Sudah Diverifikasi',
+                    text: 'Email Anda sudah diverifikasi. Silakan login kembali.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    auth.signOut();
+                    window.location.href = 'login.html';
                 });
             }
         });
