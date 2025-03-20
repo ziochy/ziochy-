@@ -29,3 +29,150 @@ textarea {
     color: var(--text-color);
     margin-bottom: 1rem;
 }
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Warna utama */
+:root {
+    --primary-color: #6c5ce7;
+    --secondary-color: #ff7675;
+    --background-color: #f8f9fa;
+    --text-color: #2d3436;
+    --white: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Body Styling */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Navbar */
+nav {
+    background-color: var(--primary-color);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 8px var(--shadow);
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Container utama */
+.forum-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 30px auto;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px var(--shadow);
+}
+
+.forum-container h1 {
+    font-size: 24px;
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Tombol */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 6px 12px; /* Ukuran lebih kecil */
+    border: none;
+    border-radius: 4px;
+    font-size: 13px; /* Font lebih kecil */
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.btn i {
+    font-size: 13px;
+}
+
+.btn:hover {
+    background: #574bdb;
+}
+
+/* Tombol Hapus */
+.btn-danger {
+    background: var(--secondary-color);
+}
+
+.btn-danger:hover {
+    background: #e74c3c;
+}
+
+/* Daftar Forum */
+.forum-list {
+    margin-top: 20px;
+}
+
+.forum-item {
+    background: var(--white);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px var(--shadow);
+    transition: 0.3s;
+}
+
+.forum-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.forum-item h2 {
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+.forum-item p {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #636e72;
+}
+
+.forum-item small {
+    display: block;
+    color: #b2bec3;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .forum-container {
+        width: 95%;
+    }
+
+    .btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+}
