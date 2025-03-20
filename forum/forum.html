@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum Belajar Bahasa Jepang - Luzuno</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css"> <!-- Sesuaikan dengan file CSS Anda -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
     <nav>
@@ -21,6 +23,8 @@
         <div id="forumList" class="forum-list"></div>
     </main>
 
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module">
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
         import { getFirestore, collection, getDocs, addDoc, serverTimestamp, updateDoc, doc, increment, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
@@ -83,63 +87,141 @@
             }
         };
 
-        // Hapus forum
+        // Hapus forum dengan modal konfirmasi
         window.deleteForum = async (forumId) => {
-            if (confirm('Apakah Anda yakin ingin menghapus forum ini?')) {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Hapus Forum?',
+                text: 'Apakah Anda yakin ingin menghapus forum ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#ff4d4d',
+                cancelButtonColor: '#6c5ce7'
+            });
+
+            if (isConfirmed) {
                 try {
                     await deleteDoc(doc(db, 'forums', forumId));
-                    alert('Forum berhasil dihapus!');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Forum berhasil dihapus.',
+                        confirmButtonText: 'OK'
+                    });
                     loadForums(); // Muat ulang daftar forum
                 } catch (error) {
                     console.error('Error deleting forum:', error);
-                    alert('Gagal menghapus forum.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Gagal menghapus forum. Silakan coba lagi.',
+                        confirmButtonText: 'OK'
+                    });
                 }
             }
         };
 
-        // Buat forum baru
+        // Buat forum baru dengan modal
         window.createForum = async () => {
-            const title = prompt('Masukkan judul forum:');
-            const description = prompt('Masukkan deskripsi forum:');
+            const { value: title } = await Swal.fire({
+                title: 'Buat Forum Baru',
+                input: 'text',
+                inputLabel: 'Judul Forum',
+                inputPlaceholder: 'Masukkan judul forum...',
+                showCancelButton: true,
+                confirmButtonText: 'Buat',
+                cancelButtonText: 'Batal',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Judul forum tidak boleh kosong!';
+                    }
+                }
+            });
 
-            if (title && description) {
-                await addDoc(collection(db, 'forums'), {
-                    title: title,
-                    description: description,
-                    createdAt: serverTimestamp(),
-                    createdBy: auth.currentUser.uid,
-                    views: 0 // Inisialisasi views dengan 0
+            if (title) {
+                const { value: description } = await Swal.fire({
+                    title: 'Deskripsi Forum',
+                    input: 'textarea',
+                    inputLabel: 'Deskripsi',
+                    inputPlaceholder: 'Masukkan deskripsi forum...',
+                    showCancelButton: true,
+                    confirmButtonText: 'Buat',
+                    cancelButtonText: 'Batal',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Deskripsi forum tidak boleh kosong!';
+                        }
+                    }
                 });
-                alert('Forum berhasil dibuat!');
-                loadForums();
+
+                if (description) {
+                    try {
+                        await addDoc(collection(db, 'forums'), {
+                            title: title,
+                            description: description,
+                            createdAt: serverTimestamp(),
+                            createdBy: auth.currentUser.uid,
+                            views: 0 // Inisialisasi views dengan 0
+                        });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Forum berhasil dibuat.',
+                            confirmButtonText: 'OK'
+                        });
+                        loadForums(); // Muat ulang daftar forum
+                    } catch (error) {
+                        console.error('Error creating forum:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Gagal membuat forum. Silakan coba lagi.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }
             }
         };
+
+        // Periksa waktu akses
+        function checkAccessTime() {
+            const user = auth.currentUser;
+            const now = new Date(); // Ambil waktu saat ini
+            const currentHour = now.getHours(); // Ambil jam saat ini
+
+            // Tentukan rentang waktu yang diizinkan (20:00 - 22:00)
+            const startHour = 20; // Jam 20:00
+            const endHour = 22; // Jam 22:00
+
+            // Jika pengguna adalah riskiziochy@gmail.com, izinkan akses kapan saja
+            if (user && user.email === 'riskiziochy@gmail.com') {
+                return; // Lanjutkan tanpa batasan waktu
+            }
+
+            // Periksa apakah waktu saat ini berada di luar rentang yang diizinkan
+            if (currentHour < startHour || currentHour >= endHour) {
+                // Tampilkan modal SweetAlert2 jika di luar rentang waktu
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Akses Ditolak',
+                    text: 'Forum hanya dapat diakses antara pukul 20:00 - 22:00.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = "access-denied.html"; // Arahkan ke halaman lain
+                });
+            }
+        }
 
         // Muat forum saat halaman dimuat
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                checkAccessTime(); // Periksa waktu akses
                 loadForums();
             } else {
                 window.location.href = 'login.html'; // Redirect jika belum login
             }
         });
-    function checkAccessTime() {
-    const now = new Date(); // Ambil waktu saat ini
-    const currentHour = now.getHours(); // Ambil jam saat ini
-
-    // Tentukan rentang waktu yang diizinkan (20:00 - 21:00)
-    const startHour = 20; // Jam 20:00
-    const endHour = 21; // Jam 21:00
-
-    // Periksa apakah waktu saat ini berada di luar rentang yang diizinkan
-    if (currentHour < startHour || currentHour >= endHour) {
-        // Jika di luar rentang, arahkan pengguna ke halaman lain atau tampilkan pesan
-        window.location.href = "access-denied.html"; // Ganti dengan halaman yang sesuai
-    }
-}
-
-// Panggil fungsi saat halaman dimuat
-window.onload = checkAccessTime;
     </script>
 </body>
 </html>
