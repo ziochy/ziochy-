@@ -28,6 +28,32 @@
             margin: 0;
         }
 
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            padding: 1rem;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--hover-color);
+        }
+
         .auth-container {
             max-width: 400px;
             width: 100%;
@@ -37,6 +63,7 @@
             box-shadow: 0 8px 32px var(--shadow-color);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
+            margin-top: 4rem; /* Beri jarak dari navbar */
         }
 
         .auth-container:hover {
@@ -146,6 +173,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
+    <!-- Navbar -->
+    <nav>
+        <a href="index.html">LUZUNO</a>
+        <a href="cs.html"><img src="cs.png" width="34"/></a> <!-- Tautan ke halaman CS -->
+    </nav>
+
+    <!-- Login Container -->
     <div class="auth-container">
         <h2>Masuk ke Luzuno</h2>
         <form id="loginForm">
@@ -197,7 +231,7 @@
                 case 'auth/operation-not-allowed':
                     return 'Metode login ini tidak diizinkan.';
                 default:
-                    return 'pasword atau email anda salah. Silakan coba lagi.';
+                    return 'Password atau email Anda salah. Silakan coba lagi.';
             }
         };
 

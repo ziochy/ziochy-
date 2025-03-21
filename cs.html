@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service - Luzuno</title>
+    <style>
+        /* General Styles */
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --accent-color: #6c5ce7;
+            --text-color: #2d3436;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --hover-color: #a29bfe;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2, h3 {
+            color: var(--accent-color);
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--hover-color);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-bottom: 3rem;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px var(--shadow-color);
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .faq-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .faq-item h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .faq-item p {
+            margin-bottom: 0;
+            color: #555;
+        }
+
+        /* Contact Form */
+        .contact-section {
+            margin-bottom: 3rem;
+        }
+
+        .contact-form {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px var(--shadow-color);
+            padding: 2rem;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: var(--hover-color);
+            box-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
+            outline: none;
+        }
+
+        .contact-form button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        /* Contact Info */
+        .contact-info {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px var(--shadow-color);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .contact-info h2 {
+            margin-top: 0;
+        }
+
+        .contact-info p {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .contact-info a {
+            display: inline-block;
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 8px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .faq-item, .contact-form, .contact-info {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Customer Service Luzuno</h1>
+            <p>Kami siap membantu Anda dengan segala pertanyaan dan masalah yang Anda hadapi.</p>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Pertanyaan Umum (FAQ)</h2>
+            <div class="faq-item">
+                <h3>1. Saya lupa password, bagaimana cara meresetnya?</h3>
+                <p>Anda dapat mereset password dengan mengklik tombol "<a href="forgot-password.html">Lupa password</a>" di sini.</p>
+            </div>
+            <div class="faq-item">
+                <h3>2. Bagaimana cara menghubungi tim support?</h3>
+                <p>Anda dapat mengisi formulir di bawah ini atau menghubungi kami melalui email/telepon yang tertera di bagian kontak.</p>
+            </div>
+            <div class="faq-item">
+                <h3>3. Apakah saya bisa mengganti email akun saya?</h3>
+                <p>Mohon maaf, untuk saat ini Anda tidak dapat mengganti email akun Anda di Luzuno.</p>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-section">
+            <h2>Hubungi Kami</h2>
+            <div class="contact-form">
+                <form id="contactForm">
+                    <label for="name">Nama</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="subject">Tentang</label>
+                    <input type="text" id="subject" name="subject" required>
+
+                    <label for="message">Pesan/Masalah yang anda alami</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+
+                    <button type="submit">Kirim Pesan</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="contact-info">
+            <h2>Informasi Kontak</h2>
+            <p>Jika Anda membutuhkan bantuan lebih lanjut, silakan hubungi kami melalui:</p>
+            <p><strong>Email:</strong> <a href="mailto:zuno354@gmail.com">zuno354@gmail.com</a></p>
+            <p><strong>WhatsApp:</strong> <a href="https://wa.me/6282136040557" target="_blank" class="animate__animated animate__fadeIn">
+                <i class="fas fa-phone"></i> 082136040557
+            </a>
+    </div>
+    </div>
+
+    <!-- EmailJS Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // Inisialisasi EmailJS dengan User ID Anda
+        emailjs.init('ywH6o4Jk6nqOo92lh');
+
+        // Handle contact form submission
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Kirim email menggunakan EmailJS
+            emailjs.send('service_gq1kqhi', 'template_2qgrq6k', {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            }).then(() => {
+                alert('Pesan berhasil dikirim!');
+                document.getElementById('contactForm').reset();
+            }, (error) => {
+                alert('Gagal mengirim pesan. Silakan coba lagi.');
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
