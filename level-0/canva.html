@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Latihan Menulis Huruf Jepang</title>
-  <link rel="stylesheet" href="../css/style.css">
   <style>
     :root {
       --primary-color: #e74c3c;
@@ -32,6 +31,19 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+    }
+
+    header {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      font-family: 'Kiwi Maru', serif;
     }
 
     .main-title {
@@ -224,35 +236,6 @@
       margin-top: 40px;
     }
 
-  /* Container Gambar */
-.image-container {
-  max-width: 100%;
-  margin: 20px auto;
-  text-align: center;
-}
-
-/* Gambar */
-.image-container img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-/* Efek Hover */
-.image-container img:hover {
-  transform: scale(1.02);
-}
-
-/* Keterangan Gambar */
-.image-caption {
-  margin-top: 10px;
-  font-style: italic;
-  color: #666;
-  font-size: 0.9em;
-}
-
     /* Modal */
     .modal {
       display: none;
@@ -303,31 +286,15 @@
   </style>
 </head>
 <body>
-  <header class="header">
+  <header>
     <div class="container">
-      <h1 class="logo">Luzuno</h1>
-      <nav class="navbar">
-        <ul>
-          <li><a href="../index.html">Beranda</a></li>
-          <li><a href="hiragana.html">Hiragana</a></li>
-          <li><a href="katakana.html">Katakana</a></li>
-          <li><a href="kosakata-dasar.html">Kosakata Dasar</a></li>
-          <li><a href="canvas.html">Latihan Menulis</a></li>
-        </ul>
-      </nav>
+      <div class="logo">Latihan Menulis Jepang</div>
     </div>
   </header>
 
   <div class="container">
     <h1 class="main-title">Latihan Menulis Hiragana & Katakana</h1>
     
-  <div class="image-container">
-  <img src="foto.jpg" alt="Deskripsi Foto">
-  </div>
-<div class="image-container">
-  <img src="fot.jpg" alt="Deskripsi Foto">
-</div>
-
     <div class="writing-card">
       <h2 class="card-title" id="mode-title">Hiragana</h2>
       <div class="character-display" id="character-display">あ</div>
@@ -382,11 +349,12 @@
       </div>
     </div>
   </div>
-    <li><a href="canfas.html">canvas</a></li>
+   
+  <li><a href="canfas.html">canvas</a></li>
     
-  <footer class="footer">
+  <footer>
     <div class="container">
-      <p>&copy; 2025 Luzuno. All rights reserved.</p>
+      <p> Latihan Menulis Jepang. &copy; 2026 All rights reserved || LUZUNO.</p>
     </div>
   </footer>
 
