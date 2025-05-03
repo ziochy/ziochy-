@@ -13,129 +13,133 @@
                    shrink-to-fit=no">
     <title>Luzuno - Belajar Bahasa Jepang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="index.css">
- 
+    <link rel="stylesheet" href="index.css">
+    
 </head>
 <body>
-      
-   <!-- Theme Toggle -->
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" onclick="toggleSidebar()">
+        <div class="hamburger-icon">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <button class="close-sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="kami/sensei.html"><i class="fas fa-chalkboard-teacher"></i> Tanya sensei</a></li>
+              <li><a href="Luzuno/pesan email.html"><i class="fas fa-envelope"></i> Pemberitahuan</a></li>
+          
+            <li><a href="kami/pay.html"><i class="fas fa-box"></i> Sedekah</a></li>
+            <li><a href="game/dino/leaderboard.html"><i class="fas fa-medal"></i> Leaderboard</a></li>
+           
+            <li><a href="#" onclick="openPrivacyModal()"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+               <li><a href="kami/about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+            <li><a href="cs.html"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+        </ul>
+    </div>
+
+    <!-- Theme Toggle -->
     <div class="theme-toggle" onclick="toggleTheme()">
         <i class="fas fa-palette"></i>
     </div>
 
     <!-- Karakter Anime -->
-      <!-- Setelah edit background transparan -->
-      class="anime-character right"
-     style="background: transparent;">
-     <div>
+    <div>
         <button id="soundButton" onclick="playSound('greeting')" class="voice-button">
             <img src="assets/images/el.gif" class="anime-character right animate__animated animate__bounceInUp">
         </button>
-    </div> <!-- Contoh implementasi -->
-
+    </div>
        
-   <audio id="greeting" src="assets/images/el.mp3"></audio>
+    <audio id="greeting" src="assets/images/el.mp3"></audio>
     
-<nav>
-    <div id="navAuth">
-        <!-- Link akan diisi oleh JavaScript -->
-        <a href="login.html">Masuk</a>
-        <a href="signup.html">Daftar</a>
+    <nav>
+        <div id="navAuth">
+            <!-- Konten default sebelum login -->
+            <a href="login.html">Masuk</a>
+            <a href="signup.html">Daftar</a>
+        </div>
+    </nav>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="privacy-modal">
+        <div class="privacy-content">
+            <button class="close-privacy" onclick="closePrivacyModal()">×</button>
+            <h2>Privacy Policy for Luzuno</h2>
+            <div class="privacy-text">
+                <p><strong>Effective Date:</strong> 11-03-2026</p>
+                
+                <h3>1. Information We Collect</h3>
+                <p>We may collect the following types of information:</p>
+                <ul>
+                    <li><strong>Personal Information:</strong> When you sign up for an account, we may ask for personal details such as your name, email address, and profile picture.</li>
+                    <li><strong>Usage Data:</strong> We may collect information on how you use our website, including IP addresses, browser types, pages visited, and interaction with features on the site.</li>
+                    <li><strong>Cookies:</strong> We use cookies to improve user experience, analyze usage, and provide personalized content.</li>
+                </ul>
+
+                <h3>2. How We Use Your Information</h3>
+                <p>The information we collect is used for the following purposes:</p>
+                <ul>
+                    <li>To provide and maintain our services.</li>
+                    <li>To personalize your experience on Luzuno.</li>
+                    <li>To improve our website's functionality and user experience.</li>
+                    <li>To communicate with you, including sending updates or marketing materials (if you've opted in).</li>
+                    <li>To protect against fraudulent activity and ensure the security of our platform.</li>
+                </ul>
+
+                <h3>3. Data Sharing and Disclosure</h3>
+                <p>We do not sell your personal information to third parties. However, we may share your information in the following cases:</p>
+                <ul>
+                    <li><strong>Service Providers:</strong> We may share your information with third-party service providers who help us operate our website (e.g., hosting services, payment processors).</li>
+                    <li><strong>Legal Requirements:</strong> We may disclose your information if required by law or to protect the rights, safety, and security of Luzuno and its users.</li>
+                </ul>
+
+                <h3>4. Data Security</h3>
+                <p>We take reasonable measures to protect your personal information. However, no data transmission or storage method is 100% secure. We cannot guarantee the absolute security of your data.</p>
+
+                <h3>5. Your Rights</h3>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Access, update, or delete your personal information.</li>
+                    <li>Opt-out of receiving marketing communications by following the instructions in our emails.</li>
+                    <li>Request a copy of your data.</li>
+                </ul>
+                <p>To exercise these rights, you can contact us through our support page.</p>
+
+                <h3>6. Cookies</h3>
+                <p>We use cookies to enhance your experience. Cookies help us remember your preferences and track usage patterns. You can control your cookie preferences through your browser settings.</p>
+
+                <h3>7. Third-Party Links</h3>
+                <p>Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. Please review their privacy policies before sharing any personal information.</p>
+
+                <h3>8. Children's Privacy</h3>
+                <p>Luzuno is not intended for individuals under the age of 13. We do not knowingly collect personal information from children. If we become aware that we have inadvertently collected information from a child, we will take steps to delete it.</p>
+
+                <h3>9. Changes to This Privacy Policy</h3>
+                <p>We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the new policy on this page with an updated effective date.</p>
+
+                <h3>10. Contact Us</h3>
+                <p>If you have any questions or concerns about this Privacy Policy or our practices, please contact us at:</p>
+                <p>Email: <a href="mailto:zuno354@gmail.com">zuno354@gmail.com</a></p>
+                <p>Support Page: <a href="cs.html">customer service</a></p>
+            </div>
+        </div>
     </div>
-    <!-- ... elemen lainnya ... -->
-    
-    <div id="navAuth">
-        <!-- Konten akan diisi oleh JavaScript -->
-    </div>
 
-</nav>
-
-<!-- Tambahkan script ini di akhir body index.html -->
-<script>
-    // Cek status login
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            // Ambil data user dari Firestore
-            const userDoc = await db.collection('users').doc(user.uid).get();
-            const userData = userDoc.data();
-            
-            document.getElementById('userGreeting').style.display = 'inline';
-            document.getElementById('username').textContent = userData.username;
-            document.getElementById('loginLink').style.display = 'none';
-            document.getElementById('signupLink').style.display = 'none';
-        }
-    });
-</script>
-      <script>
-        function playSound(id) {
-            const audio = document.getElementById(id);
-            audio.currentTime = 0;
-            audio.play().catch(() => {
-                // Handle autoplay restrictions
-                document.body.addEventListener('click', () => audio.play(), { once: true });
-            });
-        }
-
-        // Fungsi untuk menyembunyikan/menampilkan tombol sound berdasarkan tema
-        function toggleSoundButton() {
-            const soundButton = document.getElementById('soundButton');
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-
-            if (currentTheme === 'anime') {
-                soundButton.style.display = 'block'; // Tampilkan tombol
-            } else {
-                soundButton.style.display = 'none'; // Sembunyikan tombol
-            }
-        }
-
-        
-    </script>
-<!-- Tambahkan script ini sebelum penutup </body> -->
-<script type="module">
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-    import { app } from './firebase-config.js';
-
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, async (user) => {
-        const navAuth = document.getElementById('navAuth');
-        
-        if (user) {
-            const docSnap = await getDoc(doc(db, "users", user.uid));
-            if (docSnap.exists()) {
-                navAuth.innerHTML = `
-                    <span style="margin-right: 1rem;">👋 ${docSnap.data().username}</span>
-                    <a href="#" onclick="logout()">Keluar</a>
-                `;
-            }
-        } else {
-            navAuth.innerHTML = `
-                <a href="login.html">Masuk</a>
-                <a href="signup.html">Daftar</a>
-            `;
-        }
-    });
-
-    window.logout = async () => {
-        try {
-            await signOut(auth);
-            window.location.href = 'login.html';
-        } catch (error) {
-            console.error(error);
-        }
-    };
-</script>
     <!-- Header -->
     <header class="hero">
         <div class="hero-content">
             <h1 class="animate__animated animate__fadeInDown">🌸 Selamat Datang di Luzuno! 🌸</h1>
-            <p class="animate__animated animate__fadeInUp">Tempat Belajar Bahasa Jepang Terbaik</p>
+            <p class="animate__animated animate__fadeInUp">Tempat Belajar Bahasa Jepang Terbaik Menurutku</p>
             <a href="#levels" class="btn animate__animated animate__bounceIn">Mulai Belajar</a>
-        </div>
-          
+        </div>  
     </header>
 
     <!-- Level Section -->
@@ -143,7 +147,7 @@
         <h2>Pilih Tingkat Belajar</h2>
         <div class="level-grid">
             <a href="level-0/hiragana.html" class="level-card animate__animated animate__zoomIn">
-                <h3>Level 0</h3>
+                <h3>Level Pemula</h3>
                 <p>Hiragana, Katakana, Kosakata Dasar</p>
             </a>
             <a href="level-n5/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
@@ -168,59 +172,49 @@
             </a>
         </div>
     </section>
-
-                      
       
     <!-- Blog Section -->
     <section class="blog" id="blog">
-        <h2>Artikel Terbaru</h2>
-            <div class="blog-grid">
-           <div class="blog-card animate__animated animate__fadeInLeft">
-                <h3>Pembahasan khusus</h3>
-                <p>penjelasan seputar bahasa jepang (penting untuk pemula).</p>
-                <a href="blog/penjelasan.html" class="btn">cek</a>
-            </div>
-      
+        <h2>Halaman LUZUNO</h2>
+        <div class="blog-grid">
             <div class="blog-card animate__animated animate__fadeInLeft">
                 <h3>Tips Belajar Bahasa Jepang</h3>
                 <p>Pelajari cara efektif menguasai bahasa Jepang.</p>
                 <a href="blog/tips-belajar.html" class="btn">Baca Selengkapnya</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Perfektur dan Budaya Jepang</h3>
+                <p>Kenali budaya Perfektur-perfektur di Jepang untuk memahami bahasanya.</p>
+                <a href="blog/budaya-jepang.html" class="btn">Baca Selengkapnya</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInLeft">
+                <h3>Pembahasan khusus</h3>
+                <p>penjelasan seputar bahasa jepang (penting untuk pemula).</p>
+                <a href="blog/penjelasan.html" class="btn">Buka</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>kamus</h3>
+                <p>Cari kata yang ingin kamu ketahui disini</p>
+                <a href="blog/kamus.html" class="btn">Buka</a>
             </div>
             <div class="blog-card animate__animated animate__fadeInLeft">
                 <h3>Renshuu</h3>
                 <p>latihan kanji bahasa jepang.</p>
                 <a href="blog/renshuu.html" class="btn">mulai</a>
             </div>
-           
             <div class="blog-card animate__animated animate__fadeInRight">
-                <h3>Budaya Jepang</h3>
-                <p>Kenali budaya Jepang untuk memahami bahasanya.</p>
-                <a href="blog/budaya-jepang.html" class="btn">Baca Selengkapnya</a>
-            </div>
-            <div class="blog-card animate__animated animate__fadeInRight">
-                <h3>kamus</h3>
-                <p>cari kata yang ingin kamu ketahui</p>
-                <a href="blog/kamus.html" class="btn">Baca Selengkapnya</a>
-            </div>
-            <div class="blog-card animate__animated animate__fadeInRight">
-                <h3>47 perfektur jepang</h3>
-                <p>pengenalan singkat tentang wilayah jepang.</p>
-                <a href="perfektur/jepang.html" class="btn">masuk</a>
-            </div>
-         <div class="blog-card animate__animated animate__fadeInRight">
                 <h3>Permainan</h3>
-                <p>game santai.</p>
-                <a href="game/dino/index.html" class="btn">masuk</a>
+                <p>Game santai.</p>
+                <a href="game/dino/index.html" class="btn">Main</a>
             </div>
             <div class="blog-card animate__animated animate__fadeInRight">
                 <h3>Forum</h3>
                 <p>Hanya bisa di akses jam 20.00 - 22.00</p>
-                <a href="forum/forum.html" class="btn">masuk</a>
-            </div>
+                <a href="forum/Tutup.html" class="btn">Masuk</a>
+            </div> 
         </div>
     </section>
-<a href="tes/kartu.html" class="btn">flashcard kosakata</a>
-         
+     
     <!-- Tentang Kami -->
     <section id="about" class="about">
         <h2>Tentang Kami</h2>
@@ -245,24 +239,57 @@
             <i class="fas fa-home"></i>
             <span>Beranda</span>
         </a>
-        <a href="#blog">
-            <i class="fas fa-search"></i>
-            <span>Pencarian</span>
+        <a href="latihan.html">
+            <i class="fas fa-book"></i>
+            <span>Kyousai</span>
+        </a>
+        <a href="diskusi.html">
+            <i class="fas fa-comments"></i>
+            <span>Chatto</span>
         </a>
         <a href="profile.html">
             <i class="fas fa-user"></i>
-            <span>Profil</span>
-        </a>
-        <a href="settings.html">
-            <i class="fas fa-cog"></i>
-            <span>Pengaturan</span>
+            <span>Purofiiru</span>
         </a>
     </div>
-    
-</script>
-     
+
     <script>
-        // Fungsi untuk mengubah tema
+        // Sidebar functions
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('sidebar').classList.remove('open');
+        }
+        
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.querySelector('.hamburger-menu');
+            
+            if (!sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+        
+        // Close privacy modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('privacyModal');
+            if (event.target == modal) {
+                closePrivacyModal();
+            }
+        }
+        
+        // Theme functions
         function toggleTheme() {
             const themes = ['light', 'dark', 'anime'];
             let currentTheme = themes.indexOf(document.documentElement.getAttribute('data-theme'));
@@ -271,11 +298,10 @@
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
             updateThemeIcon(theme);
-            toggleSoundButton(); // Panggil fungsi untuk mengatur tombol sound
+            toggleSoundButton();
             if (theme === 'anime') addAnimeEffects();
         }
 
-        // Fungsi untuk memperbarui ikon tema
         function updateThemeIcon(theme) {
             const icon = document.querySelector('.theme-toggle i');
             const icons = {
@@ -286,7 +312,6 @@
             icon.className = `fas ${icons[theme]}`;
         }
 
-        // Fungsi untuk menambahkan efek anime
         function addAnimeEffects() {
             for (let i = 0; i < 50; i++) {
                 const star = document.createElement('div');
@@ -306,20 +331,66 @@
             }
         }
 
-        // Muat tema awal dan atur tombol sound
+        function playSound(id) {
+            const audio = document.getElementById(id);
+            audio.currentTime = 0;
+            audio.play().catch(() => {
+                document.body.addEventListener('click', () => audio.play(), { once: true });
+            });
+        }
+
+        function toggleSoundButton() {
+            const soundButton = document.getElementById('soundButton');
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            soundButton.style.display = currentTheme === 'anime' ? 'block' : 'none';
+        }
+
         window.onload = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
-            toggleSoundButton(); // Atur tampilan tombol sound saat halaman dimuat
+            toggleSoundButton();
         };
+    </script>
 
-      </script>
+    <!-- Firebase Auth Script -->
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { app } from './firebase-config.js';
 
-    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            const navAuth = document.getElementById('navAuth');
+            
+            if (user) {
+                // User sudah login - tampilkan link ke profile
+                navAuth.innerHTML = `
+                    <a href="settings.html"><i class="fas fa-user"></i> Akun</a>
+                    <a href="#" onclick="logout()">Keluar</a>
+                `;
+            } else {
+                // User belum login - tampilkan login/signup
+                navAuth.innerHTML = `
+                    <a href="login.html">Masuk</a>
+                    <a href="signup.html">Daftar</a>
+                `;
+            }
+        });
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    </script>
+
+    <!-- Firebase Initialization -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
@@ -330,30 +401,7 @@
             appId: "1:728661935868:web:859ebff3a63b1210acb979"
         };
         
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-    </script>
-
-    <script type="module">
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-        import { app } from './firebase-config.js';
-
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Logout function
-        window.logout = async () => {
-            try {
-                await signOut(auth);
-                window.location.href = 'login.html';
-            } catch (error) {
-                console.error('Error logging out:', error);
-            }
-        };
-      
+        firebase.initializeApp(firebaseConfig);
     </script>
 </body>
 </html>
-      gambatte minna san

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --primary-color: #ff6b9d;
+            --secondary-color: #00cec9;
+            --danger-color: #ff4757;
+            --warning-color: #fdcb6e;
+            --text-color: #2d3436;
+            --text-light: #636e72;
+            --card-bg: #fff0f5;
+            --bg-color: #ffe6ee;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #8c7ae6;
+            --secondary-color: #00a8a5;
+            --danger-color: #c23616;
+            --warning-color: #e1b12c;
+            --text-color: #f5f6fa;
+            --text-light: #b2bec3;
+            --card-bg: #2d3436;
+            --bg-color: #1e272e;
+        }
+
+        [data-theme="anime"] {
+            --primary-color: #6c5ce7;
+            --secondary-color: #00cec9;
+            --danger-color: #d63031;
+            --warning-color: #fdcb6e;
+            --text-color: #2d3436;
+            --text-light: #636e72;
+            --card-bg: #ffffff;
+            --bg-color: #f5f6fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 70px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Header */
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* New profile-meta section */
+        .profile-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-age {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .profile-gender {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .gender-icon {
+            font-size: 1rem;
+        }
+
+        .gender-male {
+            color: #3498db;
+        }
+
+        .gender-female {
+            color: #e84393;
+        }
+
+        .gender-other {
+            color: #9b59b6;
+        }
+
+        .profile-bio {
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+
+        /* Like Button Styles */
+        .like-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .like-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .like-btn:hover {
+            color: var(--danger-color);
+            background-color: rgba(255, 71, 87, 0.1);
+        }
+        
+        .like-btn.liked {
+            color: var(--danger-color);
+            background-color: rgba(255, 71, 87, 0.2);
+        }
+        
+        .like-count {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: bold;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        /* Profile Details */
+        .profile-details {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-icon {
+            width: 30px;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.2rem;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+
+        .badge-admin {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge-sensei {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .badge-member {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        /* Words Section */
+        .words-section {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .words-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .words-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+
+        .word-item {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .no-words {
+            color: var(--text-light);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.8rem;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 1.5rem;
+            }
+            
+            .word-item {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    
+        /* Social Media */
+        .social-media {
+            display: flex;
+            justify-content: center;
+            gap: 1.3rem;
+            margin-top: 0rem;
+            margin-bottom: 0rem;
+            padding: 0.rem 0;
+        }
+
+        .social-link {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            padding: 0.5rem;
+        }
+
+        .social-link:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="profile-header">
+            <button class="back-btn" id="backBtn">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </button>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-palette"></i>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div id="profileContent">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="../index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="../latihan.html" class="nav-item">
+            <i class="fas fa-book"></i>
+            <span>Kyousai</span>
+        </a>
+        <a href="../diskusi.html" class="nav-item">
+            <i class="fas fa-comments"></i>
+            <span>Chatto</span>
+        </a>
+        <a href="../profile.html" class="nav-item active">
+            <i class="fas fa-user"></i>
+            <span>Purofiiru</span>
+        </a>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            const themes = ['light', 'dark', 'anime'];
+            let currentTheme = themes.indexOf(document.documentElement.getAttribute('data-theme'));
+            currentTheme = (currentTheme + 1) % themes.length;
+            const theme = themes[currentTheme];
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('.theme-toggle i');
+            const icons = {
+                'light': 'fa-sun',
+                'dark': 'fa-moon',
+                'anime': 'fa-palette'
+            };
+            icon.className = `fas ${icons[theme]}`;
+        }
+
+        // Function to calculate age from birth date
+        function calculateAge(birthDate) {
+            if (!birthDate) return null;
+            
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        // Function to get gender display text
+        function getGenderDisplay(gender) {
+            if (!gender) return '';
+            
+            const genderMap = {
+                'male': 'Laki-laki',
+                'female': 'Perempuan',
+                'other': 'Lainnya'
+            };
+            
+            return genderMap[gender] || gender;
+        }
+
+        // Function to get gender icon
+        function getGenderIcon(gender) {
+            if (!gender) return 'fa-genderless';
+            
+            const iconMap = {
+                'male': 'fa-mars gender-male',
+                'female': 'fa-venus gender-female',
+                'other': 'fa-transgender gender-other'
+            };
+            
+            return iconMap[gender] || 'fa-genderless';
+        }
+
+        // Load theme on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // Get user ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('id');
+            
+            if (userId) {
+                loadUserProfile(userId);
+            } else {
+                showError("ID Pengguna tidak valid");
+            }
+        });
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+            authDomain: "luzuno-web.firebaseapp.com",
+            projectId: "luzuno-web",
+            storageBucket: "luzuno-web.appspot.com",
+            messagingSenderId: "728661935868",
+            appId: "1:728661935868:web:859ebff3a63b1210acb979"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Back button functionality
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.history.back();
+        });
+
+        // Load user profile data
+        function loadUserProfile(userId) {
+            const profileContent = document.getElementById('profileContent');
+            
+            db.collection("users").doc(userId).get()
+                .then(userDoc => {
+                    if (!userDoc.exists) {
+                        throw new Error("Pengguna tidak ditemukan");
+                    }
+                    
+                    const userData = userDoc.data();
+                    renderProfile(userData, userId);
+                })
+                .catch(error => {
+                    console.error("Error loading profile:", error);
+                    showError("Gagal memuat profil pengguna");
+                });
+        }
+
+        // Render profile page
+        function renderProfile(userData, userId) {
+            const profileContent = document.getElementById('profileContent');
+            const isSensei = userData.email === "riskiziochy@gmail.com" || userData.isSensei;
+            const isAdmin = isSensei || userData.isAdmin;
+            
+            // Calculate age if birth date exists
+            const age = userData.birthDate ? calculateAge(userData.birthDate) : null;
+            
+            // Get gender display
+            const genderDisplay = getGenderDisplay(userData.gender);
+            
+            // Social media links
+            const socialMedia = userData.socialMedia || {};
+            const socialLinks = [];
+            
+            if (socialMedia.instagram) {
+                socialLinks.push(`<a href="https://instagram.com/${socialMedia.instagram}" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>`);
+            }
+            if (socialMedia.twitter) {
+                socialLinks.push(`<a href="https://twitter.com/${socialMedia.twitter}" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>`);
+            }
+            if (socialMedia.facebook) {
+                socialLinks.push(`<a href="https://facebook.com/${socialMedia.facebook}" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a>`);
+            }
+            if (socialMedia.tiktok) {
+                socialLinks.push(`<a href="https://tiktok.com/@${socialMedia.tiktok}" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>`);
+            }
+            
+            profileContent.innerHTML = `
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <img src="${userData.avatar || 'https://i.imgur.com/6VBx3io.png'}" alt="Avatar" class="profile-avatar">
+                    
+                    <h1 class="profile-name">
+                        @${userData.username || 'Pengguna'}
+                        ${isSensei ? '<span class="badge badge-sensei">SENSEI</span>' : ''}
+                        ${isAdmin && !isSensei ? '<span class="badge badge-admin">ADMIN</span>' : ''}
+                        ${!isAdmin && !isSensei ? '<span class="badge badge-member">ANGGOTA</span>' : ''}
+                    </h1>
+                    
+                    <!-- Meta information row -->
+                    <div class="profile-meta">
+                        ${age !== null ? `
+                            <div class="profile-age">
+                                <i class="fas fa-birthday-cake"></i>
+                                <span>${age} years</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${genderDisplay ? `
+                            <div class="profile-gender">
+                                <i class="fas ${getGenderIcon(userData.gender)}"></i>
+                                <span>${genderDisplay}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <!-- Like Button Container -->
+                    <div class="like-container">
+                        <button class="like-btn" id="likeBtn" data-userid="${userId}">
+                            <i class="far fa-heart"></i>
+                            <span>Suki</span>
+                        </button>
+                        <span class="like-count" id="likeCount">${userData.likes || 0}</span>
+                    </div>
+                    
+                    ${userData.bio ? `<p class="profile-bio">${userData.bio}</p>` : ''}
+                    
+                    ${socialLinks.length > 0 ? `
+                        <div class="social-media">
+                            ${socialLinks.join('')}
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <!-- Profile Details -->
+                <div class="profile-details">
+                    ${userData.location ? `
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Lokasi/Alamat</div>
+                                <div class="detail-value">${userData.location}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${userData.hobbies ? `
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Hobi/Minat</div>
+                                <div class="detail-value">${userData.hobbies}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${userData.birthDate ? `
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Tanggal Lahir</div>
+                                <div class="detail-value">${new Date(userData.birthDate).toLocaleDateString('id-ID', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric' 
+                                })}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <!-- Words Section -->
+                <div class="words-section">
+                    <h2 class="words-title">
+                        <i class="fas fa-envelope"></i> Pesan
+                    </h2>
+                    
+                    <div class="words-container" id="wordsContainer">
+                        ${userData.words && userData.words.length > 0 ? 
+                            userData.words.map(word => 
+                                `<div class="word-item">${word}</div>`
+                            ).join('') : 
+                            '<p class="no-words">Belum ada kata-kata</p>'}
+                    </div>
+                </div>
+            `;
+            
+            // Initialize like button functionality
+            initLikeButton(userId);
+        }
+
+        // Initialize like button functionality
+        function initLikeButton(userId) {
+            const likeBtn = document.getElementById('likeBtn');
+            const likeCount = document.getElementById('likeCount');
+            
+            if (!likeBtn || !likeCount) return;
+            
+            // Get today's date string for storage key
+            const today = new Date().toDateString();
+            
+            // Get or initialize like data from localStorage
+            const likeData = JSON.parse(localStorage.getItem('likeData') || '{}');
+            if (!likeData[today]) {
+                likeData[today] = {
+                    likeCount: 0,
+                    likedUsers: []
+                };
+            }
+            
+            // Check if user already liked this profile today
+            const alreadyLiked = likeData[today].likedUsers.includes(userId);
+            
+            if (alreadyLiked) {
+                likeBtn.innerHTML = '<i class="fas fa-heart"></i><span>Sudah di-like</span>';
+                likeBtn.classList.add('liked');
+                likeBtn.disabled = true;
+            } else if (likeData[today].likeCount >= 2) {
+                likeBtn.innerHTML = '<i class="far fa-heart"></i><span>Kuota like habis</span>';
+                likeBtn.disabled = true;
+            }
+            
+            // Add click event listener
+            likeBtn.addEventListener('click', async () => {
+                try {
+                    // Check daily like quota
+                    if (likeData[today].likeCount >= 2) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Kuota Like Habis',
+                            text: 'Anda hanya bisa memberikan 2 like per hari',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        return;
+                    }
+                    
+                    // Check if already liked this user today
+                    if (likeData[today].likedUsers.includes(userId)) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Sudah Di-like',
+                            text: 'Anda sudah memberikan like ke akun ini hari ini',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        return;
+                    }
+                    
+                    // Update UI immediately
+                    likeBtn.innerHTML = '<i class="fas fa-heart"></i><span>Arigatou!</span>';
+                    likeBtn.classList.add('liked');
+                    likeBtn.disabled = true;
+                    
+                    // Update like count in UI
+                    const currentLikes = parseInt(likeCount.textContent) || 0;
+                    likeCount.textContent = currentLikes + 1;
+                    
+                    // Update like data in localStorage
+                    likeData[today].likeCount += 1;
+                    likeData[today].likedUsers.push(userId);
+                    localStorage.setItem('likeData', JSON.stringify(likeData));
+                    
+                    // Update like count in Firestore
+                    await db.collection("users").doc(userId).update({
+                        likes: firebase.firestore.FieldValue.increment(1)
+                    });
+                    
+                    // Add animation
+                    likeBtn.style.animation = 'none';
+                    void likeBtn.offsetWidth; // Trigger reflow
+                    likeBtn.style.animation = 'pulse 0.5s';
+                    
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Terima kasih!',
+                        text: `Like Anda telah tercatat (${likeData[today].likeCount}/2 hari ini)`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    
+                } catch (error) {
+                    console.error("Error updating like:", error);
+                    
+                    // Revert UI changes if failed
+                    likeBtn.innerHTML = '<i class="far fa-heart"></i><span>Suki</span>';
+                    likeBtn.classList.remove('liked');
+                    likeBtn.disabled = false;
+                    
+                    // Revert like count if failed
+                    const currentLikes = parseInt(likeCount.textContent) || 0;
+                    likeCount.textContent = Math.max(0, currentLikes - 1);
+                    
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Tidak dapat menyimpan like. Coba lagi nanti.',
+                    });
+                }
+            });
+        }
+
+        // Helper functions
+        function showError(message) {
+            const profileContent = document.getElementById('profileContent');
+            profileContent.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>${message}</p>
+                    <button class="btn" onclick="window.history.back()">Kembali</button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
