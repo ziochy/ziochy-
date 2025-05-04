@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luzuno - Materi Bahasa Jepang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+       <link rel="stylesheet" href="index.css">
+    <style>
+        /* Simplified CSS for Practice Page */
+        .practice-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .practice-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .practice-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .practice-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .practice-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .practice-card p {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+    </style>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>
+    /* Mencegah scroll horizontal */
+    body {
+        overflow-x: hidden;
+        user-select: none; /* Mencegah copy */
+        touch-action: pan-y; /* Hanya scroll vertikal */
+    }
+
+    /* Untuk elemen lain */
+    * {
+        user-select: none; /* Mencegah seleksi teks */
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+</style>
+    
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-palette"></i>
+    </div>
+
+    <!-- Anime Character -->
+    <div>
+        <button id="soundButton" onclick="playSound('greeting')" class="voice-button">
+            <img src="assets/images/el.gif" class="anime-character right animate__animated animate__bounceInUp">
+        </button>
+    </div>
+    
+    <audio id="greeting" src="assets/images/el.mp3"></audio>
+    
+    
+
+    <!-- Main Content -->
+    <div class="practice-container">
+        <div class="practice-header animate__animated animate__fadeIn">
+            <h1>Materi Bahasa Jepang</h1>
+            <p>Perbaiki kemampuan bahasa Jepangmu dengan berbagai latihan interaktif</p>
+        </div>
+        
+        <!-- Practice Categories -->
+        <h2 class="animate__animated animate__fadeIn">Jenis Latihan</h2>
+        <div class="practice-grid">
+            <!-- Kanji Practice -->
+            <div class="practice-card animate__animated animate__fadeInLeft">
+                <h3>KOSAKATA</h3>
+                <p>Belajar menulis dan membaca kanji dengan benar</p>
+                <a href="materi/menu kosakata.html" class="btn">Mulai</a>
+            </div>
+            
+            <!-- Vocabulary Practice -->
+            <div class="practice-card animate__animated animate__fadeInLeft">
+                <h3>Latihan Kosakata</h3>
+                <p>Perluas perbendaharaan kata bahasa Jepangmu</p>
+                <a href="latihan/kosakata.html" class="btn">Mulai</a>
+            </div>
+            
+            <!-- Grammar Practice -->
+            <div class="practice-card animate__animated animate__fadeInLeft">
+                <h3>Latihan Tata Bahasa</h3>
+                <p>Pahami pola kalimat dan tata bahasa Jepang</p>
+                <a href="latihan/tata-bahasa.html" class="btn">Mulai</a>
+            </div>
+            
+            <!-- Listening Practice -->
+            <div class="practice-card animate__animated animate__fadeInRight">
+                <h3>Latihan Mendengarkan</h3>
+                <p>Asah kemampuan mendengarkan bahasa Jepang</p>
+                <a href="latihan/mendengarkan.html" class="btn">Mulai</a>
+            </div>
+            
+            <!-- Reading Practice -->
+            <div class="practice-card animate__animated animate__fadeInRight">
+                <h3>Latihan Membaca</h3>
+                <p>Baca teks bahasa Jepang dan jawab pertanyaan</p>
+                <a href="latihan/membaca.html" class="btn">Mulai</a>
+            </div>
+            
+            <!-- JLPT Simulation -->
+            <div class="practice-card animate__animated animate__fadeInRight">
+                <h3>Simulasi JLPT</h3>
+                <p>Uji kemampuanmu dengan tes seperti JLPT sebenarnya</p>
+                <a href="latihan/jlpt.html" class="btn">Mulai</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>🌸 るずのとともに学びましょう 🌸</p>
+        <p>&copy; 2025 Luzuno</p>
+    </footer>
+
+        <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="latihan.html">
+            <i class="fas fa-book"></i>
+            <span>Kyousai</span>
+        </a>
+        <a href="diskusi.html">
+            <i class="fas fa-comments"></i>
+            <span>Chatto</span>
+        </a>
+        <a href="profile.html">
+            <i class="fas fa-user"></i>
+            <span>Purofiiru</span>
+        </a>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme toggle function (same as index.html)
+        function toggleTheme() {
+            const themes = ['light', 'dark', 'anime'];
+            let currentTheme = themes.indexOf(document.documentElement.getAttribute('data-theme'));
+            currentTheme = (currentTheme + 1) % themes.length;
+            const theme = themes[currentTheme];
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+            toggleSoundButton();
+            if (theme === 'anime') addAnimeEffects();
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('.theme-toggle i');
+            const icons = {
+                'light': 'fa-sun',
+                'dark': 'fa-moon',
+                'anime': 'fa-palette'
+            };
+            icon.className = `fas ${icons[theme]}`;
+        }
+
+        function addAnimeEffects() {
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.style.cssText = `
+                    position: fixed;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    width: ${Math.random() * 3}px;
+                    height: ${Math.random() * 3}px;
+                    background: rgba(255,255,255,${Math.random()});
+                    border-radius: 50%;
+                    animation: sparkle ${Math.random() * 3 + 1}s infinite;
+                    pointer-events: none;
+                    z-index: -1;
+                `;
+                document.body.appendChild(star);
+            }
+        }
+
+        function playSound(id) {
+            const audio = document.getElementById(id);
+            audio.currentTime = 0;
+            audio.play().catch(() => {
+                document.body.addEventListener('click', () => audio.play(), { once: true });
+            });
+        }
+
+        function toggleSoundButton() {
+            const soundButton = document.getElementById('soundButton');
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+
+            if (currentTheme === 'anime') {
+                soundButton.style.display = 'block';
+            } else {
+                soundButton.style.display = 'none';
+            }
+        }
+
+        // Load theme on page load
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            toggleSoundButton();
+        };
+    </script>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from './firebase-config.js';
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+           
+
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    </script>
+    
+    <script>
+    // Mencegah shortcut copy, right click, dll
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's')) || e.key === 'F12') {
+            e.preventDefault();
+        }
+    });
+
+    // Cegah zoom pakai Ctrl + scroll
+    window.addEventListener('wheel', function(e) {
+        if (e.ctrlKey) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    // Cegah pinch zoom di layar sentuh
+    document.addEventListener('gesturestart', e => e.preventDefault());
+</script>
+    
+    
+</body>
+</html>
+    
+    Ganbatte minna
+    
+    
