@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Panel - Hapus Pesan</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+      authDomain: "luzuno-web.firebaseapp.com",
+      projectId: "luzuno-web",
+      storageBucket: "luzuno-web.firebasestorage.app",
+      messagingSenderId: "728661935868",
+      appId: "1:728661935868:web:859ebff3a63b1210acb979"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const pesanList = document.getElementById('pesanList');
+    const statusDiv = document.getElementById('status');
+
+    function renderPesan(pesanArray) {
+      pesanList.innerHTML = "";
+      if (pesanArray.length === 0) {
+        pesanList.innerHTML = "<p>Tidak ada pesan.</p>";
+        return;
+      }
+      pesanArray.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = "pesanCard";
+        const waktu = item.waktu?.toDate ? item.waktu.toDate() : new Date(item.waktu);
+        div.innerHTML = `
+          <div class="pesanContent">
+            <p>${item.pesan}</p>
+            <small>${waktu.toLocaleString()}</small>
+            <button class="hapusBtn" data-id="${item.id}">Hapus</button>
+          </div>
+        `;
+        pesanList.appendChild(div);
+      });
+
+      // Tambahkan event listener hapus
+      document.querySelectorAll('.hapusBtn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          if (confirm("Yakin ingin menghapus pesan ini?")) {
+            try {
+              await deleteDoc(doc(db, "pemberitahuan", id));
+              alert("Pesan berhasil dihapus.");
+              loadPesan(); // reload list
+            } catch (err) {
+              console.error(err);
+              alert("Gagal menghapus pesan.");
+            }
+          }
+        });
+      });
+    }
+
+    async function loadPesan() {
+      statusDiv.textContent = "Memuat pesan...";
+      try {
+        const q = query(collection(db, "pemberitahuan"), orderBy("waktu", "desc"));
+        const querySnapshot = await getDocs(q);
+        const pesanData = [];
+        querySnapshot.forEach((doc) => {
+          pesanData.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        renderPesan(pesanData);
+        statusDiv.textContent = "Selesai.";
+      } catch (error) {
+        console.error(error);
+        statusDiv.textContent = "Gagal memuat pesan.";
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (user.email === "riskiziochy@gmail.com") {
+          loadPesan();
+        } else {
+          alert("Kamu tidak punya izin mengakses halaman ini.");
+          signOut(auth).then(() => {
+            window.location.href = "/"; // Redirect ke homepage
+          });
+        }
+      } else {
+        window.location.href = "/login.html"; // Redirect ke login
+      }
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    #status {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    #pesanList {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .pesanCard {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .pesanContent p {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      color: #333;
+    }
+    .pesanContent small {
+      font-size: 12px;
+      color: #777;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .hapusBtn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+    .hapusBtn:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Admin Panel - Pemberitahuan</h1>
+<div id="status">Memuat...</div>
+<div id="pesanList"></div>
+
+</body>
+</html>
