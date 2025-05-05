@@ -2,48 +2,119 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dino Game</title>
     <style>
         body {
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-image: url('wallpaper.jpg'); /* Tambahkan wallpaper di sini */
-            background-size: cover; /* Sesuaikan ukuran wallpaper */
-            background-position: center; /* Posisikan wallpaper di tengah */
-            background-repeat: no-repeat; /* Hindari pengulangan wallpaper */
-            background-attachment: fixed; /* Biarkan wallpaper tetap saat menggulir */
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            position: relative;
+            touch-action: manipulation;
         }
+        
+        #wallpaper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('wallpaper.png');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        #gameContainer {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+            border: 4px solid #2c3e50;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
         #warning {
             display: none;
-            color: red;
-            font-size: 18px;
+            color: #e74c3c;
+            font-size: 15px;
             font-weight: bold;
-            margin-bottom: 10px;
-        }
-        canvas {
-            background-color: #fff;
-            border: 2px solid black;
-        }
-        .controls {
-            margin-top: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 5px;
-            cursor: pointer;
-            background-color: #4CAF50; /* Warna hijau */
-            color: white;
-            border: none;
+            margin-bottom: 15px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
             border-radius: 5px;
         }
+        
+        canvas {
+            display: block;
+            background-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            margin: 8px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
         button:hover {
-            background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-buttons {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        #jumpButton {
+            background-color: #2ecc71;
+        }
+        
+        #jumpButton:hover {
+            background-color: #27ae60;
+        }
+        
+        #startButton {
+            background-color: #e67e22;
+        }
+        
+        #startButton:hover {
+            background-color: #d35400;
         }
 
         /* Modal Game Over */
@@ -54,115 +125,332 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
+        
         .modal-content {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 8px;
             text-align: center;
-            animation: slideIn 0.5s ease-out;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.4s ease-out;
+            border-top: 5px solid #e74c3c;
         }
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        
         .modal-content h1 {
-            font-size: 2.5em;
+            font-size: 2.2em;
             color: #e74c3c;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+        
         .modal-content p {
             font-size: 1.2em;
+            margin: 15px 0;
+            color: #2c3e50;
+        }
+        
+        .modal-content .score-display {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #3498db;
             margin: 20px 0;
         }
-        .modal-content button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 5px;
-            cursor: pointer;
+        
+        .modal-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
         }
-        .modal-content button:hover {
-            background-color: #2980b9;
+        
+        .modal-buttons button {
+            margin: 8px;
+            min-width: 120px;
         }
-
-        /* Input Nama */
-        #nameInput {
-            margin: 20px 0;
+        
+        #restartButton {
+            background-color: #2ecc71;
         }
-        #playerName {
+        
+        #restartButton:hover {
+            background-color: #27ae60;
+        }
+        
+        #leaderboardButton {
+            background-color: #9b59b6;
+        }
+        
+        #leaderboardButton:hover {
+            background-color: #8e44ad;
+        }
+        
+        .back-button {
+            background-color: #95a5a6;
+        }
+        
+        .back-button:hover {
+            background-color: #7f8c8d;
+        }
+        
+        #loginMessage {
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 15px 0;
             padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 200px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 4px;
         }
-        #submitScore {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        #submitScore:hover {
-            background-color: #2980b9;
-        }
-        /* CSS tetap sama seperti sebelumnya */
+        
         #usernameDisplay {
             position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 16px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            z-index: 100;
+            font-weight: bold;
+        }
+        
+        #backButton {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background-color: #e74c3c;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 100;
+        }
+        
+        #backButton:hover {
+            background-color: #c0392b;
+        }
+        
+        @keyframes heartFloat {
+            0% { 
+                transform: translateY(0) scale(1); 
+                opacity: 1;
+            }
+            50% { 
+                transform: translateY(-30px) scale(1.2); 
+                opacity: 0.9;
+            }
+            100% { 
+                transform: translateY(-60px) scale(0.8); 
+                opacity: 0;
+            }
+        }
+
+        .heart-flip {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('heart.png');
+            background-size: contain;
+            animation: heartFloat 1s ease-out forwards;
+            z-index: 10;
+        }
+        
+        /* Info button */
+        #infoButton {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        #infoButton:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Info modal */
+        #infoModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .info-content {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .info-content h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .info-content ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+        
+        .info-content li {
+            margin-bottom: 10px;
+        }
+        
+        .close-info {
+            position: absolute;
             top: 10px;
-            left: 10px;
-            font-size: 18px;
-            color: black;
-            font-family: Arial, sans-serif;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 500px) {
+            #gameContainer {
+                transform: scale(0.9);
+            }
+            
+            .controls {
+                transform: scale(0.9);
+            }
+            
+            #gameCanvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+        }
+        
+        @media (max-height: 700px) and (orientation: landscape) {
+            #gameContainer {
+                transform: scale(0.8);
+            }
+            
+            .controls {
+                display: none !important;
+            }
+        }
+        
+        @media (orientation: portrait) and (max-width: 1000px) {
+            #warning {
+                display: block;
+            }
+            
+            .controls {
+                display: flex;
+            }
         }
     </style>
 </head>
 <body>
+    <div id="wallpaper"></div>
+    <button id="backButton" onclick="window.location.href='index.html'">Kembali</button>
     <div id="usernameDisplay">Selamat datang, <span id="username"></span>!</div>
     <div id="warning">⚠️ Putar layar ke mode landscape untuk pengalaman terbaik!</div>
-    <canvas id="gameCanvas" width="430" height="250"></canvas>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="300"></canvas>
+    </div>
+    
     <div class="controls">
-        <button id="startButton">Mulai</button>
-        <button id="jumpButton">Lompat</button>
-          </div>
+        <div class="game-buttons">
+            <button id="startButton">Mulai Game</button>
+            <button id="jumpButton">Lompat</button>
+        </div>
+    </div>
+
+    <button id="infoButton">i</button>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="info-content">
+            <button class="close-info" onclick="document.getElementById('infoModal').style.display='none'">×</button>
+            <h2>Cara Bermain</h2>
+            <ul>
+                <li>Tekan tombol <strong>Lompat</strong> atau <strong>Spasi</strong> untuk menghindari mobil</li>
+                <li>Setiap mobil yang terhindar memberi Anda poin</li>
+                <li>Anda memiliki 3 nyawa di awal permainan</li>
+                <li>Mobil pick up (<strong>Mobil yang membawa hati</strong>) memberi Anda nyawa tambahan</li>
+                <li>Mobil bus (<strong>Bisa jadi pijakan</strong>) jika tertabrak dapat membunuhmu secara instan</li>
+                <li>Mobil merah (<strong>Mobil yang di tunggangi katak</strong>) mengurangi skor Anda 10%</li>
+                <li>Kecepatan game akan meningkat seiring waktu</li>
+                <li>Login untuk menyimpan skor tertinggi Anda!</li>
+            </ul>
+        </div>
+    </div>
 
     <!-- Modal Game Over -->
     <div id="gameOverModal" class="modal">
         <div class="modal-content">
             <h1>Game Over!</h1>
-            <p>Skor Anda: <span id="finalScore"></span></p>
-            <button id="restartButton">Mulai Ulang</button>
-             <button id="leaderboardButton">Leaderboard</button>
-            <button class="back-button" onclick="window.location.href = 'index.html'">Menu</button>
+            <div class="score-display">
+                <p>Skor Anda: <span id="finalScore">0</span></p>
+                <p>Skor Tertinggi: <span id="highScore">0</span></p>
             </div>
+            <div id="loginMessage" style="display: none;">
+                Login untuk menyimpan skor Anda!
+            </div>
+            <div class="modal-buttons">
+                <button id="restartButton">Main Lagi</button>
+                <button id="leaderboardButton">Peringkat</button>
+                <button class="back-button" onclick="window.location.href = 'index.html'">Menu Utama</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Audio untuk suara lompat, nyawa berkurang, dan game over -->
+    <!-- Audio elements -->
     <audio id="jumpSound" src="jump.mp3"></audio>
     <audio id="hurtSound" src="hurt.mp3"></audio>
     <audio id="gameOverSound" src="gameover.mp3"></audio>
-
+    <audio id="fallSound" src="fall.mp3"></audio>
+    <audio id="itemSound" src="item.mp3"></audio>
+    
     <script type="module">
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
         import { 
             getFirestore, 
-            collection, 
-            addDoc, 
-            serverTimestamp, 
-            query, 
-            where, 
-            getDocs, 
-            updateDoc 
+            doc,
+            setDoc,
+            updateDoc,
+            getDoc,
+            serverTimestamp
         } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
         import { app } from '../firebase-config.js';
 
@@ -174,24 +462,69 @@
         const warning = document.getElementById('warning');
         const gameOverModal = document.getElementById('gameOverModal');
         const finalScore = document.getElementById('finalScore');
+        const highScoreDisplay = document.getElementById('highScore');
         const restartButton = document.getElementById('restartButton');
         const leaderboardButton = document.getElementById('leaderboardButton');
         const usernameDisplay = document.getElementById('username');
+        const loginMessage = document.getElementById('loginMessage');
+        const gameContainer = document.getElementById('gameContainer');
+        const controlsDiv = document.querySelector('.controls');
+        const infoButton = document.getElementById('infoButton');
+        const infoModal = document.getElementById('infoModal');
 
+        // Game variables
         let gameRunning = false;
         let speedMultiplier = 1;
         let speedIncreaseInterval;
         let score = 0;
+        let highScore = 0;
         let lives = 3;
+        const MAX_LIVES = 5;
         let invincibleTime = 0;
         let blinkTime = 0;
         let lastMobil6Score = 0;
+        let isLoggedIn = false;
+        let gameFrame = 0;
+        let isPortrait = window.innerHeight > window.innerWidth;
+        let isGameOver = false;
+        let showStaticGame = true;
+        let isLandscapeMode = false;
+        let isOnBus = false;
+        let pushedByBus = false;
+        let pushVelocity = 0;
+        let lastBusSpawnTime = 0;
+        let busSpawnInterval = 10000; // 10 seconds between bus spawns
 
-        const dinoImg = new Image();
-        dinoImg.src = 'dino.png';
+        // Dino animation frames
+        const dinoRunFrames = [
+            new Image(), new Image(), new Image()
+        ];
+        dinoRunFrames[0].src = 'run1.png';
+        dinoRunFrames[1].src = 'run2.png';
+        dinoRunFrames[2].src = 'run3.png';
+
+        const dinoJumpFrames = [
+            new Image(), new Image(), new Image()
+        ];
+        dinoJumpFrames[0].src = 'jump1.png';
+        dinoJumpFrames[1].src = 'jump2.png';
+        dinoJumpFrames[2].src = 'jump3.png';
+
+        const dinoFallFrame = new Image();
+        dinoFallFrame.src = 'fall.png';
+
+        // Crash animation frames
+        const crashFrames = [
+            new Image(), new Image(), new Image(), new Image(), new Image()
+        ];
+        crashFrames[0].src = '1.png';
+        crashFrames[1].src = '2.png';
+        crashFrames[2].src = '3.png';
+        crashFrames[3].src = '4.png';
+        crashFrames[4].src = '5.png';
 
         const carImgs = [
-            'mobil.png', 'mobil1.png', 'mobil2.png', 'mobil3.png', 'mobil4.png', 'mobil5.png', 'mobil6.png'
+            'mobil.png', 'mobil1.png', 'mobil2.png', 'mobil3.png', 'mobil4.png', 'mobil5.png', 'mobil6.png', 'bus.png'
         ];
 
         const bgImg = new Image();
@@ -200,45 +533,64 @@
         const heartImg = new Image();
         heartImg.src = 'heart.png';
 
+        // Dino character
         let dino = {
-            x: 50,
-            y: 150,
+            x: isPortrait ? 50 : 100,
+            y: 200,
             width: 60,
             height: 60,
             velocityY: 0,
-            gravity: 0.6,
-            jumpPower: -10,
+            gravity: 0.7,
+            jumpPower: -12,
             isJumping: false,
-            groundY: 150,
+            groundY: 208,
+            frame: 0,
+            animationTimer: 0
         };
 
         let obstacles = [];
+        let backgroundOffset = 0;
+        let heartFlipElements = [];
 
-        function spawnObstacle() {
-            let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
-
-            let randomCar;
-            if (score - lastMobil6Score >= 1000) {
-                randomCar = 'mobil6.png';
-                lastMobil6Score = score;
-            } else {
-                randomCar = carImgs[Math.floor(Math.random() * (carImgs.length - 1))];
-            }
-
-            let newObstacle = {
-                x: lastX + Math.random() * 300 + 200,
-                y: dino.groundY + 30,
-                width: 50,
-                height: 30,
-                speed: 6,
-                carImg: randomCar
-            };
-            obstacles.push(newObstacle);
-        }
-
+        // Event listeners
         document.getElementById('startButton').addEventListener('click', startGame);
         document.getElementById('jumpButton').addEventListener('click', jump);
-        document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
+        document.addEventListener('keydown', (event) => { 
+            if (event.code === 'Space' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                jump(); 
+            }
+        });
+
+        // Info button
+        infoButton.addEventListener('click', () => {
+            infoModal.style.display = 'flex';
+        });
+
+        // Touch controls for landscape mode
+        canvas.addEventListener('touchstart', handleTouch);
+        canvas.addEventListener('click', handleCanvasClick);
+
+        function handleTouch(e) {
+            e.preventDefault();
+            if (isLandscapeMode) {
+                if (!gameRunning) {
+                    startGame();
+                } else {
+                    jump();
+                }
+            }
+        }
+
+        function handleCanvasClick(e) {
+            if (isLandscapeMode) {
+                if (!gameRunning) {
+                    startGame();
+                } else {
+                    jump();
+                }
+            }
+        }
 
         leaderboardButton.addEventListener('click', () => {
             window.location.href = 'leaderboard.html';
@@ -249,20 +601,30 @@
             startGame();
         });
 
+        // Game functions
         function jump() {
-            if (!gameRunning) return;
-            if (!dino.isJumping) {
+            if (!gameRunning || isGameOver) return;
+            if (!dino.isJumping && !isOnBus) {
                 dino.isJumping = true;
                 dino.velocityY = dino.jumpPower;
+                dino.frame = 0;
                 document.getElementById('jumpSound').play();
             }
         }
 
         function startGame() {
             if (!gameRunning) {
+                showStaticGame = false;
+                isGameOver = false;
+                isOnBus = false;
+                pushedByBus = false;
                 gameRunning = true;
+                dino.x = isPortrait ? 50 : 100;
                 dino.y = dino.groundY;
                 dino.velocityY = 0;
+                dino.isJumping = false;
+                dino.frame = 0;
+                dino.animationTimer = 0;
                 obstacles = [];
                 score = 0;
                 lives = 3;
@@ -270,6 +632,8 @@
                 invincibleTime = 0;
                 blinkTime = 0;
                 lastMobil6Score = 0;
+                lastBusSpawnTime = 0;
+                backgroundOffset = 0;
 
                 clearInterval(speedIncreaseInterval);
                 speedIncreaseInterval = setInterval(increaseSpeed, 5000);
@@ -283,56 +647,240 @@
         }
 
         function increaseSpeed() {
-            if (speedMultiplier < 1.2) {
-                speedMultiplier += 0.02;
+            if (speedMultiplier < 1.5) {
+                speedMultiplier += 0.03;
             } else {
                 clearInterval(speedIncreaseInterval);
             }
         }
 
-        function updateGame() {
-            if (!gameRunning) return;
+        function spawnObstacle() {
+            let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
+            const currentTime = Date.now();
+            let randomCar;
 
+            // Mobil6 appears only when score is 2000 more than last appearance (very rare)
+            if (score - lastMobil6Score >= 2000) {
+                randomCar = 'mobil6.png';
+                lastMobil6Score = score;
+            } 
+            // Bus appears every 10 seconds
+            else if (currentTime - lastBusSpawnTime >= busSpawnInterval) {
+                randomCar = 'bus.png';
+                lastBusSpawnTime = currentTime;
+            } 
+            else {
+                // Random car (excluding mobil6 and bus)
+                randomCar = carImgs[Math.floor(Math.random() * (carImgs.length - 2))];
+            }
+
+            let newObstacle = {
+                x: lastX + Math.random() * 500 + 350,
+                y: randomCar === 'bus.png' ? dino.groundY - 10 : dino.groundY + 15, // Lowered bus position
+                width: randomCar === 'bus.png' ? 120 : 80,
+                height: randomCar === 'bus.png' ? 70 : 60, // Reduced bus height
+                speed: 7,
+                carImg: randomCar,
+                isCrashing: false,
+                crashFrame: 0,
+                crashTimer: 0,
+                isBus: randomCar === 'bus.png'
+            };
+            obstacles.push(newObstacle);
+        }
+
+        function createHeartFlip(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-flip';
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+            gameContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        }
+
+        function updateGame() {
+            gameFrame++;
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-            moveDino();
-            moveObstacles();
-            checkCollision();
-            drawDino();
-            drawObstacles();
-            updateScore();
-            drawScore();
-            drawLives();
+            
+            if (showStaticGame) {
+                drawBackground();
+                drawStaticDino();
+                drawStaticObstacles();
+                drawStaticScore();
+                drawStaticLives();
+            } else {
+                drawBackground();
+                moveDino();
+                moveObstacles();
+                checkCollision();
+                drawDino();
+                drawObstacles();
+                updateScore();
+                drawScore();
+                drawLives();
+            }
 
             invincibleTime--;
             blinkTime--;
-            requestAnimationFrame(updateGame);
+            
+            if (gameRunning || showStaticGame) {
+                requestAnimationFrame(updateGame);
+            }
+        }
+
+        function drawStaticDino() {
+            ctx.drawImage(dinoRunFrames[0], dino.x, dino.y, dino.width, dino.height);
+        }
+
+        function drawStaticObstacles() {
+            for (let i = 0; i < 2; i++) {
+                let carImg = new Image();
+                carImg.src = carImgs[i];
+                ctx.drawImage(carImg, canvas.width - 200 - i * 150, dino.groundY + 10, 60, 40);
+            }
+        }
+
+        function drawStaticScore() {
+            ctx.font = 'bold 20px Arial';
+            ctx.fillStyle = '#2c3e50';
+            ctx.strokeStyle = '#ecf0f1';
+            ctx.lineWidth = 3;
+            
+            ctx.strokeText('Skor: 0', 20, 40);
+            ctx.fillText('Skor: 0', 20, 40);
+            
+            ctx.strokeText('Rekor: ' + highScore, 20, 70);
+            ctx.fillText('Rekor: ' + highScore, 20, 70);
+        }
+
+        function drawStaticLives() {
+            for (let i = 0; i < 3; i++) {
+                ctx.drawImage(heartImg, canvas.width - 50 - i * 40, 20, 30, 30);
+            }
+        }
+
+        function drawBackground() {
+            backgroundOffset -= showStaticGame ? 0 : 3 * speedMultiplier;
+            if (backgroundOffset <= -canvas.width) {
+                backgroundOffset = 0;
+            }
+            
+            ctx.drawImage(bgImg, backgroundOffset, 0, canvas.width, canvas.height);
+            ctx.drawImage(bgImg, backgroundOffset + canvas.width, 0, canvas.width, canvas.height);
         }
 
         function drawDino() {
             if (blinkTime > 0 && Math.floor(blinkTime / 10) % 2 === 0) {
                 return;
             }
-            ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+            
+            dino.animationTimer++;
+            
+            if (isGameOver) {
+                ctx.drawImage(dinoFallFrame, dino.x, dino.y, dino.width, dino.height);
+                return;
+            }
+            
+            if (dino.isJumping) {
+                if (dino.animationTimer % 10 === 0) {
+                    dino.frame = (dino.frame + 1) % dinoJumpFrames.length;
+                }
+                ctx.drawImage(dinoJumpFrames[dino.frame], dino.x, dino.y, dino.width, dino.height);
+            } 
+            else {
+                if (dino.animationTimer % 8 === 0) {
+                    dino.frame = (dino.frame + 1) % dinoRunFrames.length;
+                }
+                ctx.drawImage(dinoRunFrames[dino.frame], dino.x, dino.y, dino.width, dino.height);
+            }
         }
 
         function moveDino() {
-            dino.y += dino.velocityY;
-            dino.velocityY += dino.gravity;
+            if (isGameOver) {
+                return;
+            }
+            
+            // Apply push from bus if being pushed
+            if (pushedByBus) {
+                dino.x += pushVelocity;
+                pushVelocity *= 0.95; // Slow down push effect
+                
+                // Stop pushing when velocity is small enough
+                if (Math.abs(pushVelocity) < 0.5) {
+                    pushedByBus = false;
+                    pushVelocity = 0;
+                }
+            }
+            
+            // Regular movement when not on bus
+            if (!isOnBus) {
+                dino.y += dino.velocityY;
+                dino.velocityY += dino.gravity;
+            }
 
+            // Check if dino is out of bounds
+            if (dino.x < -dino.width || dino.x > canvas.width) {
+                lives--;
+                blinkTime = 60;
+                document.getElementById('hurtSound').play();
+                
+                // Reset position if still alive
+                if (lives > 0) {
+                    dino.x = Math.max(0, Math.min(dino.x, canvas.width - dino.width));
+                    dino.y = dino.groundY;
+                    dino.velocityY = 0;
+                    invincibleTime = 90;
+                } else {
+                    isGameOver = true;
+                    document.getElementById('gameOverSound').play();
+                    setTimeout(() => showGameOverModal(score), 1000);
+                    gameRunning = false;
+                    clearInterval(speedIncreaseInterval);
+                }
+            }
+
+            // Ground check
             if (dino.y > dino.groundY) {
                 dino.y = dino.groundY;
                 dino.isJumping = false;
                 dino.velocityY = 0;
+                dino.frame = 0;
             }
         }
 
         function drawObstacles() {
-            obstacles.forEach(obstacle => {
-                let carImg = new Image();
-                carImg.src = obstacle.carImg;
-                ctx.drawImage(carImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            });
+            for (let i = 0; i < obstacles.length; i++) {
+                let obstacle = obstacles[i];
+                
+                if (obstacle.isCrashing) {
+                    obstacle.crashTimer++;
+                    if (obstacle.crashTimer % 5 === 0) {
+                        obstacle.crashFrame++;
+                    }
+                    
+                    if (obstacle.crashFrame < crashFrames.length) {
+                        ctx.drawImage(
+                            crashFrames[obstacle.crashFrame], 
+                            obstacle.x - 20, 
+                            obstacle.y - 20, 
+                            obstacle.width + 40, 
+                            obstacle.height + 40
+                        );
+                    } else {
+                        obstacles.splice(i, 1);
+                        i--;
+                        spawnObstacle();
+                    }
+                } else {
+                    let carImg = new Image();
+                    carImg.src = obstacle.carImg;
+                    ctx.drawImage(carImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                }
+            }
         }
 
         function moveObstacles() {
@@ -347,72 +895,173 @@
         }
 
         function checkCollision() {
-            if (invincibleTime > 0) return;
+            if (isGameOver) return;
 
-            for (let obstacle of obstacles) {
+            for (let i = 0; i < obstacles.length; i++) {
+                let obstacle = obstacles[i];
+                
+                if (obstacle.isCrashing) continue;
+                
                 let dinoHitbox = {
-                    x: dino.x + 10,
-                    y: dino.y + 10,
+                    x: dino.x + 15,
+                    y: dino.y + 15,
                     width: 40,
-                    height: 50
+                    height: 40
                 };
 
                 let obstacleHitbox = {
-                    x: obstacle.x,
-                    y: obstacle.y,
-                    width: obstacle.width,
-                    height: obstacle.height
+                    x: obstacle.x + 5,
+                    y: obstacle.y + 5,
+                    width: obstacle.width - 10,
+                    height: obstacle.height - 10
                 };
 
+                // Check if dino is on top of a bus
+                if (obstacle.isBus && 
+                    dinoHitbox.x + dinoHitbox.width > obstacleHitbox.x &&
+                    dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
+                    dino.y + dino.height <= obstacle.y + 10 &&
+                    dino.y + dino.height >= obstacle.y - 5) {
+                    
+                    // Land on the bus
+                    isOnBus = true;
+                    dino.y = obstacle.y - dino.height + 5;
+                    dino.velocityY = 0;
+                    dino.isJumping = false;
+                    continue;
+                }
+
+                // Check for regular collision
                 if (
                     dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
                     dinoHitbox.x + dinoHitbox.width > obstacleHitbox.x &&
                     dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
+                    // Special case for mobil6 (life-giving car)
                     if (obstacle.carImg === 'mobil6.png') {
-                        if (lives < 3) {
-                            lives++;
-                        }
-                    } else {
-                        lives--;
-                        blinkTime = 55;
-                        document.getElementById('hurtSound').play();
+                        lives++; // Always add 1 life
+                        createHeartFlip(dino.x + dino.width/2 - 15, dino.y - 30);
+                        document.getElementById('itemSound').play();
+                        
+                        // Remove mobil6 after collision
+                        obstacles.splice(i, 1);
+                        spawnObstacle();
+                        return;
+                    } 
+                    // Special case for mobil4 (score reducer)
+                    else if (obstacle.carImg === 'mobil4.png') {
+                        score = Math.floor(score * 0.9);
+                        document.getElementById('fallSound').play();
+                        // Mobil4 continues moving without crashing
+                        return;
                     }
+                    // Special case for bus (platform or death)
+                    else if (obstacle.isBus) {
+                        // If hitting bus from side
+                        if (dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y + 10) {
+                            lives--;
+                            blinkTime = 60;
+                            document.getElementById('hurtSound').play();
+                            
+                            // Push effect
+                            pushedByBus = true;
+                            pushVelocity = (dino.x < obstacle.x) ? -10 : 10;
+                            
+                            if (lives <= 0) {
+                                isGameOver = true;
+                                document.getElementById('gameOverSound').play();
+                                setTimeout(() => showGameOverModal(score), 1000);
+                                gameRunning = false;
+                                clearInterval(speedIncreaseInterval);
+                            } else {
+                                invincibleTime = 90;
+                            }
+                            return;
+                        }
+                    }
+                    
+                    // Only check for damage if not invincible
+                    if (invincibleTime <= 0) {
+                        lives--;
+                        blinkTime = 60;
+                        document.getElementById('hurtSound').play();
+                        obstacle.isCrashing = true;
+                        obstacle.crashFrame = 0;
+                        obstacle.crashTimer = 0;
+                        invincibleTime = 90;
 
-                    invincibleTime = 80;
-
-                    if (lives <= 0) {
-                        document.getElementById('gameOverSound').play();
-                        showGameOverModal(score);
-                        gameRunning = false;
-                        clearInterval(speedIncreaseInterval);
+                        if (lives <= 0) {
+                            isGameOver = true;
+                            document.getElementById('gameOverSound').play();
+                            setTimeout(() => showGameOverModal(score), 1000);
+                            gameRunning = false;
+                            clearInterval(speedIncreaseInterval);
+                        }
                     }
                     return;
+                }
+            }
+
+            // If not on any bus, reset isOnBus
+            if (isOnBus) {
+                let onAnyBus = false;
+                for (let obstacle of obstacles) {
+                    if (obstacle.isBus && 
+                        dino.x + dino.width > obstacle.x &&
+                        dino.x < obstacle.x + obstacle.width &&
+                        dino.y + dino.height <= obstacle.y + 10) {
+                        onAnyBus = true;
+                        break;
+                    }
+                }
+                
+                if (!onAnyBus) {
+                    isOnBus = false;
+                    dino.velocityY = 0;
                 }
             }
         }
 
         function updateScore() {
-            if (gameRunning) {
-                score += 1; // Tambahkan 1 poin setiap frame
+            if (gameRunning && !isGameOver) {
+                score += Math.floor(speedMultiplier);
             }
         }
 
         function drawScore() {
-            ctx.font = '20px Arial';
-            ctx.fillStyle = 'black';
-            ctx.fillText('Skor: ' + score, canvas.width - 120, 30);
+            ctx.font = 'bold 20px Arial';
+            ctx.fillStyle = '#2c3e50';
+            ctx.strokeStyle = '#ecf0f1';
+            ctx.lineWidth = 3;
+            
+            ctx.strokeText('Skor: ' + score, 20, 40);
+            ctx.fillText('Skor: ' + score, 20, 40);
+            
+            ctx.strokeText('Rekor: ' + highScore, 20, 70);
+            ctx.fillText('Rekor: ' + highScore, 20, 70);
         }
 
         function drawLives() {
-            for (let i = 0; i < lives; i++) {
-                ctx.drawImage(heartImg, 10 + i * 35, 10, 30, 30);
+            const displayLives = Math.min(lives, MAX_LIVES);
+            for (let i = 0; i < displayLives; i++) {
+                ctx.drawImage(heartImg, canvas.width - 50 - i * 40, 20, 30, 30);
+            }
+            
+            // Show +X if lives exceed MAX_LIVES
+            if (lives > MAX_LIVES) {
+                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = '#2ecc71';
+                ctx.fillText(`+${lives - MAX_LIVES}`, canvas.width - 50 - MAX_LIVES * 40, 35);
             }
         }
 
-        // Simpan skor ke Firestore
-        async function saveScore(score) {
+        async function saveScore(currentScore) {
+            if (!isLoggedIn) {
+                console.log('Pengguna belum login, skor tidak disimpan');
+                return;
+            }
+
             const user = auth.currentUser;
             if (!user) {
                 console.error('Pengguna belum login.');
@@ -420,39 +1069,47 @@
             }
 
             try {
-                // Ambil nama pengguna dari Firebase Authentication
-                const displayName = user.displayName || "Gati"; // Default jika displayName tidak ada
+                const userRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userRef);
 
-                // Cek apakah pengguna sudah memiliki skor
-                const scoresRef = collection(db, 'scores');
-                const q = query(scoresRef, where('userId', '==', user.uid));
-                const querySnapshot = await getDocs(q);
+                const displayName = user.displayName || "Player";
+                const userData = {
+                    name: displayName,
+                    email: user.email,
+                    lastLogin: serverTimestamp()
+                };
 
-                if (!querySnapshot.empty) {
-                    // Jika sudah ada skor
-                    const doc = querySnapshot.docs[0];
-                    const existingScore = doc.data().score;
+                if (userDoc.exists()) {
+                    const existingData = userDoc.data();
+                    const existingHighScore = existingData.dinoHighScore || 0;
 
-                    if (score > existingScore) {
-                        // Update skor jika skor baru lebih tinggi
-                        await updateDoc(doc.ref, {
-                            name: displayName, // Simpan nama pengguna
-                            score: score,
+                    if (currentScore > existingHighScore) {
+                        await updateDoc(userRef, {
+                            ...userData,
+                            dinoHighScore: currentScore,
+                            dinoLastScore: currentScore,
                             updatedAt: serverTimestamp()
                         });
-                        console.log('Skor diperbarui!');
+                        highScore = currentScore;
+                        console.log('Skor tertinggi diperbarui!');
                     } else {
-                        console.log('Skor baru lebih rendah, tidak diperbarui.');
+                        await updateDoc(userRef, {
+                            ...userData,
+                            dinoLastScore: currentScore,
+                            updatedAt: serverTimestamp()
+                        });
+                        highScore = existingHighScore;
+                        console.log('Skor terakhir disimpan.');
                     }
                 } else {
-                    // Jika belum ada skor, tambahkan skor baru
-                    await addDoc(scoresRef, {
-                        name: displayName, // Simpan nama pengguna
-                        score: score,
-                        userId: user.uid,
+                    await setDoc(userRef, {
+                        ...userData,
+                        dinoHighScore: currentScore,
+                        dinoLastScore: currentScore,
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
                     });
+                    highScore = currentScore;
                     console.log('Skor baru disimpan!');
                 }
             } catch (error) {
@@ -460,25 +1117,84 @@
             }
         }
 
-        // Saat game over, tampilkan modal dan simpan skor
-        function showGameOverModal(score) {
-            finalScore.textContent = score;
-            gameOverModal.style.display = 'flex';
+        async function loadHighScore() {
+            if (!isLoggedIn) {
+                highScore = 0;
+                return;
+            }
 
-            // Simpan skor otomatis
-            saveScore(score);
+            const user = auth.currentUser;
+            if (!user) {
+                highScore = 0;
+                return;
+            }
+
+            try {
+                const userRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userRef);
+
+                if (userDoc.exists()) {
+                    highScore = userDoc.data().dinoHighScore || 0;
+                } else {
+                    highScore = 0;
+                }
+            } catch (error) {
+                console.error('Gagal memuat skor tertinggi:', error);
+                highScore = 0;
+            }
         }
 
-        // Muat leaderboard saat halaman dimuat
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Tampilkan nama pengguna
-                const displayName = user.displayName || "Gati"; // Default jika displayName tidak ada
-                usernameDisplay.textContent = displayName;
+        function showGameOverModal(currentScore) {
+            finalScore.textContent = currentScore;
+            highScoreDisplay.textContent = highScore;
+            gameOverModal.style.display = 'flex';
+            
+            loginMessage.style.display = isLoggedIn ? 'none' : 'block';
+            
+            if (isLoggedIn) {
+                saveScore(currentScore);
+            }
+        }
+
+        function checkOrientation() {
+            isPortrait = window.innerHeight > window.innerWidth;
+            isLandscapeMode = !isPortrait;
+            
+            if (isPortrait) {
+                warning.style.display = 'block';
+                controlsDiv.style.display = 'flex';
+                if (gameRunning || showStaticGame) {
+                    dino.x = 50;
+                }
             } else {
-                window.location.href = 'login.html'; // Redirect ke halaman login jika belum login
+                warning.style.display = 'none';
+                controlsDiv.style.display = 'none';
+                if (gameRunning || showStaticGame) {
+                    dino.x = 100;
+                }
+            }
+        }
+
+        // Initialize auth state
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                isLoggedIn = true;
+                const displayName = user.displayName || "Player";
+                usernameDisplay.textContent = displayName;
+                
+                await loadHighScore();
+            } else {
+                isLoggedIn = false;
+                usernameDisplay.textContent = "Tamu";
+                highScore = 0;
             }
         });
+
+        window.addEventListener('resize', checkOrientation);
+        checkOrientation();
+        
+        // Start the static game display
+        updateGame();
     </script>
 </body>
 </html>
