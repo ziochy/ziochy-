@@ -1,128 +1,866 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --text-color: #2d3436;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --rank-1: #ffd700;
+            --rank-2: #c0c0c0;
+            --rank-3: #cd7f32;
+            --dino-color: #00b894;
+            --majo-color: #e84393;
+            --success-color: #00b894;
+            --error-color: #d63031;
+            --warning-color: #fdcb6e;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #8c7ae6;
+            --secondary-color: #9c88ff;
+            --accent-color: #e84393;
+            --text-color: #f5f6fa;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --dino-color: #55efc4;
+            --majo-color: #fd79a8;
+            --success-color: #55efc4;
+            --error-color: #ff7675;
+            --warning-color: #ffeaa7;
+        }
+
         body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-image: url('wallpaper.jpg'); /* Tambahkan wallpaper di sini */
-            background-size: cover; /* Sesuaikan ukuran wallpaper */
-            background-position: center; /* Posisikan wallpaper di tengah */
-            background-repeat: no-repeat; /* Hindari pengulangan wallpaper */
-            background-attachment: fixed; /* Biarkan wallpaper tetap saat menggulir */
-            font-family: Arial, sans-serif;
-        }
-        .leaderboard-container {
-            background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
+            min-height: 100vh;
         }
-        .leaderboard-container h1 {
-            font-size: 2em;
-            color: #e74c3c;
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            position: relative;
         }
-        .leaderboard {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 20px;
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
         }
-        .leaderboard-item {
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .profile-scores {
             display: flex;
             justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .score-card {
+            background: var(--card-bg);
+            border-radius: 10px;
             padding: 10px;
-            border-bottom: 1px solid #ccc;
+            width: 48%;
+            box-shadow: 0 3px 10px var(--shadow-color);
         }
-        .leaderboard-item .rank {
-            font-weight: bold;
-            color: #e74c3c;
+
+        .dino-card {
+            border-top: 2px solid var(--dino-color);
         }
-        .leaderboard-item .name {
-            flex: 1;
-            margin: 0 10px;
+
+        .majo-card {
+            border-top: 2px solid var(--majo-color);
         }
-        .leaderboard-item .score {
-            font-weight: bold;
-            color: #2ecc71;
+
+        .leaderboard-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px var(--shadow-color);
         }
-        .back-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            transition: all 0.2s;
             cursor: pointer;
         }
-        .back-button:hover {
-            background-color: #2980b9;
+
+        .leaderboard-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transform: translateX(5px);
+        }
+
+        .rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            color: white;
+            position: relative;
+        }
+
+        .rank-1 { 
+            background: var(--rank-1);
+            font-weight: 800;
+        }
+        .rank-2 { background: var(--rank-2); }
+        .rank-3 { background: var(--rank-3); }
+        .rank-other { background: var(--primary-color); }
+
+        .crown-icon {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 600;
+        }
+
+        .player-words {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .player-score {
+            font-weight: bold;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .dino-score {
+            color: var(--dino-color);
+        }
+
+        .majo-score {
+            color: var(--majo-color);
+        }
+
+        .score-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: var(--secondary-color);
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .tab-container {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .tab.active {
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .leaderboard-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .leaderboard-section.active {
+            display: block;
+        }
+
+        .update-info {
+            font-size: 0.8rem;
+            text-align: right;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .timer-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .refresh-timer {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .refresh-icon {
+            cursor: pointer;
+            color: var(--accent-color);
+            transition: transform 0.3s;
+        }
+
+        .refresh-icon:hover {
+            transform: rotate(180deg);
+        }
+
+        .refresh-icon.disabled {
+            color: var(--secondary-color);
+            cursor: not-allowed;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .status-cached {
+            background-color: var(--warning-color);
+            color: var(--text-color);
+        }
+
+        .status-fresh {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .profile-avatar {
+                margin: 0 auto 15px;
+            }
+            
+            .profile-scores {
+                flex-direction: column;
+            }
+            
+            .score-card {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .player-name {
+                font-size: 0.9rem;
+            }
+            
+            .player-score {
+                font-size: 0.8rem;
+                min-width: 60px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="leaderboard-container">
-        <h1>Leaderboard</h1>
-        <div id="leaderboardList" class="leaderboard"></div>
-        <button class="back-button" onclick="window.location.href = 'dino.html'">Kembali ke Game</button>
+    <div class="container">
+        <!-- Profil Pengguna -->
+        <div class="profile-card" id="profileSection">
+            <div class="profile-header">
+                <img src="assets/images/default-avatar.png" alt="Avatar" class="profile-avatar" id="profileAvatar">
+                <div>
+                    <h3 id="profileName">Memuat...</h3>
+                    <div id="userWords">-</div>
+                </div>
+            </div>
+            
+            <div class="profile-scores">
+                <div class="score-card dino-card" id="dinoScoreCard">
+                    <h4>Skor Dino</h4>
+                    <div>Tertinggi: <span id="dinoHighScore">0</span></div>
+                    <div>Peringkat: <span id="dinoRank">-</span></div>
+                </div>
+                
+                <div class="score-card majo-card" id="majoScoreCard">
+                    <h4>Skor Majo</h4>
+                    <div>Tertinggi: <span id="majoHighScore">0</span></div>
+                    <div>Peringkat: <span id="majoRank">-</span></div>
+                </div>
+            </div>
+            <div class="status-badge" id="dataStatusBadge">Memuat...</div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tab active" data-tab="dino">Leaderboard Dino</div>
+            <div class="tab" data-tab="majo">Leaderboard Majo</div>
+        </div>
+
+        <!-- Timer Refresh -->
+        <div class="timer-container">
+            <div class="refresh-timer" id="refreshTimer">
+                <i class="fas fa-clock"></i> <span id="timerText">Memuat...</span>
+            </div>
+            <i class="fas fa-sync-alt refresh-icon" id="refreshIcon"></i>
+        </div>
+        <div class="update-info" id="updateInfo">
+            Terakhir diperbarui: -
+        </div>
+
+        <!-- Leaderboard Dino -->
+        <div class="leaderboard-section active" id="dinoLeaderboard">
+            <div class="leaderboard-card">
+                <h2><i class="fas fa-skating" style="color: var(--dino-color);"></i> 5 Pemain Teratas Dino</h2>
+                <div id="dinoLeaderboardList">
+                    <p>Memuat leaderboard Dino...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Majo -->
+        <div class="leaderboard-section" id="majoLeaderboard">
+            <div class="leaderboard-card">
+                <h2><i class="fas fa-hat-wizard" style="color: var(--majo-color);"></i> 5 Pemain Teratas Majo</h2>
+                <div id="majoLeaderboardList">
+                    <p>Memuat leaderboard Majo...</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="window.location.href='index.html'">
+            Kembali ke Menu
+        </button>
     </div>
 
     <script type="module">
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-        import { getFirestore, query, collection, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-        import { app } from '../firebase-config.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            query, 
+            orderBy, 
+            limit, 
+            getDocs,
+            doc,
+            getDoc,
+            where
+        } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+            authDomain: "luzuno-web.firebaseapp.com",
+            projectId: "luzuno-web",
+            storageBucket: "luzuno-web.appspot.com",
+            messagingSenderId: "728661935868",
+            appId: "1:728661935868:web:859ebff3a63b1210acb979"
+        };
+
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const leaderboardList = document.getElementById('leaderboardList');
 
-        // Tampilkan leaderboard
-        async function loadLeaderboard() {
-            leaderboardList.innerHTML = '';
+        // Konstanta untuk cache
+        const CACHE_PREFIX = 'luzuno_leaderboard_';
+        const CACHE_EXPIRY_DAYS = 2; // Data akan dianggap kadaluarsa setelah 2 hari
+        const UPDATE_COOLDOWN_MINUTES = 10; // Cooldown tombol update 10 menit
+        const TIMER_UPDATE_INTERVAL = 1000; // Update timer setiap 1 detik
 
+        // Elemen DOM
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const userWordsDisplay = document.getElementById('userWords');
+        const dinoHighScoreDisplay = document.getElementById('dinoHighScore');
+        const majoHighScoreDisplay = document.getElementById('majoHighScore');
+        const dinoRankDisplay = document.getElementById('dinoRank');
+        const majoRankDisplay = document.getElementById('majoRank');
+        const dinoLeaderboardList = document.getElementById('dinoLeaderboardList');
+        const majoLeaderboardList = document.getElementById('majoLeaderboardList');
+        const tabs = document.querySelectorAll('.tab');
+        const dinoLeaderboardSection = document.getElementById('dinoLeaderboard');
+        const majoLeaderboardSection = document.getElementById('majoLeaderboard');
+        const refreshIcon = document.getElementById('refreshIcon');
+        const timerText = document.getElementById('timerText');
+        const updateInfo = document.getElementById('updateInfo');
+        const dataStatusBadge = document.getElementById('dataStatusBadge');
+        const dinoScoreCard = document.getElementById('dinoScoreCard');
+        const majoScoreCard = document.getElementById('majoScoreCard');
+
+        // Variabel state
+        let currentUser = null;
+        let lastUpdateTime = null;
+        let lastRefreshTime = localStorage.getItem('lastRefreshTime') ? parseInt(localStorage.getItem('lastRefreshTime')) : 0;
+        let timerInterval = null;
+        let isUsingCachedData = false;
+
+        // Fungsi untuk menyimpan data ke cache
+        function saveToCache(key, data) {
+            const cacheData = {
+                timestamp: Date.now(),
+                data: data
+            };
+            localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(cacheData));
+        }
+
+        // Fungsi untuk mengambil data dari cache
+        function getFromCache(key) {
+            const cachedItem = localStorage.getItem(CACHE_PREFIX + key);
+            if (!cachedItem) return null;
+            
             try {
-                const q = query(collection(db, 'scores'), orderBy('score', 'desc'), limit(10));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    leaderboardList.innerHTML = '<p>Tidak ada data skor.</p>';
-                    return;
-                }
-
-                querySnapshot.forEach((doc, index) => {
-                    const data = doc.data();
-                    leaderboardList.innerHTML += `
-                        <div class="leaderboard-item">
-                            <span class="rank">${index + 1}</span>
-                            <span class="name">${data.name}</span>
-                            <span class="score">${data.score}</span>
-                        </div>
-                    `;
-                });
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
-                leaderboardList.innerHTML = '<p>Gagal memuat leaderboard.</p>';
+                const parsedData = JSON.parse(cachedItem);
+                return parsedData;
+            } catch (e) {
+                console.error("Error parsing cached data:", e);
+                return null;
             }
         }
 
-        // Muat leaderboard saat halaman dimuat
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loadLeaderboard();
+        // Fungsi untuk mengecek apakah cache sudah kadaluarsa
+        function isCacheExpired(cachedData) {
+            if (!cachedData || !cachedData.timestamp) return true;
+            
+            const cacheAgeInDays = (Date.now() - cachedData.timestamp) / (1000 * 60 * 60 * 24);
+            return cacheAgeInDays > CACHE_EXPIRY_DAYS;
+        }
+
+        // Fungsi untuk membuat link profil
+        function createProfileLink(userId) {
+            return `../../users.html?id=${userId}`;
+        }
+
+        // Fungsi untuk format tanggal/waktu
+        function formatDateTime(timestamp) {
+            if (!timestamp) return '-';
+            
+            const date = new Date(timestamp);
+            return date.toLocaleString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Fungsi untuk format waktu countdown
+        function formatCountdown(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}m ${remainingSeconds}s`;
+        }
+
+        // Fungsi untuk update UI status data
+        function updateDataStatusUI(isCached) {
+            isUsingCachedData = isCached;
+            
+            if (isCached) {
+                dataStatusBadge.textContent = "Data Cache";
+                dataStatusBadge.className = "status-badge status-cached";
             } else {
-                window.location.href = 'login.html'; // Redirect ke halaman login jika belum login
+                dataStatusBadge.textContent = "Data Terbaru";
+                dataStatusBadge.className = "status-badge status-fresh";
             }
-        });
+        }
+
+        // Fungsi untuk update timer
+        function updateTimer() {
+            const now = Date.now();
+            const timeSinceLastRefresh = now - lastRefreshTime;
+            const cooldownMs = UPDATE_COOLDOWN_MINUTES * 60 * 1000;
+            const remainingTime = Math.max(0, cooldownMs - timeSinceLastRefresh);
+            const remainingSeconds = Math.floor(remainingTime / 1000);
+
+            if (remainingTime > 0) {
+                // Masih dalam cooldown
+                timerText.textContent = `Dapat diperbarui dalam ${formatCountdown(remainingSeconds)}`;
+                refreshIcon.classList.add('disabled');
+            } else {
+                // Sudah bisa refresh
+                timerText.textContent = "Data dapat diperbarui";
+                refreshIcon.classList.remove('disabled');
+            }
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            // Hentikan timer sebelumnya jika ada
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            // Update timer segera
+            updateTimer();
+            
+            // Set interval untuk update timer setiap detik
+            timerInterval = setInterval(updateTimer, TIMER_UPDATE_INTERVAL);
+        }
+
+        // Fungsi untuk handle refresh
+        async function handleRefresh() {
+            const now = Date.now();
+            const timeSinceLastRefresh = now - lastRefreshTime;
+            const cooldownMs = UPDATE_COOLDOWN_MINUTES * 60 * 1000;
+            
+            if (timeSinceLastRefresh < cooldownMs) {
+                // Masih dalam cooldown
+                return;
+            }
+            
+            // Update last refresh time
+            lastRefreshTime = now;
+            localStorage.setItem('lastRefreshTime', lastRefreshTime.toString());
+            
+            // Tampilkan loading state
+            refreshIcon.classList.add('fa-spin');
+            
+            // Muat ulang data dengan force refresh
+            await loadData(currentUser, true);
+            
+            // Hentikan animasi loading
+            refreshIcon.classList.remove('fa-spin');
+            
+            // Mulai timer baru
+            startTimer();
+        }
+
+        // Fungsi untuk switch tab
+        function setupTabs() {
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active tab UI
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Tampilkan section yang sesuai
+                    const tabName = tab.getAttribute('data-tab');
+                    dinoLeaderboardSection.classList.remove('active');
+                    majoLeaderboardSection.classList.remove('active');
+                    
+                    if (tabName === 'dino') {
+                        dinoLeaderboardSection.classList.add('active');
+                        // Sembunyikan skor Majo di profil
+                        majoScoreCard.style.display = 'none';
+                        dinoScoreCard.style.display = 'block';
+                    } else {
+                        majoLeaderboardSection.classList.add('active');
+                        // Sembunyikan skor Dino di profil
+                        dinoScoreCard.style.display = 'none';
+                        majoScoreCard.style.display = 'block';
+                    }
+                });
+            });
+        }
+
+        // Fungsi utama untuk memuat data
+        async function loadData(user, forceRefresh = false) {
+            currentUser = user;
+            try {
+                // 1. Coba ambil dari cache jika tidak force refresh
+                const cacheKey = `user_${user.uid}`;
+                const cachedUserData = getFromCache(cacheKey);
+                
+                let userData;
+                if (!forceRefresh && cachedUserData && !isCacheExpired(cachedUserData)) {
+                    // Gunakan data cache
+                    userData = cachedUserData.data;
+                    updateDataStatusUI(true);
+                } else {
+                    // Ambil data baru dari Firestore
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    userData = userDoc.exists() ? { id: userDoc.id, ...userDoc.data() } : {};
+                    saveToCache(cacheKey, userData);
+                    updateDataStatusUI(false);
+                }
+                
+                // 2. Render profil
+                renderProfile(userData);
+                
+                // 3. Ambil leaderboard Dino dan Majo
+                await Promise.all([
+                    fetchLeaderboard('dino', forceRefresh),
+                    fetchLeaderboard('majo', forceRefresh)
+                ]);
+                
+                // 4. Hitung peringkat untuk kedua game
+                if (userData.dinoHighScore > 0) {
+                    await calculateUserRank(user.uid, userData.dinoHighScore, 'dino', forceRefresh);
+                }
+                if (userData.high_score_majo > 0) {
+                    await calculateUserRank(user.uid, userData.high_score_majo, 'majo', forceRefresh);
+                }
+
+                // Update last update time
+                lastUpdateTime = Date.now();
+                updateInfo.textContent = `Terakhir diperbarui: ${formatDateTime(lastUpdateTime)}`;
+                
+            } catch (error) {
+                console.error("Error:", error);
+                dinoLeaderboardList.innerHTML = '<p>Gagal memuat leaderboard Dino.</p>';
+                majoLeaderboardList.innerHTML = '<p>Gagal memuat leaderboard Majo.</p>';
+            }
+        }
+
+        // Ambil leaderboard dari Firebase atau cache
+        async function fetchLeaderboard(gameType, forceRefresh = false) {
+            try {
+                const scoreField = gameType === 'dino' ? 'dinoHighScore' : 'high_score_majo';
+                const targetElement = gameType === 'dino' ? dinoLeaderboardList : majoLeaderboardList;
+                const cacheKey = `leaderboard_${gameType}`;
+                
+                // Cek cache terlebih dahulu jika tidak force refresh
+                const cachedLeaderboard = getFromCache(cacheKey);
+                
+                let leaderboardData;
+                if (!forceRefresh && cachedLeaderboard && !isCacheExpired(cachedLeaderboard)) {
+                    // Gunakan data dari cache
+                    leaderboardData = cachedLeaderboard.data;
+                    updateDataStatusUI(true);
+                } else {
+                    // Ambil data baru dari Firestore
+                    const leaderboardQuery = query(
+                        collection(db, 'users'),
+                        where(scoreField, '>', 0),
+                        orderBy(scoreField, 'desc'),
+                        limit(5)
+                    );
+                    
+                    const leaderboardSnapshot = await getDocs(leaderboardQuery);
+                    leaderboardData = [];
+                    
+                    // Ambil data untuk setiap user
+                    for (const doc of leaderboardSnapshot.docs) {
+                        const userData = doc.data();
+                        leaderboardData.push({
+                            id: doc.id,
+                            name: userData.username || userData.name || 'Anonymous',
+                            avatar: userData.avatar || 'assets/images/default-avatar.png',
+                            score: userData[scoreField] || 0,
+                            words: userData.words?.[0] || 'Tidak ada kata-kata'
+                        });
+                    }
+                    
+                    // Simpan ke cache
+                    saveToCache(cacheKey, leaderboardData);
+                    updateDataStatusUI(false);
+                }
+                
+                // Render leaderboard
+                renderLeaderboard(leaderboardData, gameType, targetElement);
+                
+            } catch (error) {
+                console.error(`Error fetching ${gameType} leaderboard:`, error);
+                const targetElement = gameType === 'dino' ? dinoLeaderboardList : majoLeaderboardList;
+                targetElement.innerHTML = `<p>Gagal memuat leaderboard ${gameType}.</p>`;
+            }
+        }
+
+        // Render profil
+        function renderProfile(userData) {
+            profileName.textContent = userData.username || userData.name || "Pengguna";
+            userWordsDisplay.textContent = userData.words?.[0] || "Tidak ada kata-kata";
+            dinoHighScoreDisplay.textContent = userData.dinoHighScore || 0;
+            majoHighScoreDisplay.textContent = userData.high_score_majo || 0;
+            
+            if (userData.avatar) {
+                profileAvatar.src = userData.avatar;
+            }
+            
+            // Default: tampilkan skor Dino (sesuai tab aktif pertama)
+            majoScoreCard.style.display = 'none';
+            dinoScoreCard.style.display = 'block';
+        }
+
+        // Render leaderboard dengan link profil
+        function renderLeaderboard(players, gameType, targetElement) {
+            if (!players || players.length === 0) {
+                targetElement.innerHTML = '<p>Belum ada data skor.</p>';
+                return;
+            }
+
+            let leaderboardHTML = '';
+            
+            players.forEach((player, index) => {
+                const rank = index + 1;
+                const isCurrentUser = player.id === currentUser?.uid;
+                const profileLink = createProfileLink(player.id);
+                
+                leaderboardHTML += `
+                    <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}" 
+                         onclick="window.location.href='${profileLink}'">
+                        <div class="rank rank-${rank <= 3 ? rank : 'other'}">
+                            ${rank}
+                            ${rank === 1 ? '<i class="fas fa-crown crown-icon"></i>' : ''}
+                        </div>
+                        <img src="${player.avatar}" 
+                             alt="${player.name}" 
+                             class="player-avatar">
+                        <div class="player-info">
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-words">"${player.words}"</div>
+                        </div>
+                        <div class="score-container">
+                            <div class="player-score ${gameType === 'dino' ? 'dino-score' : 'majo-score'}">
+                                ${player.score}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            targetElement.innerHTML = leaderboardHTML;
+        }
+
+        // Hitung peringkat user
+        async function calculateUserRank(userId, userScore, gameType, forceRefresh = false) {
+            try {
+                const scoreField = gameType === 'dino' ? 'dinoHighScore' : 'high_score_majo';
+                const rankDisplay = gameType === 'dino' ? dinoRankDisplay : majoRankDisplay;
+                const cacheKey = `user_rank_${gameType}_${userId}`;
+                
+                // Cek cache terlebih dahulu jika tidak force refresh
+                const cachedRank = getFromCache(cacheKey);
+                
+                let rank;
+                if (!forceRefresh && cachedRank && !isCacheExpired(cachedRank)) {
+                    // Gunakan rank dari cache
+                    rank = cachedRank.data;
+                    updateDataStatusUI(true);
+                } else {
+                    // Hitung rank baru dari Firestore
+                    const rankQuery = query(
+                        collection(db, 'users'),
+                        where(scoreField, '>', userScore),
+                        orderBy(scoreField, 'desc')
+                    );
+                    
+                    const snapshot = await getDocs(rankQuery);
+                    rank = snapshot.size + 1;
+                    
+                    // Simpan ke cache
+                    saveToCache(cacheKey, rank);
+                    updateDataStatusUI(false);
+                }
+                
+                rankDisplay.textContent = rank;
+            } catch (error) {
+                console.error(`Error calculating ${gameType} rank:`, error);
+                const rankDisplay = gameType === 'dino' ? dinoRankDisplay : majoRankDisplay;
+                rankDisplay.textContent = '-';
+            }
+        }
+
+        // Setup refresh icon
+        function setupRefreshIcon() {
+            refreshIcon.addEventListener('click', async () => {
+                if (refreshIcon.classList.contains('disabled')) return;
+                await handleRefresh();
+            });
+        }
+
+        // Inisialisasi
+        function init() {
+            setupTabs();
+            setupRefreshIcon();
+            startTimer();
+            
+            // Pantau status auth
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    loadData(user);
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+
+        init();
     </script>
 </body>
 </html>
