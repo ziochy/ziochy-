@@ -3,18 +3,358 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pesan Pemberitahuan</title>
+  <title>Pesan Pemberitahuan - Luzuno</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-dark: #bb2d3b;
+      --secondary-color: #6c757d;
+      --accent-color: #fd79a8;
+      --text-color: #212529;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --error-color: #dc3545;
+      --info-color: #17a2b8;
+      --penting-color: #e83e8c;
+      --event-color: #6f42c1;
+      --personal-color: #20c997;
+      --global-color: #0dcaf0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-color);
+      margin: 0;
+      padding: 0;
+      color: var(--text-color);
+      min-height: 100vh;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      color: var(--primary-color) !important;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 i {
+      font-size: 1.5rem;
+    }
+
+    #status {
+      font-size: 0.9rem;
+      color: #4361ee;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 24px;
+    }
+
+    #status i {
+      font-size: 1.1rem;
+    }
+
+    .refresh-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: absolute;
+      right: 0;
+    }
+
+    .refresh-btn:hover {
+      background: var(--primary-dark);
+      transform: rotate(180deg);
+    }
+
+    .refresh-btn:active {
+      transform: scale(0.95) rotate(180deg);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-bottom: 3px solid transparent;
+      font-size: 0.95rem;
+    }
+
+    .tab.active {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+
+    .tab i {
+      margin-right: 8px;
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 4px solid rgba(220, 53, 69, 0.2);
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #notificationsList {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .notification-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--primary-color);
+      position: relative;
+    }
+
+    .notification-card.unread {
+      background-color: #f8f9fa;
+      border-left: 4px solid var(--success-color);
+    }
+
+    .notification-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .notification-header i {
+      font-size: 1.3rem;
+    }
+
+    .notification-header i.info {
+      color: var(--info-color);
+    }
+
+    .notification-header i.penting {
+      color: var(--penting-color);
+    }
+
+    .notification-header i.update {
+      color: var(--warning-color);
+    }
+
+    .notification-header i.event {
+      color: var(--event-color);
+    }
+
+    .notification-header i.answer {
+      color: var(--success-color);
+    }
+
+    .target-badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .target-badge.personal {
+      background-color: rgba(32, 201, 151, 0.1);
+      color: var(--personal-color);
+      border: 1px solid rgba(32, 201, 151, 0.3);
+    }
+
+    .target-badge.global {
+      background-color: rgba(13, 202, 240, 0.1);
+      color: var(--global-color);
+      border: 1px solid rgba(13, 202, 240, 0.3);
+    }
+
+    .notification-time {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+
+    .notification-content {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .notification-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .notification-link:hover {
+      text-decoration: underline;
+    }
+
+    .mark-read-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: #6c757d;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .mark-read-btn:hover {
+      color: var(--primary-color);
+    }
+
+    #emptyState {
+      text-align: center;
+      padding: 50px 20px;
+      color: #6c757d;
+      display: none;
+    }
+
+    #emptyState i {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+      color: var(--primary-color);
+    }
+
+    #emptyState p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .notification-card {
+        padding: 15px;
+      }
+      
+      .tab {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-bell"></i> Pemberitahuan</h1>
+      <button id="refreshBtn" class="refresh-btn" title="Perbarui">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+    </header>
+    
+    <div id="status">Memuat pemberitahuan...</div>
+    
+    <div class="tabs">
+      <div id="tabAll" class="tab active"><i class="fas fa-globe"></i> Semua</div>
+      <div id="tabPersonal" class="tab"><i class="fas fa-user"></i> Pribadi</div>
+    </div>
+    
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Memuat pemberitahuan...</p>
+    </div>
+    
+    <div id="emptyState">
+      <i class="far fa-bell-slash"></i>
+      <p>Tidak ada pemberitahuan</p>
+    </div>
+    
+    <div id="notificationsList"></div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
       authDomain: "luzuno-web.firebaseapp.com",
       projectId: "luzuno-web",
-      storageBucket: "luzuno-web.firebasestorage.app",
+      storageBucket: "luzuno-web.appspot.com",
       messagingSenderId: "728661935868",
       appId: "1:728661935868:web:859ebff3a63b1210acb979"
     };
@@ -24,7 +364,7 @@
     const auth = getAuth(app);
 
     // Elemen DOM
-    const pesanList = document.getElementById('pesanList');
+    const notificationsList = document.getElementById('notificationsList');
     const statusDiv = document.getElementById('status');
     const refreshBtn = document.getElementById('refreshBtn');
     const tabAll = document.getElementById('tabAll');
@@ -73,60 +413,100 @@
       }
     }
 
+    // Fungsi untuk menandai notifikasi sebagai dibaca
+    async function markAsRead(notificationId) {
+      try {
+        await updateDoc(doc(db, "pemberitahuan", notificationId), {
+          dibaca: true
+        });
+        
+        // Update data lokal
+        const notifIndex = notifications.findIndex(n => n.id === notificationId);
+        if (notifIndex !== -1) {
+          notifications[notifIndex].dibaca = true;
+          renderNotifications();
+        }
+      } catch (error) {
+        console.error("Error marking notification as read: ", error);
+      }
+    }
+
     // Fungsi untuk render notifikasi
-    function renderPesan() {
+    function renderNotifications() {
       const filteredNotif = filterNotifications();
       
       if (filteredNotif.length === 0) {
         emptyState.style.display = 'block';
-        pesanList.innerHTML = '';
+        notificationsList.innerHTML = '';
         return;
       }
       
       emptyState.style.display = 'none';
-      pesanList.innerHTML = '';
+      notificationsList.innerHTML = '';
       
       filteredNotif.forEach((item) => {
         const div = document.createElement('div');
-        div.className = "pesanCard";
+        div.className = `notification-card ${item.dibaca ? '' : 'unread'}`;
         const waktu = item.waktu;
         
         let icon = "fa-info-circle";
-        let badgeClass = "info";
+        let iconClass = "info";
         if (item.jenis === "penting") {
           icon = "fa-exclamation-circle";
-          badgeClass = "penting";
+          iconClass = "penting";
         } else if (item.jenis === "update") {
           icon = "fa-sync-alt";
-          badgeClass = "update";
+          iconClass = "update";
         } else if (item.jenis === "event") {
           icon = "fa-calendar-alt";
-          badgeClass = "event";
+          iconClass = "event";
+        } else if (item.jenis === "answer") {
+          icon = "fa-reply";
+          iconClass = "answer";
         }
         
         const targetBadge = item.target === 'user' ? 
           '<span class="target-badge personal"><i class="fas fa-user"></i> Pribadi</span>' : 
           '<span class="target-badge global"><i class="fas fa-users"></i> Global</span>';
         
+        let linkButton = '';
+        if (item.link) {
+          linkButton = `<a href="${item.link}" class="notification-link"><i class="fas fa-external-link-alt"></i> Lihat detail</a>`;
+        }
+        
         div.innerHTML = `
-          <div class="pesanHeader">
+          ${!item.dibaca ? `<button class="mark-read-btn" data-id="${item.id}"><i class="fas fa-check"></i> Tandai sudah dibaca</button>` : ''}
+          <div class="notification-header">
             <div class="badge-container">
-              <i class="fas ${icon} ${badgeClass}"></i>
+              <i class="fas ${icon} ${iconClass}"></i>
               ${targetBadge}
             </div>
-            <span class="waktu">${formatWaktu(waktu)}</span>
+            <span class="notification-time">${formatWaktu(waktu)}</span>
           </div>
-          <div class="pesanContent">
+          <div class="notification-content">
             <p>${item.pesan}</p>
+            ${linkButton}
           </div>
         `;
-        pesanList.appendChild(div);
+        
+        notificationsList.appendChild(div);
+        
+        // Tambahkan event listener untuk tombol mark as read
+        if (!item.dibaca) {
+          const markReadBtn = div.querySelector('.mark-read-btn');
+          if (markReadBtn) {
+            markReadBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              markAsRead(item.id);
+            });
+          }
+        }
       });
     }
 
     // Fungsi untuk memuat notifikasi
-    async function loadPesanDariServer() {
-      statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat pesan terbaru...';
+    async function loadNotifications() {
+      statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat pemberitahuan terbaru...';
       refreshBtn.style.display = 'flex';
       loadingIndicator.style.display = 'block';
       
@@ -145,11 +525,11 @@
         localStorage.setItem("cachePemberitahuan", JSON.stringify(notifications));
         localStorage.setItem("lastUpdateTime", Date.now());
         
-        renderPesan();
+        renderNotifications();
         statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Terakhir diperbarui: ' + new Date().toLocaleTimeString();
       } catch (error) {
         console.error(error);
-        statusDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Gagal memuat pesan terbaru';
+        statusDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Gagal memuat pemberitahuan terbaru';
         loadFromCache();
       } finally {
         refreshBtn.style.display = 'none';
@@ -173,7 +553,7 @@
             statusDiv.innerHTML = '<i class="fas fa-database"></i> Memuat dari cache';
           }
           
-          renderPesan();
+          renderNotifications();
         } catch {
           console.error("Cache korup.");
           statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Cache error';
@@ -187,7 +567,7 @@
     // Fungsi untuk menampilkan empty state
     function showEmptyState() {
       emptyState.style.display = 'block';
-      pesanList.innerHTML = '';
+      notificationsList.innerHTML = '';
     }
 
     // Event listener untuk tab
@@ -195,7 +575,7 @@
       activeTab = 'all';
       tabAll.classList.add('active');
       tabPersonal.classList.remove('active');
-      renderPesan();
+      renderNotifications();
     });
 
     tabPersonal.addEventListener('click', () => {
@@ -206,15 +586,15 @@
       activeTab = 'personal';
       tabAll.classList.remove('active');
       tabPersonal.classList.add('active');
-      renderPesan();
+      renderNotifications();
     });
 
     // Event listener untuk tombol refresh
-    refreshBtn.addEventListener('click', loadPesanDariServer);
+    refreshBtn.addEventListener('click', loadNotifications);
 
     // Inisialisasi saat pertama load
     window.addEventListener('load', () => {
-      refreshBtn.style.display = 'none'; // Sembunyikan tombol refresh awal
+      refreshBtn.style.display = 'none';
       
       onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -226,304 +606,10 @@
         }
         
         loadFromCache();
-        loadPesanDariServer();
+        loadNotifications();
       });
     });
 
   </script>
-
-  <style>
-    :root {
-      --primary-color: #6c5ce7;
-      --primary-dark: #5a4fd4;
-      --secondary-color: #a29bfe;
-      --accent-color: #fd79a8;
-      --text-color: #2d3436;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --shadow-color: rgba(0, 0, 0, 0.1);
-      --success-color: #00b894;
-      --warning-color: #fdcb6e;
-      --error-color: #d63031;
-      --info-color: #0984e3;
-      --penting-color: #e84393;
-      --event-color: #8c7ae6;
-      --personal-color: #00cec9;
-      --global-color: #74b9ff;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg-color);
-      margin: 0;
-      padding: 0;
-      color: var(--text-color);
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      position: relative;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: var(--primary-color);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    h1 i {
-      font-size: 1.2rem;
-    }
-
-    #status {
-      font-size: 0.8rem;
-      color: #666;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      min-height: 20px;
-    }
-
-    #status i {
-      font-size: 1rem;
-    }
-
-    .refresh-btn {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: none; /* Awalnya disembunyikan */
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: absolute;
-      right: 0;
-    }
-
-    .refresh-btn:hover {
-      background: var(--primary-dark);
-      transform: rotate(180deg);
-    }
-
-    .refresh-btn:active {
-      transform: scale(0.95) rotate(180deg);
-    }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid var(--light-gray);
-    }
-
-    .tab {
-      padding: 8px 16px;
-      border-radius: 8px 8px 0 0;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-      border-bottom: 3px solid transparent;
-    }
-
-    .tab.active {
-      background: rgba(108, 92, 231, 0.1);
-      color: var(--primary-color);
-      border-bottom-color: var(--primary-color);
-    }
-
-    .tab i {
-      margin-right: 5px;
-    }
-
-    #loading {
-      display: none;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(108, 92, 231, 0.2);
-      border-top-color: var(--primary-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 10px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    #pesanList {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .pesanCard {
-      background: var(--card-bg);
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px var(--shadow-color);
-      transition: all 0.3s ease;
-      border-left: 4px solid var(--primary-color);
-    }
-
-    .pesanCard:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    .pesanHeader {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .badge-container {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .pesanHeader i {
-      font-size: 1.2rem;
-    }
-
-    .pesanHeader i.info {
-      color: var(--info-color);
-    }
-
-    .pesanHeader i.penting {
-      color: var(--penting-color);
-    }
-
-    .pesanHeader i.update {
-      color: var(--warning-color);
-    }
-
-    .pesanHeader i.event {
-      color: var(--event-color);
-    }
-
-    .target-badge {
-      font-size: 0.7rem;
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-weight: 500;
-    }
-
-    .target-badge.personal {
-      background-color: rgba(0, 206, 201, 0.1);
-      color: var(--personal-color);
-      border: 1px solid rgba(0, 206, 201, 0.3);
-    }
-
-    .target-badge.global {
-      background-color: rgba(116, 185, 255, 0.1);
-      color: var(--global-color);
-      border: 1px solid rgba(116, 185, 255, 0.3);
-    }
-
-    .waktu {
-      font-size: 0.75rem;
-      color: #777;
-    }
-
-    .pesanContent p {
-      margin: 0;
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    #emptyState {
-      text-align: center;
-      padding: 40px 20px;
-      color: #777;
-      display: none;
-    }
-
-    #emptyState i {
-      font-size: 3rem;
-      margin-bottom: 15px;
-      opacity: 0.5;
-      color: var(--primary-color);
-    }
-
-    #emptyState p {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 15px;
-      }
-      
-      h1 {
-        font-size: 1.3rem;
-      }
-      
-      .pesanCard {
-        padding: 15px;
-      }
-      
-      .tab {
-        padding: 6px 12px;
-        font-size: 0.9rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1><i class="fas fa-bell"></i> Pemberitahuan</h1>
-      <button id="refreshBtn" class="refresh-btn" title="Perbarui">
-        <i class="fas fa-sync-alt"></i>
-      </button>
-    </header>
-    
-    <div id="status">Memuat...</div>
-    
-    <div class="tabs">
-      <div id="tabAll" class="tab active"><i class="fas fa-globe"></i> Semua</div>
-      <div id="tabPersonal" class="tab" style="display:none;"><i class="fas fa-user"></i> Pribadi</div>
-    </div>
-    
-    <div id="loading">
-      <div class="spinner"></div>
-      <p>Memuat pemberitahuan...</p>
-    </div>
-    
-    <div id="emptyState">
-      <i class="far fa-bell"></i>
-      <p>Tidak ada pemberitahuan</p>
-    </div>
-    
-    <div id="pesanList"></div>
-  </div>
 </body>
 </html>
