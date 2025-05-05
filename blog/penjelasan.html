@@ -3,332 +3,515 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Pembahasan Bahasa Jepang</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <title> Pembahasan Bahasa Jepang - Belajar Bahasa Jepang Secara Mendalam</title>
+    <meta name="description" content="Sumber belajar bahasa Jepang lengkap mulai dari dasar hingga menengah. Pelajari kanji, tata bahasa, dan kosakata bahasa Jepang.">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
 <style>
-   /* Reset CSS */
+/* === SIMPLIFIED CSS === */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Noto Sans JP', sans-serif; /* Font yang cocok untuk tema kanji */
+    font-family: 'Noto Sans JP', sans-serif;
 }
   
 body {
-    background-color: #ffffff; /* Latar belakang putih */
+    background-color: #f5f5f5;
     line-height: 1.6;
-    color: #333; /* Teks gelap untuk kontras */
+    color: #333;
+    padding-bottom: 60px;
 }
 
 header {
-    background-color: #e0e7ff; /* Abu-abu muda untuk header */
-    color: #333;
-    padding: 2rem;
+    background: #2c3e50;
+    color: white;
+    padding: 2rem 1rem;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
 }
 
-header::before {
-    content: "侍"; /* Kanji untuk Samurai */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 10rem;
-    opacity: 0.1;
-    color: rgba(0, 0, 0, 0.1);
-    pointer-events: none;
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
 }
 
+.header-content p {
+    font-size: 1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
     
 nav {
-    background-color: #bebebe; /* Hitam gelap untuk kontras */
-    padding: 1rem;
+    background: #34495e;
+    padding: 0.8rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 nav ul {
     list-style: none;
     display: flex;
     justify-content: center;
-    gap: 2rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-nav a::after {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #ffcc00; /* Warna emas untuk garis hover */
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
-nav a:hover::after {
-    transform: scaleX(1);
+    font-size: 0.95rem;
+    transition: opacity 0.3s;
 }
 
 nav a:hover {
-    color: #ffcc00; /* Warna emas untuk hover */
+    opacity: 0.8;
 }
 
 .content {
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 1.5rem auto;
     padding: 0 1rem;
 }
 
-.blog-card {
-    background: #f9f9f9; /* Abu-abu sangat muda untuk kartu */
-    border-radius: 15px;
-    padding: 2rem;
+.intro-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
     margin: 1.5rem 0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: center;
 }
 
-.blog-card::before {
-    content: "和"; /* Kanji untuk Harmoni */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 8rem;
-    opacity: 0.05;
-    color: rgba(0, 0, 0, 0.1);
-    pointer-events: none;
+.intro-section h2 {
+    color: #2c3e50;
+    margin-bottom: 0.8rem;
+    font-size: 1.5rem;
+}
+
+.intro-section p {
+    color: #555;
+    font-size: 1rem;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin: 1.5rem 0;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+    border: 1px solid #eee;
 }
 
 .blog-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.blog-card h3 {
+    color: #2c3e50;
+    margin-bottom: 0.6rem;
+    font-size: 1.1rem;
+}
+
+.blog-card p {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.btn-container {
+    margin-top: 0.8rem;
 }
 
 button {
-    background-color: #e0e7ff; /* Hitam gelap untuk tombol */
+    background: #3498db;
     color: white;
     border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 25px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
-    position: relative;
-    overflow: hidden;
-}
-
-button::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300%;
-    height: 300%;
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%) scale(0);
-    border-radius: 50%;
-    transition: transform 0.5s ease;
-}
-
-button:hover::after {
-    transform: translate(-50%, -50%) scale(1);
+    transition: background 0.3s;
+    font-size: 0.9rem;
+    width: 100%;
 }
 
 button:hover {
-    background-color: #555; /* Warna abu-abu yang lebih terang */
-    transform: scale(1.05);
+    background: #2980b9;
+}
+
+.btn {
+    color: white;
+    text-decoration: none;
+    display: block;
 }
 
 footer {
-    background-color: #e0e7ff; /* Hitam gelap untuk footer */
-    color: gray;
+    background: #2c3e50;
+    color: white;
     text-align: center;
     padding: 1rem;
     position: fixed;
     bottom: 0;
     width: 100%;
+    font-size: 0.9rem;
 }
 
-footer::before {
-    content: "風"; /* Kanji untuk Angin */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 5rem;
-    opacity: 0.1;
-    color: rgba(255, 255, 255, 0.3);
-    pointer-events: none;
+.back-to-top {
+    position: fixed;
+    bottom: 70px;
+    right: 15px;
+    background: #3498db;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+}
+
+.back-to-top:hover {
+    background: #2980b9;
 }
 
 @media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+    
     nav ul {
-        flex-direction: column;
-        text-align: center;
         gap: 1rem;
     }
     
-    .blog-card {
-        margin: 1rem;
+    h1 {
+        font-size: 1.5rem;
     }
-}
-
-/* Animasi Kustom */
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-}
-
-@keyframes kanji-float {
-    0% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(10deg); }
-    100% { transform: translateY(0px) rotate(0deg); }
-}
-
-h1 {
-    animation: float 3s ease-in-out infinite;
-}
-
-header::before, .blog-card::before, footer::before {
-    animation: kanji-float 6s ease-in-out infinite;
 }
 </style>
 </head>
 <body>
     <header>
-        <h1 class=" ">🇯🇵 Blog Pembahasan Bahasa Jepang 🇯🇵</h1>
-        <p>Belajar bahasa Jepang dengan mudah dan menyenangkan!</p>
+        <div class="header-content">
+            <h1>🇯🇵 Pembahasan Bahasa Jepang 🇯🇵</h1>
+            <p>Belajar bahasa Jepang dengan mudah dan menyenangkan mulai dari dasar hingga menengah!</p>
+        </div>
     </header>
 
     <nav>
         <ul>
-            <li><a href="../index.html">Beranda</a></li>
+            <li><a href="../index.html"><i class="fas fa-home"></i> Beranda</a></li>
         </ul>
     </nav>
 
     <div class="content">
-        <section class="animate__animated animate__fadeIn">
-            <h2>Selamat Datang!</h2>
-            <p>Ini adalah blog sederhana untuk mempelajari bahasa Jepang. Pilih topik untuk mulai kamu pelajari.</p>
+        <section class="intro-section animate__animated animate__fadeIn">
+            <h2>Selamat Datang di Sumber Belajar Bahasa Jepang!</h2>
+            <p>Temukan materi pembelajaran bahasa Jepang yang komprehensif dan terstruktur. Mulailah perjalanan belajar Anda dengan memilih topik yang ingin dipelajari dari koleksi materi kami.</p>
         </section>
 
-        <div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Aturan baca Bahasa Jepang</h3>
-            <p>Pelajari cara membaca bahasa Jepang.</p>
-            <button>
-                <a href="penjelasan/carabaca.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-        <div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Arti kono sono ano Bahasa Jepang</h3>
-            <p>Pelajari cara menugunakan kono sono ano dalam bahasa Jepang.</p>
-            <button>
-                <a href="penjelasan/kono.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-        <div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Arti kore sore are Bahasa Jepang</h3>
-            <p>Pelajari cara menugunakan kore sore are dalam bahasa Jepang.</p>
-            <button>
-                <a href="penjelasan/kore.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-        <div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Partikel wa dan no dalam Bahasa Jepang</h3>
-            <p>Arti partikel no dan wa dalam bahasa Jepang.</p>
-            <button>
-                <a href="penjelasan/wa.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-        
-           <div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Kata kerja kelompok 1</h3>
-            <p>Cara ubah bentuk kata kerja kelompok 1.</p>
-            <button>
-                <a href="penjelasan/bentuk1.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-        </div>
-           <div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Kata kerja kelompok 2</h3>
-            <p>Cara ubah bentuk kata kerja kelompok 2.</p>
-            <button>
-                <a href="penjelasan/bentuk2.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
+        <div class="blog-grid">
+            <div class="blog-card">
+                <h3>Aturan baca Bahasa Jepang</h3>
+                <p>Pelajari dasar-dasar cara membaca bahasa Jepang termasuk hiragana, katakana, dan kanji.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/carabaca.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+                        <div class="blog-card">
+                <h3>Struktur kalimat dalam Bahasa Jepang</h3>
+                <p>penjelasan perbedaan struktur kalimat dalam kalimat bahasa Jepang.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/struktur.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            <div class="blog-card">
+                <h3>Partikel wa dan no dalam Bahasa Jepang</h3>
+                <p>Pahami arti dan penggunaan partikel no dan wa dalam kalimat bahasa Jepang.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/wa.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+           
+            <div class="blog-card">
+                <h3>Arti kono sono ano Bahasa Jepang</h3>
+                <p>Pelajari cara menggunakan kono, sono, ano dalam percakapan bahasa Jepang sehari-hari.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/kono.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Arti kore sore are Bahasa Jepang</h3>
+                <p>Kuasi penggunaan kata tunjuk kore, sore, are dalam berbagai konteks kalimat.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/kore.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Dore, dono dalam bahasa jepang</h3>
+                <p>Pelajari perbedaan dan cara menggunakan dore dan dono dalam kalimat tanya.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/dore.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Ko-so-a-do dalam bahasa jepang</h3>
+                <p>Pelajari sistem penunjuk tempat dalam bahasa Jepang dengan kosoado.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/koko.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Ko-so-a-do lengkap dalam bahasa jepang</h3>
+                <p>Panduan komprehensif tentang seluruh sistem kata tunjuk kosoado.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/kosoa.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <h3>3 Kata kerja kelompok</h3>
+                <p>Klasifikasi kata kerja bahasa Jepang menjadi 3 kelompok utama.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/kelkatakerja.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Kata kerja kelompok 1</h3>
+                <p>Panduan perubahan bentuk kata kerja kelompok 1 (godan doushi).</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/bentuk1.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Kata kerja kelompok 2</h3>
+                <p>Panduan perubahan bentuk kata kerja kelompok 2 (ichidan doushi).</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/bentuk2.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Kata kerja kelompok 3</h3>
+                <p>Panduan perubahan bentuk kata kerja kelompok 3 (fukisoku doushi).</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/bentuk3.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Bentuk kata kerja dasar dalam bahasa jepang</h3>
+                <p>Macam-macam bentuk kata kerja dan penggunaannya dalam kalimat.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/bentuk kata kerja.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Jam dalam bahasa jepang</h3>
+                <p>Cara menyatakan waktu dalam bahasa Jepang dengan tepat.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/jam.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Cara menanyakan waktu dalam bahasa jepang</h3>
+                <p>Ekspresi yang digunakan untuk menanyakan waktu dalam berbagai situasi.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/menanyakan waktu.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Angka jepang</h3>
+                <p>Sistem bilangan dalam bahasa Jepang dari nol hingga jutaan.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/angkat.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Tingkat kesopanan Bahasa jepang</h3>
+                <p>Perbedaan tingkat bahasa: biasa (futsuu), sopan (teinei), dan kasar (kudaketa).</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/sopan.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Beberapa POLA KALIMAT bahasa jepang</h3>
+                <p>Pola kalimat kategori te, nai, ta, ru dan contoh penggunaannya.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/BK.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Fungsi kata benda</h3>
+                <p>Teknik mengubah kata kerja dan kata sifat menjadi kata benda.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/FKB.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Daftar kata keterangan</h3>
+                <p>Kumpulan kata keterangan (fukushi) yang sering digunakan beserta contoh.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/FKBD.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Kata kerja rareru</h3>
+                <p>Fungsi dan penggunaan bentuk pasif/penghormatan rareru.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/rareru.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>"O" dan "Go"</h3>
+                <p>Awalan kehormatan "o" dan "go" beserta aturan penggunaannya.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/ogo.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Te ageru</h3>
+                <p>Bentuk te ageru untuk menyatakan memberi/melakukan sesuatu untuk orang lain.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/ageru.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <h3>Te kureru dan te morau</h3>
+                <p>Perbedaan dan contoh penggunaan te kureru dan te morau.</p>
+                <div class="btn-container">
+                    <button>
+                        <a href="penjelasan/kuge.html" class="btn">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-           <div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Kata kerja kelompok 3</h3>
-            <p>Cara ubah bentuk kata kerja kelompok 3.</p>
-            <button>
-                <a href="penjelasan/bentuk3.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
+    
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
     </div>
-<div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Jam dalam bahasa jepang</h3>
-            <p>Pelajari cara menyatakan waktu.</p>
-            <button>
-                <a href="penjelasan/jam.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-    </div>
-<div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Dore, dono dalam bahasa jepang</h3>
-            <p>Pelajari cara mengunakan dore dan dono.</p>
-            <button>
-                <a href="penjelasan/dore.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-    </div>
-<div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>ko-so-a-do dalam bahasa jepang</h3>
-            <p>Pelajari cara menunjukan tempat dalam bahasa jepang.</p>
-            <button>
-                <a href="penjelasan/koko.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-    </div>
-<div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Cara menanyakan waktu dalam bahasa jepang</h3>
-            <p>Pelajari cara menanyakan waktu dalam bahasa jepang.</p>
-            <button>
-                <a href="penjelasan/menanyakan waktu.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-    </div>
-<div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Angka jepang</h3>
-            <p>Pelajari cara membaca angka dalam bahasa jepang.</p>
-            <button>
-                <a href="penjelasan/angkat.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-    </div>
-<div class="blog-card animate__animated animate__fadeInLeft">
-            <h3>Bentuk kata kerja dasar dalam bahasa jepang</h3>
-            <p>Pelajari macam bentuk kata kerja dalam bahasa jepang.</p>
-            <button>
-                <a href="penjelasan/bentuk kata kerja.html" class="btn">Baca Selengkapnya 🎌</a>
-            </button>
-        </div>
-    </div>
+    
     <footer>
-        <p>&copy; 2025 Blog Pembahasan Bahasa Jepang</p>
+        <div class="footer-content">
+            <p>&copy; 2025 Blog Pembahasan Bahasa Jepang. All Rights Reserved.</p>
+        </div>
     </footer>
+
+    <script>
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Card hover effect enhancement
+        const cards = document.querySelectorAll('.blog-card');
+        
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px)';
+                card.style.boxShadow = '0 12px 20px rgba(0,0,0,0.15)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
+            });
+        });
+    </script>
 </body>
 </html>
