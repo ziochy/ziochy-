@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belajar Katakana - Luzuno</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+  
+    
+    .katakana-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .katakana-table th, .katakana-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+   
+    .katakana-table th {
+      background-color: gray;
+      
+    }
+    .stroke-order img {
+      width: 100px;
+      margin: 10px;
+      transition: transform 0.3s ease;
+    }
+    .stroke-order img:hover {
+      transform: scale(1.1);
+    }
+    .quiz {
+      background-color: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .quiz button:hover {
+      background-color: #c0392b;
+    }
+    .quiz-options {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .quiz-options button {
+      padding: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .quiz-options button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  .white {
+    color: white;
+    
+  }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">Luzuno</h1>
+      <nav class="navbar">
+        <ul>
+          <li><a href="../index.html">Beranda</a></li>
+          <li><a href="hiragana.html">Hiragana</a></li>
+          <li><a href="katakana.html">Katakana</a></li>
+          <li><a href="kosakata-dasar.html">Kosakata Dasar</a></li>
+          <li><a href="canvas.html">Latihan Menulis</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content">
+    <div class="container">
+      <h1>Belajar Katakana</h1>
+      <p>Katakana adalah salah satu dari tiga sistem penulisan dalam bahasa Jepang. Katakana digunakan untuk menulis kata-kata asing, nama orang asing, dan onomatopoeia (kata tiruan bunyi).</p>
+
+      <h2>Tabel Katakana Lengkap</h2>
+      <p>Berikut adalah tabel Katakana yang terdiri dari 46 huruf dasar:</p>
+      <table class="katakana-table">
+        <color>
+          <tr class= "white">
+          <th>ア (a)</th>
+          <th>イ (i)</th>
+          <th>ウ (u)</th>
+          <th>エ (e)</th>
+          <th>オ (o)</th>
+        </tr>
+        </color>
+        <tr>
+          <td>カ (ka)</td>
+          <td>キ (ki)</td>
+          <td>ク (ku)</td>
+          <td>ケ (ke)</td>
+          <td>コ (ko)</td>
+        </tr>
+        <tr>
+          <td>サ (sa)</td>
+          <td>シ (shi)</td>
+          <td>ス (su)</td>
+          <td>セ (se)</td>
+          <td>ソ (so)</td>
+        </tr>
+        <tr>
+          <td>タ (ta)</td>
+          <td>チ (chi)</td>
+          <td>ツ (tsu)</td>
+          <td>テ (te)</td>
+          <td>ト (to)</td>
+        </tr>
+        <tr>
+          <td>ナ (na)</td>
+          <td>ニ (ni)</td>
+          <td>ヌ (nu)</td>
+          <td>ネ (ne)</td>
+          <td>ノ (no)</td>
+        </tr>
+        <tr>
+          <td>ハ (ha)</td>
+          <td>ヒ (hi)</td>
+          <td>フ (fu)</td>
+          <td>ヘ (he)</td>
+          <td>ホ (ho)</td>
+        </tr>
+        <tr>
+          <td>マ (ma)</td>
+          <td>ミ (mi)</td>
+          <td>ム (mu)</td>
+          <td>メ (me)</td>
+          <td>モ (mo)</td>
+        </tr>
+        <tr>
+          <td>ヤ (ya)</td>
+          <td>-</td>
+          <td>ユ (yu)</td>
+          <td>-</td>
+          <td>ヨ (yo)</td>
+        </tr>
+        <tr>
+          <td>ラ (ra)</td>
+          <td>リ (ri)</td>
+          <td>ル (ru)</td>
+          <td>レ (re)</td>
+          <td>ロ (ro)</td>
+        </tr>
+        <tr>
+          <td>ワ (wa)</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>ヲ (wo)</td>
+        </tr>
+        <tr>
+          <td>ン (n)</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+      </table>
+
+      <!-- Dakuon -->
+<h2>Dakuon (Tanda Vokal Berubah)</h2>
+<p>Dakuon adalah huruf Katakana yang memiliki tanda <strong>tenten (〃)</strong> atau <strong>maru (゜)</strong> yang mengubah pelafalannya.</p>
+<div style="display: flex; gap: 20px;">
+  <!-- Tabel Dakuon Bagian 1 -->
+  <table class="katakana-table">
+    <tr class= "white">
+      <th>Huruf</th>
+      <th>Romaji</th>
+    </tr>
+    <tr>
+      <td>ガ</td>
+      <td>ga</td>
+    </tr>
+    <tr>
+      <td>ギ</td>
+      <td>gi</td>
+    </tr>
+    <tr>
+      <td>グ</td>
+      <td>gu</td>
+    </tr>
+    <tr>
+      <td>ゲ</td>
+      <td>ge</td>
+    </tr>
+    <tr>
+      <td>ゴ</td>
+      <td>go</td>
+    </tr>
+    <tr>
+      <td>ザ</td>
+      <td>za</td>
+    </tr>
+    <tr>
+      <td>ジ</td>
+      <td>ji</td>
+    </tr>
+    <tr>
+      <td>ズ</td>
+      <td>zu</td>
+    </tr>
+    <tr>
+      <td>ゼ</td>
+      <td>ze</td>
+    </tr>
+    <tr>
+      <td>ゾ</td>
+      <td>zo</td>
+    </tr>
+  </table>
+
+  <!-- Tabel Dakuon Bagian 2 -->
+  <table class="katakana-table">
+    <tr class= "white">
+      <th>Huruf</th>
+      <th>Romaji</th>
+    </tr>
+    <tr>
+      <td>ダ</td>
+      <td>da</td>
+    </tr>
+    <tr>
+      <td>ヂ</td>
+      <td>ji</td>
+    </tr>
+    <tr>
+      <td>ヅ</td>
+      <td>zu</td>
+    </tr>
+    <tr>
+      <td>デ</td>
+      <td>de</td>
+    </tr>
+    <tr>
+      <td>ド</td>
+      <td>do</td>
+    </tr>
+    <tr>
+      <td>バ</td>
+      <td>ba</td>
+    </tr>
+    <tr>
+      <td>ビ</td>
+      <td>bi</td>
+    </tr>
+    <tr>
+      <td>ブ</td>
+      <td>bu</td>
+    </tr>
+    <tr>
+      <td>ベ</td>
+      <td>be</td>
+    </tr>
+    <tr>
+      <td>ボ</td>
+      <td>bo</td>
+    </tr>
+    <tr>
+      <td>パ</td>
+      <td>pa</td>
+    </tr>
+    <tr>
+      <td>ピ</td>
+      <td>pi</td>
+    </tr>
+    <tr>
+      <td>プ</td>
+      <td>pu</td>
+    </tr>
+    <tr>
+      <td>ペ</td>
+      <td>pe</td>
+    </tr>
+    <tr>
+      <td>ポ</td>
+      <td>po</td>
+    </tr>
+  </table>
+</div>
+      
+      <!-- Yōon -->
+      <h2>Yōon (Huruf Gabungan)</h2>
+      <p>Yōon adalah kombinasi huruf Katakana yang menggunakan huruf kecil (ャ, ュ, ョ) untuk menghasilkan suara gabungan.</p>
+      <table class="katakana-table">
+        <tr class= "white">
+          <th>Huruf</th>
+          <th>Romaji</th>
+          <th>Huruf</th>
+          <th>Romaji</th>
+          <th>Huruf</th>
+          <th>Romaji</th>
+        </tr>
+        <tr>
+          <td>キャ</td>
+          <td>kya</td>
+          <td>キュ</td>
+          <td>kyu</td>
+          <td>キョ</td>
+          <td>kyo</td>
+        </tr>
+        <tr>
+          <td>シャ</td>
+          <td>sha</td>
+          <td>シュ</td>
+          <td>shu</td>
+          <td>ショ</td>
+          <td>sho</td>
+        </tr>
+        <tr>
+          <td>チャ</td>
+          <td>cha</td>
+          <td>チュ</td>
+          <td>chu</td>
+          <td>チョ</td>
+          <td>cho</td>
+        </tr>
+        <tr>
+          <td>ニャ</td>
+          <td>nya</td>
+          <td>ニュ</td>
+          <td>nyu</td>
+          <td>ニョ</td>
+          <td>nyo</td>
+        </tr>
+        <tr>
+          <td>ヒャ</td>
+          <td>hya</td>
+          <td>ヒュ</td>
+          <td>hyu</td>
+          <td>ヒョ</td>
+          <td>hyo</td>
+        </tr>
+        <tr>
+          <td>ミャ</td>
+          <td>mya</td>
+          <td>ミュ</td>
+          <td>myu</td>
+          <td>ミョ</td>
+          <td>myo</td>
+        </tr>
+        <tr>
+         <td>リャ</td>
+          <td>rya</td>
+          <td>リュ</td>
+          <td>ryu</td>
+          <td>リョ</td>
+          <td>ryo</td>
+        </tr>
+        <tr>
+          <td>ギャ</td>
+          <td>gya</td>
+          <td>ギュ</td>
+          <td>gyu</td>
+          <td>ギョ</td>
+          <td>gyo</td>
+        </tr>
+        <tr>
+          <td>ジャ</td>
+          <td>ja</td>
+          <td>ジュ</td>
+          <td>ju</td>
+          <td>ジョ</td>
+          <td>jo</td>
+        </tr>
+        <tr>
+          <td>ビャ</td>
+          <td>bya</td>
+          <td>ビュ</td>
+          <td>byu</td>
+          <td>ビョ</td>
+          <td>byo</td>
+        </tr>
+        <tr>
+          <td>ピャ</td>
+          <td>pya</td>
+          <td>ピュ</td>
+          <td>pyu</td>
+          <td>ピョ</td>
+          <td>pyo</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+      <h2>Cara Menulis Katakana</h2>
+      <p>Setiap huruf Katakana memiliki urutan goresan yang benar. Biasanay garis horizontal ditulis terlebih dahulu baru vertikal. Berikut contoh cara menulis beberapa huruf:</p>
+      <div class="stroke-order">
+        <img src="../assets/images/katakana-a.gif" alt="Cara menulis ア">
+        <img src="../assets/images/katakana-ka.gif" alt="Cara menulis カ">
+        <img src="../assets/images/katakana-sa.gif" alt="Cara menulis サ">
+      </div>
+
+      <h2>Penggunaan Katakana</h2>
+      <p>Katakana digunakan dalam beberapa situasi:</p>
+      <ul>
+        <li>Menulis kata-kata asing (contoh: コーヒー - koohii, "kopi").</li>
+        <li>Menulis nama orang asing (contoh: ジョン - Jon, "John").</li>
+        <li>Menulis onomatopoeia (contoh: ドキドキ - dokidoki, "degup jantung").</li>
+      </ul>
+
+      <h2>Latihan Interaktif</h2>
+      <div class="quiz">
+        <p><strong>Latihan:</strong> Pilih huruf Katakana yang sesuai dengan romaji berikut:</p>
+        <p id="question"></p>
+        <div class="quiz-options" id="options"></div>
+        <button onclick="generateQuestion()">Acak Lagi</button>
+        <p class="result" id="result"></p>
+      </div>
+
+      <h2>Tips Menghafal Katakana</h2>
+      <ul>
+        <li>Gunakan flashcard untuk menghafal huruf.</li>
+        <li>Latihan menulis setiap hari.</li>
+        <li>Gunakan aplikasi belajar Katakana.</li>
+      </ul>
+
+      
+       
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Luzuno. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const katakanaData = [
+      // Katakana Dasar
+      { character: 'ア', romaji: 'a' },
+      { character: 'イ', romaji: 'i' },
+      { character: 'ウ', romaji: 'u' },
+      { character: 'エ', romaji: 'e' },
+      { character: 'オ', romaji: 'o' },
+      { character: 'カ', romaji: 'ka' },
+      { character: 'キ', romaji: 'ki' },
+      { character: 'ク', romaji: 'ku' },
+      { character: 'ケ', romaji: 'ke' },
+      { character: 'コ', romaji: 'ko' },
+      { character: 'サ', romaji: 'sa' },
+      { character: 'シ', romaji: 'shi' },
+      { character: 'ス', romaji: 'su' },
+      { character: 'セ', romaji: 'se' },
+      { character: 'ソ', romaji: 'so' },
+      { character: 'タ', romaji: 'ta' },
+      { character: 'チ', romaji: 'chi' },
+      { character: 'ツ', romaji: 'tsu' },
+      { character: 'テ', romaji: 'te' },
+      { character: 'ト', romaji: 'to' },
+      { character: 'ナ', romaji: 'na' },
+      { character: 'ニ', romaji: 'ni' },
+      { character: 'ヌ', romaji: 'nu' },
+      { character: 'ネ', romaji: 'ne' },
+      { character: 'ノ', romaji: 'no' },
+      { character: 'ハ', romaji: 'ha' },
+      { character: 'ヒ', romaji: 'hi' },
+      { character: 'フ', romaji: 'fu' },
+      { character: 'ヘ', romaji: 'he' },
+      { character: 'ホ', romaji: 'ho' },
+      { character: 'マ', romaji: 'ma' },
+      { character: 'ミ', romaji: 'mi' },
+      { character: 'ム', romaji: 'mu' },
+      { character: 'メ', romaji: 'me' },
+      { character: 'モ', romaji: 'mo' },
+      { character: 'ヤ', romaji: 'ya' },
+      { character: 'ユ', romaji: 'yu' },
+      { character: 'ヨ', romaji: 'yo' },
+      { character: 'ラ', romaji: 'ra' },
+      { character: 'リ', romaji: 'ri' },
+      { character: 'ル', romaji: 'ru' },
+      { character: 'レ', romaji: 're' },
+      { character: 'ロ', romaji: 'ro' },
+      { character: 'ワ', romaji: 'wa' },
+      { character: 'ヲ', romaji: 'wo' },
+      { character: 'ン', romaji: 'n' },
+
+      // Dakuon
+      { character: 'ガ', romaji: 'ga' },
+      { character: 'ギ', romaji: 'gi' },
+      { character: 'グ', romaji: 'gu' },
+      { character: 'ゲ', romaji: 'ge' },
+      { character: 'ゴ', romaji: 'go' },
+      { character: 'ザ', romaji: 'za' },
+      { character: 'ジ', romaji: 'ji' },
+      { character: 'ズ', romaji: 'zu' },
+      { character: 'ゼ', romaji: 'ze' },
+      { character: 'ゾ', romaji: 'zo' },
+      { character: 'ダ', romaji: 'da' },
+      { character: 'ヂ', romaji: 'ji' },
+      { character: 'ヅ', romaji: 'zu' },
+      { character: 'デ', romaji: 'de' },
+      { character: 'ド', romaji: 'do' },
+      { character: 'バ', romaji: 'ba' },
+      { character: 'ビ', romaji: 'bi' },
+      { character: 'ブ', romaji: 'bu' },
+      { character: 'ベ', romaji: 'be' },
+      { character: 'ボ', romaji: 'bo' },
+      { character: 'パ', romaji: 'pa' },
+      { character: 'ピ', romaji: 'pi' },
+      { character: 'プ', romaji: 'pu' },
+      { character: 'ペ', romaji: 'pe' },
+      { character: 'ポ', romaji: 'po' },
+
+      // Yōon
+      { character: 'キャ', romaji: 'kya' },
+      { character: 'キュ', romaji: 'kyu' },
+      { character: 'キョ', romaji: 'kyo' },
+      { character: 'シャ', romaji: 'sha' },
+      { character: 'シュ', romaji: 'shu' },
+      { character: 'ショ', romaji: 'sho' },
+      { character: 'チャ', romaji: 'cha' },
+      { character: 'チュ', romaji: 'chu' },
+      { character: 'チョ', romaji: 'cho' },
+      { character: 'ニャ', romaji: 'nya' },
+      { character: 'ニュ', romaji: 'nyu' },
+      { character: 'ニョ', romaji: 'nyo' },
+      { character: 'ヒャ', romaji: 'hya' },
+      { character: 'ヒュ', romaji: 'hyu' },
+      { character: 'ヒョ', romaji: 'hyo' },
+      { character: 'ミャ', romaji: 'mya' },
+      { character: 'ミュ', romaji: 'myu' },
+      { character: 'ミョ', romaji: 'myo' },
+      { character: 'リャ', romaji: 'rya' },
+      { character: 'リュ', romaji: 'ryu' },
+      { character: 'リョ', romaji: 'ryo' },
+      { character: 'ギャ', romaji: 'gya' },
+      { character: 'ギュ', romaji: 'gyu' },
+      { character: 'ギョ', romaji: 'gyo' },
+      { character: 'ジャ', romaji: 'ja' },
+      { character: 'ジュ', romaji: 'ju' },
+      { character: 'ジョ', romaji: 'jo' },
+      { character: 'ビャ', romaji: 'bya' },
+      { character: 'ビュ', romaji: 'byu' },
+      { character: 'ビョ', romaji: 'byo' },
+      { character: 'ピャ', romaji: 'pya' },
+      { character: 'ピュ', romaji: 'pyu' },
+      { character: 'ピョ', romaji: 'pyo' },
+
+      // Katakana Tambahan
+      { character: 'ウィ', romaji: 'wi' },
+      { character: 'ウェ', romaji: 'we' },
+      { character: 'ウォ', romaji: 'wo' },
+      { character: 'ヴァ', romaji: 'va' },
+      { character: 'ヴィ', romaji: 'vi' },
+      { character: 'ヴ', romaji: 'vu' },
+      { character: 'ヴェ', romaji: 've' },
+      { character: 'ヴォ', romaji: 'vo' },
+      { character: 'ファ', romaji: 'fa' },
+      { character: 'フィ', romaji: 'fi' },
+      { character: 'フェ', romaji: 'fe' },
+      { character: 'フォ', romaji: 'fo' },
+      { character: 'ティ', romaji: 'ti' },
+      { character: 'トゥ', romaji: 'tu' },
+      { character: 'ディ', romaji: 'di' },
+      { character: 'ドゥ', romaji: 'du' },
+    ];
+
+    let currentQuestion;
+
+    function generateQuestion() {
+      const randomIndex = Math.floor(Math.random() * katakanaData.length);
+      currentQuestion = katakanaData[randomIndex];
+
+      document.getElementById('question').innerText = `Romaji: ${currentQuestion.romaji}`;
+
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+
+      const shuffledData = [...katakanaData].sort(() => Math.random() - 0.5).slice(0, 4);
+      if (!shuffledData.includes(currentQuestion)) {
+        shuffledData[Math.floor(Math.random() * 4)] = currentQuestion;
+      }
+
+      shuffledData.forEach(item => {
+        const button = document.createElement('button');
+        button.innerText = item.character;
+        button.onclick = () => checkAnswer(item.character);
+        options.appendChild(button);
+      });
+
+      document.getElementById('result').innerText = '';
+    }
+
+    function checkAnswer(selectedCharacter) {
+      const result = document.getElementById('result');
+      if (selectedCharacter === currentQuestion.character) {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = `Salah! Jawaban yang benar adalah ${currentQuestion.character}.`;
+        result.style.color = 'red';
+      }
+    }
+
+    // Generate first question on page load
+    window.onload = generateQuestion;
+  </script>
+</body>
+</html>

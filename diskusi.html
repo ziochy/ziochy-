@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diskusi Bahasa Jepang - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+       <!-- Theme Toggle Button -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-palette"></i>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="chat-header">
+            <div class="group-info">
+                <div class="group-avatar">
+                    <img src="assets/images/pp.png" alt="Group Avatar">
+                </div>
+                <div class="group-meta">
+                    <span class="group-name">LUZUNO</span>
+                    <span class="group-status">youkoso ningen</span>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+               
+                <button class="header-btn" id="menuBtn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="chat-main">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">Anggota Grup</h3>
+                    <button class="header-btn" id="closeSidebar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="search-input" id="memberSearch" placeholder="Cari anggota...">
+                </div>
+                
+                <div class="member-list" id="memberList">
+                    <!-- Members will be loaded here -->
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="messages-container" id="messages">
+                    <!-- Older messages button will be added here -->
+                    <!-- Messages will be loaded here -->
+                </div>
+                
+                <!-- Message Input with Reply Feature -->
+                <div class="message-input-container" id="messageInputContainer">
+                    <div class="reply-preview" id="replyPreview" style="display: none;">
+                        <div class="reply-preview-content">
+                            <strong id="replyingTo">Membalas</strong>: <span id="replyContent"></span>
+                        </div>
+                        <button class="cancel-reply" id="cancelReply">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="input-area">
+                        <div class="input-actions">
+                            <button class="input-btn" id="emojiBtn">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button class="input-btn" id="attachmentBtn">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                        </div>
+                        
+                        <textarea class="message-input" id="messageInput" placeholder="Tulis pesan..." rows="1"></textarea>
+                        
+                        <button class="send-btn" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation (Mobile Only) -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="latihan.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Kyousai</span>
+            </a>
+            <a href="diskusi.html" class="nav-item active">
+                <i class="fas fa-comments"></i>
+                <span>Chatto</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Purofiiru</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-functions-compat.js"></script>
+
+<script>
+// Enhanced Input Features with better UX
+function initInputFeatures() {
+    const emojiBtn = document.getElementById('emojiBtn');
+    const attachmentBtn = document.getElementById('attachmentBtn');
+    const messageInput = document.getElementById('messageInput');
+    const inputArea = document.querySelector('.input-area');
+    
+    // Create emoji picker
+    const emojiPicker = document.createElement('div');
+    emojiPicker.className = 'emoji-picker';
+    
+    // Popular emoji categories
+    const emojiCategories = {
+    "にがおえ (Wajah)": ['😊', '😂', '😆', '🥹', '😅', '😳', '😢', '😭', '😠', '🥰'],
+    "ジェスチャー (Gerakan Tangan)": ['🙏', '👋', '👍', '✌️', '🤞', '👏', '🤙', '🫶', '🙌', '🫰'],
+    "ハート (Hati)": ['❤️', '💖', '💕', '💞', '💓', '💗', '💘', '💔', '🩷', '🫶'],
+    "どうぶつ (Hewan)": ['🐶', '🐱', '🐰', '🐻', '🐼', '🐯', '🦊', '🐸', '🐤', '🐙'],
+    "たべもの (Makanan)": ['🍙', '🍚', '🍜', '🍛', '🍣', '🍱', '🍡', '🍢', '🍵', '🍓'],
+    "きもち (Perasaan)": ['🥺', '🤔', '😌', '😤', '🤯', '😴', '🤤', '😎', '🥳', '😬']
+};
+    
+    // Add emojis to picker
+    for (const [category, emojis] of Object.entries(emojiCategories)) {
+        const title = document.createElement('div');
+        title.className = 'emoji-category-title';
+        title.textContent = category;
+        emojiPicker.appendChild(title);
+        
+        emojis.forEach(emoji => {
+            const emojiSpan = document.createElement('span');
+            emojiSpan.textContent = emoji;
+            emojiSpan.title = emoji;
+            
+            emojiSpan.addEventListener('click', () => {
+                const cursorPos = messageInput.selectionStart;
+                const textBefore = messageInput.value.substring(0, cursorPos);
+                const textAfter = messageInput.value.substring(cursorPos);
+                
+                messageInput.value = textBefore + emoji + textAfter;
+                messageInput.focus();
+                messageInput.selectionStart = cursorPos + emoji.length;
+                messageInput.selectionEnd = cursorPos + emoji.length;
+                
+                // Trigger input event for auto-resize
+                const event = new Event('input', { bubbles: true });
+                messageInput.dispatchEvent(event);
+            });
+            
+            emojiPicker.appendChild(emojiSpan);
+        });
+    }
+    
+    // Add close button to emoji picker
+    const emojiCloseBtn = document.createElement('button');
+    emojiCloseBtn.className = 'picker-close';
+    emojiCloseBtn.innerHTML = '<i class="fas fa-times"></i>';
+    emojiCloseBtn.addEventListener('click', () => {
+        emojiPicker.style.display = 'none';
+        emojiBtn.classList.remove('active');
+    });
+    emojiPicker.appendChild(emojiCloseBtn);
+    
+    // Create attachment menu
+    const attachmentMenu = document.createElement('div');
+    attachmentMenu.className = 'attachment-menu';
+    attachmentMenu.innerHTML = `
+        <ul>
+            <li><a href="buku.html"><i class="fas fa-book"></i> Buku Materi</a></li>
+            <li><a href="dokumen.html"><i class="fas fa-file"></i> Dokumen</a></li>
+            <li><a href="gambar.html"><i class="fas fa-image"></i> Gambar</a></li>
+            <li><a href="video.html"><i class="fas fa-video"></i> Video</a></li>
+        </ul>
+        <button class="picker-close"><i class="fas fa-times"></i></button>
+    `;
+    
+    // Add close button functionality
+    attachmentMenu.querySelector('.picker-close').addEventListener('click', () => {
+        attachmentMenu.style.display = 'none';
+        attachmentBtn.classList.remove('active');
+    });
+    
+    // Add pickers to DOM
+    inputArea.appendChild(emojiPicker);
+    inputArea.appendChild(attachmentMenu);
+    
+    // Toggle emoji picker
+    emojiBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Hide attachment menu if open
+        if (attachmentMenu.style.display === 'block') {
+            attachmentMenu.style.display = 'none';
+            attachmentBtn.classList.remove('active');
+        }
+        
+        // Toggle emoji picker
+        if (emojiPicker.style.display === 'block') {
+            emojiPicker.style.display = 'none';
+            emojiBtn.classList.remove('active');
+        } else {
+            emojiPicker.style.display = 'block';
+            emojiBtn.classList.add('active');
+        }
+    });
+    
+    // Toggle attachment menu
+    attachmentBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Hide emoji picker if open
+        if (emojiPicker.style.display === 'block') {
+            emojiPicker.style.display = 'none';
+            emojiBtn.classList.remove('active');
+        }
+        
+        // Toggle attachment menu
+        if (attachmentMenu.style.display === 'block') {
+            attachmentMenu.style.display = 'none';
+            attachmentBtn.classList.remove('active');
+        } else {
+            attachmentMenu.style.display = 'block';
+            attachmentBtn.classList.add('active');
+        }
+    });
+    
+    // Close pickers when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+            emojiPicker.style.display = 'none';
+            emojiBtn.classList.remove('active');
+        }
+        
+        if (!attachmentMenu.contains(e.target) && e.target !== attachmentBtn) {
+            attachmentMenu.style.display = 'none';
+            attachmentBtn.classList.remove('active');
+        }
+    });
+    
+    // Prevent propagation when clicking inside pickers
+    emojiPicker.addEventListener('click', (e) => e.stopPropagation());
+    attachmentMenu.addEventListener('click', (e) => e.stopPropagation());
+}
+
+// Theme toggle function
+function toggleTheme() {
+    const themes = ['light', 'dark', 'anime'];
+    let currentTheme = themes.indexOf(document.documentElement.getAttribute('data-theme'));
+    currentTheme = (currentTheme + 1) % themes.length;
+    const theme = themes[currentTheme];
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    updateThemeIcon(theme);
+    if (theme === 'anime') addAnimeEffects();
+    else removeAnimeEffects();
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.querySelector('.theme-toggle i');
+    const icons = {
+        'anime': 'fa-palette',
+        'dark': 'fa-moon',
+        'light': 'fa-sun'
+    };
+    icon.className = `fas ${icons[theme]}`;
+}
+
+function addAnimeEffects() {
+    document.querySelectorAll('.anime-star').forEach(star => star.remove());
+    
+    for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'anime-star';
+        star.style.cssText = `
+            position: fixed;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            width: ${Math.random() * 3}px;
+            height: ${Math.random() * 3}px;
+            background: rgba(255,107,157,${Math.random()});
+            border-radius: 50%;
+            animation: sparkle ${Math.random() * 3 + 1}s infinite;
+            pointer-events: none;
+            z-index: -1;
+        `;
+        document.body.appendChild(star);
+    }
+}
+
+function removeAnimeEffects() {
+    document.querySelectorAll('.anime-star').forEach(star => star.remove());
+}
+
+// Load theme on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+    if (savedTheme === 'anime') addAnimeEffects();
+    
+    // Initialize input features
+    initInputFeatures();
+});
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+    authDomain: "luzuno-web.firebaseapp.com",
+    projectId: "luzuno-web",
+    storageBucket: "luzuno-web.appspot.com",
+    messagingSenderId: "728661935868",
+    appId: "1:728661935868:web:859ebff3a63b1210acb979"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const functions = firebase.functions();
+
+// DOM elements
+const menuBtn = document.getElementById('menuBtn');
+const closeSidebar = document.getElementById('closeSidebar');
+const sidebar = document.getElementById('sidebar');
+const messagesDiv = document.getElementById('messages');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const memberList = document.getElementById('memberList');
+const memberSearch = document.getElementById('memberSearch');
+const replyPreview = document.getElementById('replyPreview');
+const replyingTo = document.getElementById('replyingTo');
+const replyContent = document.getElementById('replyContent');
+const cancelReply = document.getElementById('cancelReply');
+const messageInputContainer = document.getElementById('messageInputContainer');
+
+// State management
+let lastDisplayedDate = null;
+let replyingToMessage = null;
+let loadingOlderMessages = false;
+let allMembers = [];
+let messageListener = null;
+let initialMessagesLoaded = false;
+let messagesLimit = 15;
+let lastVisibleMessage = null;
+let isFirstLoad = true;
+let messageIds = new Set(); // Untuk mencegah duplikasi pesan
+
+// Cache management
+const SEARCH_CACHE_EXPIRY = 20 * 60 * 60 * 1000; // 20 hours in milliseconds
+
+// Get cached search results
+function getCachedSearchResults(searchTerm) {
+    const cachedResults = localStorage.getItem(`search_${searchTerm}`);
+    if (!cachedResults) return null;
+    
+    const { results, timestamp } = JSON.parse(cachedResults);
+    const now = new Date().getTime();
+    
+    // Check if cache is expired
+    if (now - timestamp > SEARCH_CACHE_EXPIRY) {
+        localStorage.removeItem(`search_${searchTerm}`);
+        return null;
+    }
+    
+    return results;
+}
+
+// Store search results in cache
+function cacheSearchResults(searchTerm, results) {
+    const cacheData = {
+        results: results,
+        timestamp: new Date().getTime()
+    };
+    localStorage.setItem(`search_${searchTerm}`, JSON.stringify(cacheData));
+}
+
+// Toggle sidebar on mobile
+menuBtn.addEventListener('click', () => {
+    sidebar.classList.add('active');
+});
+
+closeSidebar.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+});
+
+// Auto-resize textarea
+messageInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+
+// Check auth state
+auth.onAuthStateChanged(user => {
+    if (user) {
+        console.log("User logged in:", user.displayName);
+        setupUserProfile(user);
+        loadGroupMembers();
+        setupMessageCleanup();
+        loadMessages();
+    } else {
+        window.location.href = "login.html";
+    }
+});
+
+// Set up user profile
+function setupUserProfile(user) {
+    const userRef = db.collection("users").doc(user.uid);
+    
+    userRef.get().then(doc => {
+        if (!doc.exists) {
+            const isSensei = user.email === "riskiziochy@gmail.com";
+            const isAdmin = isSensei || user.email === "admin@example.com";
+            
+            userRef.set({
+                username: user.displayName || user.email.split('@')[0],
+                email: user.email,
+                avatar: user.photoURL || 'https://i.imgur.com/6VBx3io.png',
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                isAdmin: isAdmin,
+                isSensei: isSensei,
+                joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } else {
+            userRef.update({
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+    });
+}
+
+// Set up message cleanup
+function setupMessageCleanup() {
+    const cleanupMessages = functions.httpsCallable('cleanupOldMessages');
+    cleanupMessages({ daysToKeep: 7 }).catch(error => {
+        console.error("Error cleaning up messages:", error);
+    });
+}
+
+// Load group members with search button
+function loadGroupMembers() {
+    // Setup search button functionality
+    setupSearchButton();
+}
+
+// Setup search button with caching
+function setupSearchButton() {
+    const searchBtn = document.createElement('button');
+    searchBtn.className = 'search-button';
+    searchBtn.innerHTML = '<i class="fas fa-search"></i> Cari';
+
+    // Insert button after search input
+    memberSearch.insertAdjacentElement('afterend', searchBtn);
+
+    searchBtn.addEventListener('click', () => {
+        const searchTerm = memberSearch.value.toLowerCase().trim();
+
+        if (searchTerm.length < 3) {
+            memberList.innerHTML = '<div class="no-members">Ketik minimal 3 huruf untuk mencari</div>';
+            return;
+        }
+
+        // Check cache first
+        const cachedResults = getCachedSearchResults(searchTerm);
+        if (cachedResults) {
+            renderMemberList(cachedResults);
+            return;
+        }
+
+        // Query Firestore with limit 15
+        db.collection("users")
+            .orderBy("username_lowercase")
+            .startAt(searchTerm)
+            .endAt(searchTerm + '\uf8ff')
+            .limit(15)
+            .get()
+            .then(snapshot => {
+                if (snapshot.empty) {
+                    memberList.innerHTML = '<div class="no-members">Tidak ada anggota yang cocok</div>';
+                    return;
+                }
+
+                const filteredMembers = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Cache the results
+                cacheSearchResults(searchTerm, filteredMembers);
+                
+                // Render the results
+                renderMemberList(filteredMembers);
+            })
+            .catch(error => {
+                console.error("Error searching members:", error);
+                memberList.innerHTML = '<div class="no-members">Gagal mencari anggota</div>';
+            });
+    });
+
+    // Enter = klik tombol
+    memberSearch.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchBtn.click();
+        }
+    });
+}
+       
+// Render member list from filtered data
+function renderMemberList(members) {
+    memberList.innerHTML = '';
+    
+    if (members.length === 0) {
+        memberList.innerHTML = '<div class="no-members">Tidak ada anggota yang cocok</div>';
+        return;
+    }
+    
+    members.forEach(member => {
+        displayMember(member, member.id);
+    });
+}
+
+// Display member with clickable link to profile
+function displayMember(member, memberId) {
+    const memberItem = document.createElement('div');
+    memberItem.className = 'member-item';
+    memberItem.setAttribute('data-name', member.username.toLowerCase());
+    memberItem.style.cursor = 'pointer';
+    
+    memberItem.addEventListener('click', () => {
+        window.location.href = `users.html?id=${memberId}`;
+    });
+    
+    const isRiskiziochy = member.email === "riskiziochy@gmail.com";
+    const badges = [];
+    
+    if (isRiskiziochy) {
+        badges.push('<span class="sensei-badge">SENSEI</span>');
+        badges.push('<span class="admin-badge">ADMIN</span>');
+    } else {
+        if (member.isSensei) badges.push('<span class="sensei-badge">SENSEI</span>');
+        if (member.isAdmin) badges.push('<span class="admin-badge">ADMIN</span>');
+    }
+    
+    memberItem.innerHTML = `
+        <img src="${member.avatar || 'https://i.imgur.com/6VBx3io.png'}" alt="Avatar" class="member-avatar">
+        <div class="member-info">
+            <div class="member-name">
+                ${member.username}
+                ${badges.join(' ')}
+            </div>
+            <div class="member-status">${member.lastSeen ? 'メンバー' : 'メンバー'}</div>
+        </div>
+    `;
+    
+    memberList.appendChild(memberItem);
+}
+
+// Load messages with pagination
+function loadMessages() {
+    if (isFirstLoad) {
+        messagesDiv.innerHTML = '';
+        messageIds.clear();
+    }
+    
+    loadingOlderMessages = true;
+    
+    let query = db.collection("messages")
+        .orderBy("timestamp", "desc")
+        .limit(messagesLimit);
+    
+    if (lastVisibleMessage && !isFirstLoad) {
+        query = query.startAfter(lastVisibleMessage);
+    }
+    
+    query.get()
+        .then(snapshot => {
+            const messages = [];
+            snapshot.forEach(doc => {
+                if (!messageIds.has(doc.id)) {
+                    messages.push({
+                        data: doc.data(),
+                        id: doc.id
+                    });
+                    messageIds.add(doc.id);
+                    lastVisibleMessage = doc;
+                }
+            });
+            
+            if (isFirstLoad) {
+                displayMessagesInOrder(messages.reverse());
+                setupMessageListener();
+                initialMessagesLoaded = true;
+                scrollToBottom();
+            } else {
+                prependMessages(messages.reverse());
+            }
+            
+            if (snapshot.docs.length === messagesLimit) {
+                addLoadMoreButton();
+            } else {
+                removeLoadMoreButton();
+            }
+            
+            loadingOlderMessages = false;
+            isFirstLoad = false;
+        })
+        .catch(error => {
+            console.error("Error loading messages:", error);
+            loadingOlderMessages = false;
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Memuat Pesan',
+                text: 'Tidak dapat memuat pesan',
+                confirmButtonColor: '#6c5ce7'
+            });
+        });
+}
+
+// Prepend older messages to the top
+function prependMessages(messages) {
+    const fragment = document.createDocumentFragment();
+    let firstMessageElement = messagesDiv.querySelector('.message');
+    
+    messages.forEach(msg => {
+        const messageElement = createMessageElement(msg.data, msg.id);
+        fragment.appendChild(messageElement);
+        
+        const messageDate = msg.data.timestamp?.toDate();
+        const currentDate = messageDate ? formatMessageDate(messageDate) : null;
+        
+        if (currentDate && currentDate !== lastDisplayedDate) {
+            const dateDiv = createDateDivider(currentDate);
+            fragment.insertBefore(dateDiv, messageElement);
+            lastDisplayedDate = currentDate;
+        }
+    });
+    
+    if (firstMessageElement) {
+        messagesDiv.insertBefore(fragment, firstMessageElement);
+    } else {
+        messagesDiv.appendChild(fragment);
+    }
+}
+
+// Create message element
+function createMessageElement(message, messageId) {
+    const messageDate = message.timestamp?.toDate();
+    const messageTime = messageDate?.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || 'baru saja';
+    const isCurrentUser = message.senderEmail === auth.currentUser?.email;
+    const isRiskiziochy = message.senderEmail === "riskiziochy@gmail.com";
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isCurrentUser ? 'sent' : 'received'}`;
+    messageDiv.setAttribute('data-message-id', messageId);
+    
+    if (!isCurrentUser) {
+        messageDiv.innerHTML = `
+            <img src="${message.avatar || 'https://i.imgur.com/6VBx3io.png'}" alt="Avatar" class="message-avatar">
+        `;
+    }
+    
+    const messageInner = document.createElement('div');
+    messageInner.className = 'message-inner';
+    
+    const messageInfo = document.createElement('div');
+    messageInfo.className = 'message-info';
+    
+    const senderSpan = document.createElement('span');
+    senderSpan.className = 'message-sender';
+    senderSpan.textContent = isCurrentUser ? 'Anda' : message.sender;
+    
+    if (isRiskiziochy) {
+        const senseiBadge = document.createElement('span');
+        senseiBadge.className = 'sensei-badge';
+        senseiBadge.textContent = 'SENSEI';
+        senderSpan.appendChild(document.createTextNode(' '));
+        senderSpan.appendChild(senseiBadge);
+    } else {
+        if (message.isSensei) {
+            const senseiBadge = document.createElement('span');
+            senseiBadge.className = 'sensei-badge';
+            senseiBadge.textContent = 'SENSEI';
+            senderSpan.appendChild(document.createTextNode(' '));
+            senderSpan.appendChild(senseiBadge);
+        } else if (message.isAdmin) {
+            const adminBadge = document.createElement('span');
+            adminBadge.className = 'admin-badge';
+            adminBadge.textContent = 'ADMIN';
+            senderSpan.appendChild(document.createTextNode(' '));
+            senderSpan.appendChild(adminBadge);
+        }
+    }
+    
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'message-time';
+    timeSpan.textContent = messageTime;
+    
+    messageInfo.appendChild(senderSpan);
+    messageInfo.appendChild(timeSpan);
+    
+    const messageBubble = document.createElement('div');
+    messageBubble.className = 'message-bubble';
+    
+    if (message.replyTo) {
+        const replyContainer = document.createElement('div');
+        replyContainer.className = 'reply-container';
+        
+        const replySender = document.createElement('div');
+        replySender.className = 'reply-sender';
+        replySender.textContent = `Membalas ${message.replyTo.sender}`;
+        
+        const replyContent = document.createElement('div');
+        replyContent.className = 'reply-content';
+        replyContent.textContent = message.replyTo.text;
+        
+        replyContainer.appendChild(replySender);
+        replyContainer.appendChild(replyContent);
+        messageBubble.appendChild(replyContainer);
+    }
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.textContent = message.text;
+    
+    messageBubble.appendChild(messageContent);
+    messageInner.appendChild(messageInfo);
+    messageInner.appendChild(messageBubble);
+    messageDiv.appendChild(messageInner);
+    
+    messageDiv.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+            setReplyMessage(message, messageId);
+        }
+    });
+    
+    return messageDiv;
+}
+
+// Create date divider element
+function createDateDivider(dateString) {
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'message-date';
+    dateDiv.innerHTML = `<span>${dateString}</span>`;
+    return dateDiv;
+}
+
+// Add "Load more" button at the top
+function addLoadMoreButton() {
+    removeLoadMoreButton();
+    
+    const loadMoreBtn = document.createElement('button');
+    loadMoreBtn.className = 'load-more-btn';
+    loadMoreBtn.innerHTML = '<i class="fas fa-chevron-up"></i> Muat Pesan Sebelumnya';
+    
+    loadMoreBtn.addEventListener('click', () => {
+        messagesLimit += 5;
+        loadMessages();
+    });
+    
+    messagesDiv.insertBefore(loadMoreBtn, messagesDiv.firstChild);
+}
+
+function removeLoadMoreButton() {
+    const existingButton = messagesDiv.querySelector('.load-more-btn');
+    if (existingButton) {
+        existingButton.remove();
+    }
+}
+
+// Display messages in proper chronological order
+function displayMessagesInOrder(messages) {
+    messages.sort((a, b) => a.data.timestamp.toDate() - b.data.timestamp.toDate());
+    lastDisplayedDate = null;
+    
+    messages.forEach(msg => {
+        const messageElement = createMessageElement(msg.data, msg.id);
+        
+        const messageDate = msg.data.timestamp?.toDate();
+        const currentDate = messageDate ? formatMessageDate(messageDate) : null;
+        
+        if (currentDate && currentDate !== lastDisplayedDate) {
+            const dateDiv = createDateDivider(currentDate);
+            messagesDiv.appendChild(dateDiv);
+            lastDisplayedDate = currentDate;
+        }
+        
+        messagesDiv.appendChild(messageElement);
+    });
+}
+
+// Set up real-time listener for new messages (with duplicate prevention)
+function setupMessageListener() {
+    if (messageListener) messageListener();
+    
+    messageListener = db.collection("messages")
+        .orderBy("timestamp", "desc")
+        .limit(1)
+        .onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(change => {
+                if (change.type === "added" && initialMessagesLoaded && !messageIds.has(change.doc.id)) {
+                    const messageElement = createMessageElement(change.doc.data(), change.doc.id);
+                    messagesDiv.appendChild(messageElement);
+                    messageIds.add(change.doc.id);
+                    
+                    // Check if we need to add a date divider for new day
+                    const messageDate = change.doc.data().timestamp?.toDate();
+                    const currentDate = messageDate ? formatMessageDate(messageDate) : null;
+                    
+                    // Get the previous message
+                    const previousMessage = messagesDiv.querySelector('.message:last-child');
+                    if (previousMessage) {
+                        const previousMessageId = previousMessage.getAttribute('data-message-id');
+                        const previousMessageDate = messageIds.has(previousMessageId) ? 
+                            getMessageDate(previousMessageId) : null;
+                        
+                        if (currentDate && previousMessageDate && 
+                            formatMessageDate(previousMessageDate) !== currentDate) {
+                            const dateDiv = createDateDivider(currentDate);
+                            messagesDiv.insertBefore(dateDiv, messageElement);
+                        }
+                    }
+                    
+                    scrollToBottom();
+                }
+            });
+        });
+}
+
+// Helper function to get message date from Firestore
+function getMessageDate(messageId) {
+    return db.collection("messages").doc(messageId).get()
+        .then(doc => doc.exists ? doc.data().timestamp?.toDate() : null);
+}
+
+    
+// Format date with weekday (and show time if same day)
+function formatMessageDate(date) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    
+    // Check if the message is from today
+    if (date.getDate() === now.getDate() && 
+        date.getMonth() === now.getMonth() && 
+        date.getFullYear() === now.getFullYear()) {
+        return "kyou";
+    }
+    // Check if the message is from yesterday
+    else if (date.getDate() === yesterday.getDate() && 
+             date.getMonth() === yesterday.getMonth() && 
+             date.getFullYear() === yesterday.getFullYear()) {
+        return "kinou";
+    }
+    // Otherwise show full date
+    else {
+        const options = { 
+            weekday: 'long',
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric'
+        };
+        return date.toLocaleDateString('id-ID', options);
+    }
+}
+
+// Set reply message
+function setReplyMessage(message, messageId) {
+    replyingToMessage = {
+        id: messageId,
+        sender: message.sender,
+        text: message.text
+    };
+    
+    replyingTo.textContent = `Membalas ${message.sender}`;
+    replyContent.textContent = message.text.length > 30 
+        ? message.text.substring(0, 30) + '...' 
+        : message.text;
+    
+    replyPreview.style.display = 'flex';
+    messageInput.focus();
+    messageInputContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Cancel reply
+cancelReply.addEventListener('click', () => {
+    replyingToMessage = null;
+    replyPreview.style.display = 'none';
+    messageInput.focus();
+});
+
+// Send message
+function sendMessage() {
+    const messageText = messageInput.value.trim();
+    
+    if (messageText && auth.currentUser) {
+        const user = auth.currentUser;
+        
+        db.collection("users").doc(user.uid).get()
+            .then(doc => {
+                const userData = doc.data();
+                
+                const messageData = {
+                    text: messageText,
+                    sender: userData.username || user.email.split('@')[0],
+                    senderEmail: user.email,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    isAdmin: userData.isAdmin || false,
+                    isSensei: userData.isSensei || false,
+                    avatar: userData.avatar || 'https://i.imgur.com/6VBx3io.png'
+                };
+                
+                if (replyingToMessage) {
+                    messageData.replyTo = {
+                        messageId: replyingToMessage.id,
+                        sender: replyingToMessage.sender,
+                        text: replyingToMessage.text
+                    };
+                }
+                
+                db.collection("messages").add(messageData)
+                    .then(() => {
+                        messageInput.value = '';
+                        messageInput.style.height = 'auto';
+                        replyPreview.style.display = 'none';
+                        replyingToMessage = null;
+                    })
+                    .catch(error => {
+                        console.error("Error sending message: ", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Mengirim',
+                            text: 'Pesan gagal dikirim',
+                            confirmButtonColor: '#6c5ce7'
+                        });
+                    });
+            });
+    }
+}
+
+// Scroll to bottom
+function scrollToBottom() {
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Event listeners
+sendBtn.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+// Initial scroll to bottom
+window.addEventListener('load', scrollToBottom);
+</script>
+
+</body>
+</html>

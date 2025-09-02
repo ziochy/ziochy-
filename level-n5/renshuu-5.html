@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latihan Partikel N5 - Luzuno</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .category {
+      margin-bottom: 40px;
+    }
+    .category h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid #e74c3c;
+      padding-bottom: 10px;
+    }
+    .quiz {
+      background-color: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .quiz button:hover {
+      background-color: #c0392b;
+    }
+    .quiz-options {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .quiz-options button {
+      padding: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      flex: 1 1 45%;
+    }
+    .quiz-options button.selected {
+      background-color: #2ecc71; /* Warna hijau untuk jawaban yang dipilih */
+    }
+    .quiz-options button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .score {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .correct-answer {
+      color: green;
+    }
+    .wrong-answer {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">Luzuno</h1>
+      <nav class="navbar">
+        <ul>
+          <li><a href="../index.html">Beranda</a></li>
+          <li><a href="tata-bahasa.html">Tata bahasa</a></li>
+          <li><a href="kosakata-5.html">Kosakata</a></li>
+          <li><a href="renshuu-5.html">Latihan -Partikel</a></li>
+            <li><a href="renshuu-SK.html">-Susun Kata</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content">
+    <div class="container">
+      <h1>Latihan Partikel N5</h1>
+      <p>Berikut adalah latihan melengkapi partikel dalam kalimat. Pilih jawaban yang benar dan klik "Submit Nilai" untuk melihat hasilnya.</p>
+
+      <!-- Soal Acak -->
+      <div class="category">
+        <h2>Soal Partikel</h2>
+        <div id="grammar-questions"></div>
+      </div>
+
+      <!-- Tombol Submit dan Skor -->
+      <div class="score">
+        <button onclick="calculateScore()">Submit Nilai</button>
+        <p id="final-score"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2023 Luzuno. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Bank Soal Partikel
+    const grammarQuestions = [
+      {
+        question: "わたし ___ がくせい です。",
+        options: ["は", "を", "に", "で"],
+        answer: "は"
+      },
+      {
+        question: "ほん ___ よみます。",
+        options: ["は", "を", "に", "で"],
+        answer: "を"
+      },
+      {
+        question: "がっこう ___ いきます。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "きょうしつ ___ べんきょうします。",
+        options: ["は", "を", "に", "で"],
+        answer: "で"
+      },
+      {
+        question: "ともだち ___ あいます。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "えいが ___ みます。",
+        options: ["は", "を", "に", "で"],
+        answer: "を"
+      },
+      {
+        question: "レストラン ___ たべます。",
+        options: ["は", "を", "に", "で"],
+        answer: "で"
+      },
+      {
+        question: "でんしゃ ___ のります。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "いえ ___ かえります。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "ほん ___ かいます。",
+        options: ["は", "を", "に", "で"],
+        answer: "を"
+      },
+      {
+        question: "がっこう ___ べんきょうします。",
+        options: ["は", "を", "に", "で"],
+        answer: "で"
+      },
+      {
+        question: "ともだち ___ はなします。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "コーヒー ___ のみます。",
+        options: ["は", "を", "に", "で"],
+        answer: "を"
+      },
+      {
+        question: "パーティー ___ いきます。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "しょくどう ___ たべます。",
+        options: ["は", "を", "に", "で"],
+        answer: "で"
+      },
+      {
+        question: "えいがかん ___ いきます。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "としょかん ___ ほんをよみます。",
+        options: ["は", "を", "に", "で"],
+        answer: "で"
+      },
+      {
+        question: "バス ___ のります。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "かいしゃ ___ いきます。",
+        options: ["は", "を", "に", "で"],
+        answer: "に"
+      },
+      {
+        question: "テレビ ___ みます。",
+        options: ["は", "を", "に", "で"],
+        answer: "を"
+      },
+  {
+    question: "わたし ___ にほんご を べんきょうします。",
+    options: ["は", "を", "に", "で"],
+    answer: "は"
+  },
+  {
+    question: "ともだち ___ えいが を みます。",
+    options: ["は", "を", "と", "で"],
+    answer: "と"
+  },
+  {
+    question: "がっこう ___ いきます。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "レストラン ___ ばんごはん を たべます。",
+    options: ["は", "を", "に", "で"],
+    answer: "で"
+  },
+  {
+    question: "ほん ___ よみます。",
+    options: ["は", "を", "に", "で"],
+    answer: "を"
+  },
+  {
+    question: "きょう ___ いそがしいです。",
+    options: ["は", "を", "に", "で"],
+    answer: "は"
+  },
+  {
+    question: "でんしゃ ___ のります。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "としょかん ___ ほん を かります。",
+    options: ["は", "を", "に", "で"],
+    answer: "で"
+  },
+  {
+    question: "あした ___ かいしゃ に いきます。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "コーヒー ___ のみます。",
+    options: ["は", "を", "に", "で"],
+    answer: "を"
+  },
+  {
+    question: "パーティー ___ いきます。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "しょくどう ___ たべます。",
+    options: ["は", "を", "に", "で"],
+    answer: "で"
+  },
+  {
+    question: "えいがかん ___ いきます。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "としょかん ___ ほんをよみます。",
+    options: ["は", "を", "に", "で"],
+    answer: "で"
+  },
+  {
+    question: "バス ___ のります。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "かいしゃ ___ いきます。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "テレビ ___ みます。",
+    options: ["は", "を", "に", "で"],
+    answer: "を"
+  },
+  {
+    question: "がっこう ___ べんきょうします。",
+    options: ["は", "を", "に", "で"],
+    answer: "で"
+  },
+  {
+    question: "ともだち ___ はなします。",
+    options: ["は", "を", "に", "で"],
+    answer: "に"
+  },
+  {
+    question: "コーヒー ___ のみます。",
+    options: ["は", "を", "に", "で"],
+    answer: "を"
+  },
+  {
+    question: "ともだち ___ えいが を みます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "がっこう ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ いっしょに いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "きょう ___ いそがしいです。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ はなします。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "かいしゃ ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ コーヒー を のみます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ レストラン に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "えいがかん ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ ほん を よみます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ パーティー に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "としょかん ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ テレビ を みます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ こうえん に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "がっこう ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ コーヒー を のみます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ レストラン に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "えいがかん ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ ほん を よみます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ パーティー に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "としょかん ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ テレビ を みます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ こうえん に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "がっこう ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ コーヒー を のみます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ レストラン に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "えいがかん ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  },
+  {
+    question: "わたし ___ ほん を よみます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "も"
+  },
+  {
+    question: "ともだち ___ パーティー に いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "と"
+  },
+  {
+    question: "としょかん ___ いきます。",
+    options: ["と", "へ", "も", "で"],
+    answer: "へ"
+  }
+    ];
+
+    // Fungsi untuk mengacak array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Fungsi untuk menampilkan soal
+    function displayQuestions(questions, containerId) {
+      const container = document.getElementById(containerId);
+      questions.forEach((q, index) => {
+        const quizDiv = document.createElement('div');
+        quizDiv.className = 'quiz';
+        quizDiv.innerHTML = `
+          <p><strong>Soal ${index + 1}:</strong> ${q.question}</p>
+          <div class="quiz-options" id="options${index}">
+            ${q.options.map(opt => `<button onclick="selectAnswer('${opt}', '${q.answer}', 'result${index}', 'options${index}')">${opt}</button>`).join('')}
+          </div>
+          <p class="result" id="result${index}"></p>
+        `;
+        container.appendChild(quizDiv);
+      });
+    }
+
+    // Fungsi untuk memilih jawaban
+    const userAnswers = [];
+    function selectAnswer(selectedAnswer, correctAnswer, resultId, optionsId) {
+      // Simpan jawaban pengguna
+      userAnswers[resultId] = {
+        selected: selectedAnswer,
+        correct: correctAnswer
+      };
+
+      // Ubah warna tombol yang dipilih
+      const optionsContainer = document.getElementById(optionsId);
+      const buttons = optionsContainer.querySelectorAll('button');
+      buttons.forEach(button => {
+        if (button.innerText === selectedAnswer) {
+          button.classList.add('selected'); // Tambahkan class 'selected' ke tombol yang dipilih
+        } else {
+          button.classList.remove('selected'); // Hapus class 'selected' dari tombol lain
+        }
+      });
+    }
+
+    // Fungsi untuk menghitung skor dan menampilkan hasil
+    function calculateScore() {
+      let correctAnswers = 0;
+      Object.keys(userAnswers).forEach((key) => {
+        const result = document.getElementById(key);
+        const userAnswer = userAnswers[key];
+        if (userAnswer.selected === userAnswer.correct) {
+          result.innerHTML = `<span class="correct-answer">Benar! 🎉 (Jawaban: ${userAnswer.correct})</span>`;
+          correctAnswers++;
+        } else {
+          result.innerHTML = `<span class="wrong-answer">Salah! 😢 (Jawaban: ${userAnswer.correct})</span>`;
+        }
+      });
+
+      const totalQuestions = Object.keys(userAnswers).length;
+      const score = (correctAnswers / totalQuestions) * 100;
+      document.getElementById('final-score').innerText = `Nilai Anda: ${score.toFixed(2)}% (${correctAnswers} benar dari ${totalQuestions} soal)`;
+    }
+
+    // Acak soal dan tampilkan 30 soal
+    window.onload = () => {
+      const shuffledGrammar = shuffleArray(grammarQuestions).slice(0, 20); // Ambil 30 soal acak
+      displayQuestions(shuffledGrammar, 'grammar-questions');
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tahapan Belajar Bahasa Jepang untuk Lulus N1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button.no {
+            background-color: #dc3545;
+        }
+        .button.udah {
+            background-color: #28a745;
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Apakah Kamu Mau Lulus N1?</h1>
+    <p>Pilih "Yes" jika kamu serius ingin lulus N1, atau "No" jika belum siap.</p>
+    <a href="#persiapan-n1" class="button">Yes</a>
+    <a href="#" class="button no">No</a>
+
+    <div id="persiapan-n1" style="display:none;">
+        <h2>Persiapan untuk Lulus N1</h2>
+        <p>Jika kamu memilih "Yes", kamu harus menguasai hal-hal berikut:</p>
+        <ul>
+            <li><strong>Kanji</strong> – Sekitar 2.000 karakter yang sering digunakan.</li>
+            <li><strong>Kosakata</strong> – Ribuan kata, termasuk idiom dan ekspresi formal.</li>
+            <li><strong>Tata Bahasa</strong> – Struktur kalimat kompleks, gaya tulisan resmi, dan bahasa sopan.</li>
+            <li><strong>Membaca</strong> – Artikel berita, esai akademik, dan novel.</li>
+            <li><strong>Mendengar</strong> – Percakapan cepat, laporan berita, dan ceramah.</li>
+        </ul>
+        <p>Apakah kamu siap?</p>
+        <a href="#mulai-belajar" class="button">Siap!</a>
+        <a href="#" class="button no">Tidak</a>
+    </div>
+
+    <div id="mulai-belajar" style="display:none;">
+        <h2>Gambatte! Mari Mulai Belajar</h2>
+        <p>Masukkan nama kamu:</p>
+        <input type="text" id="nama-input" placeholder="Masukkan nama kamu">
+        <button id="submit-nama" class="button">Submit</button>
+        <p id="gambatte-pesan" style="display:none;"></p>
+
+        <div id="materi-belajar" style="display:none;">
+            <p>Untuk belajar bahasa Jepang, ada beberapa hal penting yang harus kamu kuasai terlebih dahulu:</p>
+            <h3>1. Huruf Jepang (Kana & Kanji)</h3>
+            <p>Bahasa Jepang menggunakan tiga jenis tulisan:</p>
+            <ul>
+                <li><strong>Hiragana (ひらがな)</strong> – Digunakan untuk kata asli Jepang dan tata bahasa.</li>
+                <li><strong>Katakana (カタカナ)</strong> – Digunakan untuk kata serapan asing, nama orang asing, dan istilah teknis.</li>
+                <li><strong>Kanji (漢字)</strong> – Simbol karakter Tionghoa yang mewakili kata atau makna tertentu.</li>
+            </ul>
+            <h3>2. Hiragana (ひらがな)</h3>
+            <p>Ada 46 huruf dasar dalam hiragana. Berikut tabelnya:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>a</th>
+                        <th>i</th>
+                        <th>u</th>
+                        <th>e</th>
+                        <th>o</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>あ (a)</td>
+                        <td>い (i)</td>
+                        <td>う (u)</td>
+                        <td>え (e)</td>
+                        <td>お (o)</td>
+                    </tr>
+                    <tr>
+                        <td>か (ka)</td>
+                        <td>き (ki)</td>
+                        <td>く (ku)</td>
+                        <td>け (ke)</td>
+                        <td>こ (ko)</td>
+                    </tr>
+                    <tr>
+                        <td>さ (sa)</td>
+                        <td>し (shi)</td>
+                        <td>す (su)</td>
+                        <td>せ (se)</td>
+                        <td>そ (so)</td>
+                    </tr>
+                    <tr>
+                        <td>た (ta)</td>
+                        <td>ち (chi)</td>
+                        <td>つ (tsu)</td>
+                        <td>て (te)</td>
+                        <td>と (to)</td>
+                    </tr>
+                    <tr>
+                        <td>な (na)</td>
+                        <td>に (ni)</td>
+                        <td>ぬ (nu)</td>
+                        <td>ね (ne)</td>
+                        <td>の (no)</td>
+                    </tr>
+                    <tr>
+                        <td>は (ha)</td>
+                        <td>ひ (hi)</td>
+                        <td>ふ (fu)</td>
+                        <td>へ (he)</td>
+                        <td>ほ (ho)</td>
+                    </tr>
+                    <tr>
+                        <td>ま (ma)</td>
+                        <td>み (mi)</td>
+                        <td>む (mu)</td>
+                        <td>め (me)</td>
+                        <td>も (mo)</td>
+                    </tr>
+                    <tr>
+                        <td>や (ya)</td>
+                        <td>-</td>
+                        <td>ゆ (yu)</td>
+                        <td>-</td>
+                        <td>よ (yo)</td>
+                    </tr>
+                    <tr>
+                        <td>ら (ra)</td>
+                        <td>り (ri)</td>
+                        <td>る (ru)</td>
+                        <td>れ (re)</td>
+                        <td>ろ (ro)</td>
+                    </tr>
+                    <tr>
+                        <td>わ (wa)</td>
+                        <td>-</td>
+                        <td>を (wo)</td>
+                        <td>-</td>
+                        <td>ん (n)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Latihan Pertama: Menghafal Hiragana</h3>
+            <ol>
+                <li>Baca tabel di atas dan coba ucapkan setiap huruf dengan suara keras.</li>
+                <li>Tulis hurufnya satu per satu di buku latihan.</li>
+                <li>Coba ingat dan tulis ulang tanpa melihat tabel.</li>
+            </ol>
+            <button id="udah-hiragana" class="button udah">Udah!</button>
+        </div>
+    </div>
+
+    <div id="materi-katakana" style="display:none;">
+        <h2>Bagus, <span id="nama-tampil"></span>! Sekarang kita lanjut ke Katakana (カタカナ)</h2>
+        <p>Katakana memiliki jumlah huruf yang sama dengan Hiragana, tetapi bentuknya lebih kaku dan digunakan untuk kata serapan asing, nama orang asing, dan istilah teknis.</p>
+        <h3>Tabel Katakana (カタカナ)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>a</th>
+                    <th>i</th>
+                    <th>u</th>
+                    <th>e</th>
+                    <th>o</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ア (a)</td>
+                    <td>イ (i)</td>
+                    <td>ウ (u)</td>
+                    <td>エ (e)</td>
+                    <td>オ (o)</td>
+                </tr>
+                <tr>
+                    <td>カ (ka)</td>
+                    <td>キ (ki)</td>
+                    <td>ク (ku)</td>
+                    <td>ケ (ke)</td>
+                    <td>コ (ko)</td>
+                </tr>
+                <tr>
+                    <td>サ (sa)</td>
+                    <td>シ (shi)</td>
+                    <td>ス (su)</td>
+                    <td>セ (se)</td>
+                    <td>ソ (so)</td>
+                </tr>
+                <tr>
+                    <td>タ (ta)</td>
+                    <td>チ (chi)</td>
+                    <td>ツ (tsu)</td>
+                    <td>テ (te)</td>
+                    <td>ト (to)</td>
+                </tr>
+                <tr>
+                    <td>ナ (na)</td>
+                    <td>ニ (ni)</td>
+                    <td>ヌ (nu)</td>
+                    <td>ネ (ne)</td>
+                    <td>ノ (no)</td>
+                </tr>
+                <tr>
+                    <td>ハ (ha)</td>
+                    <td>ヒ (hi)</td>
+                    <td>フ (fu)</td>
+                    <td>ヘ (he)</td>
+                    <td>ホ (ho)</td>
+                </tr>
+                <tr>
+                    <td>マ (ma)</td>
+                    <td>ミ (mi)</td>
+                    <td>ム (mu)</td>
+                    <td>メ (me)</td>
+                    <td>モ (mo)</td>
+                </tr>
+                <tr>
+                    <td>ヤ (ya)</td>
+                    <td>-</td>
+                    <td>ユ (yu)</td>
+                    <td>-</td>
+                    <td>ヨ (yo)</td>
+                </tr>
+                <tr>
+                    <td>ラ (ra)</td>
+                    <td>リ (ri)</td>
+                    <td>ル (ru)</td>
+                    <td>レ (re)</td>
+                    <td>ロ (ro)</td>
+                </tr>
+                <tr>
+                    <td>ワ (wa)</td>
+                    <td>-</td>
+                    <td>ヲ (wo)</td>
+                    <td>-</td>
+                    <td>ン (n)</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Latihan Menghafal Katakana</h3>
+        <ol>
+            <li>Bacalah satu per satu dan ucapkan dengan suara keras.</li>
+            <li>Tulislah setiap huruf di buku latihan.</li>
+            <li>Coba ingat dan tulis ulang tanpa melihat tabel.</li>
+        </ol>
+        <p>Kalau sudah hafal Katakana, kita bisa lanjut ke tata bahasa dasar! Beri tahu aku kalau kamu sudah selesai.</p>
+    </div>
+
+    <script>
+        // Fungsi untuk menyimpan dan memuat state dari localStorage
+        function loadState() {
+            const state = localStorage.getItem('state');
+            if (state) {
+                const parsedState = JSON.parse(state);
+                if (parsedState.persiapanN1) {
+                    document.getElementById('persiapan-n1').style.display = 'block';
+                }
+                if (parsedState.mulaiBelajar) {
+                    document.getElementById('mulai-belajar').style.display = 'block';
+                }
+                if (parsedState.nama) {
+                    document.getElementById('nama-input').value = parsedState.nama;
+                    document.getElementById('gambatte-pesan').style.display = 'block';
+                    document.getElementById('gambatte-pesan').innerText = `Gambatte, ${parsedState.nama}!`;
+                    document.getElementById('materi-belajar').style.display = 'block';
+                }
+                if (parsedState.udahHiragana) {
+                    document.getElementById('materi-katakana').style.display = 'block';
+                    document.getElementById('nama-tampil').innerText = parsedState.nama;
+                }
+            }
+        }
+
+        // Fungsi untuk menyimpan state ke localStorage
+        function saveState() {
+            const state = {
+                persiapanN1: document.getElementById('persiapan-n1').style.display === 'block',
+                mulaiBelajar: document.getElementById('mulai-belajar').style.display === 'block',
+                nama: document.getElementById('nama-input').value,
+                udahHiragana: document.getElementById('materi-katakana').style.display === 'block'
+            };
+            localStorage.setItem('state', JSON.stringify(state));
+        }
+
+        // Event listener untuk tombol
+        document.querySelector('.button').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('persiapan-n1').style.display = 'block';
+            saveState();
+        });
+        document.querySelector('.button.no').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Kamu memilih untuk keluar. Sampai jumpa!');
+        });
+        document.querySelectorAll('.button')[2].addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('mulai-belajar').style.display = 'block';
+            saveState();
+        });
+        document.getElementById('submit-nama').addEventListener('click', function(e) {
+            const nama = document.getElementById('nama-input').value;
+            if (nama) {
+                document.getElementById('gambatte-pesan').style.display = 'block';
+                document.getElementById('gambatte-pesan').innerText = `Gambatte, ${nama}!`;
+                document.getElementById('materi-belajar').style.display = 'block';
+                saveState();
+            } else {
+                alert('Silakan masukkan nama kamu!');
+            }
+        });
+        document.getElementById('udah-hiragana').addEventListener('click', function(e) {
+            document.getElementById('materi-katakana').style.display = 'block';
+            document.getElementById('nama-tampil').innerText = document.getElementById('nama-input').value;
+            saveState();
+        });
+
+        // Memuat state saat halaman dimuat
+        window.onload = loadState;
+    </script>
+
+</body>
+</html>

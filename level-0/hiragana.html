@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belajar Hiragana - Luzuno</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .hiragana-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .hiragana-table th, .hiragana-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .hiragana-table th {
+      background-color: gray;
+    }
+    .stroke-order img {
+      width: 100px;
+      margin: 10px;
+      transition: transform 0.3s ease;
+    }
+    .stroke-order img:hover {
+      transform: scale(1.1);
+    }
+    .quiz {
+      background-color: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .quiz button:hover {
+      background-color: #c0392b;
+    }
+    .quiz-options {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .quiz-options button {
+      padding: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .quiz-options button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  .white {
+    color: white
+  }
+  
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">Luzuno</h1>
+      <nav class="navbar">
+        <ul>
+          <li><a href="../index.html">Beranda</a></li>
+          <li><a href="hiragana.html">Hiragana</a></li>
+          <li><a href="katakana.html">Katakana</a></li>
+          <li><a href="kosakata-dasar.html">Kosakata Dasar</a></li>
+          <li><a href="canvas.html">Latihan Menulis</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content">
+    <div class="container">
+      <h1>Belajar Hiragana</h1>
+      <p>Hiragana adalah salah satu dari tiga sistem penulisan dalam bahasa Jepang. Hiragana digunakan untuk menulis kata-kata asli Jepang, partikel, dan akhiran kata kerja.</p>
+
+      <h2>Tabel Hiragana Lengkap</h2>
+      <p>Berikut adalah tabel Hiragana yang terdiri dari 46 huruf dasar:</p>
+      <table class="hiragana-table">
+        <tr class="white">
+          <th>あ (a)</th>
+          <th>い (i)</th>
+          <th>う (u)</th>
+          <th>え (e)</th>
+          <th>お (o)</th>
+        </tr>
+        <tr>
+          <td>か (ka)</td>
+          <td>き (ki)</td>
+          <td>く (ku)</td>
+          <td>け (ke)</td>
+          <td>こ (ko)</td>
+        </tr>
+        <tr>
+          <td>さ (sa)</td>
+          <td>し (shi)</td>
+          <td>す (su)</td>
+          <td>せ (se)</td>
+          <td>そ (so)</td>
+        </tr>
+        <tr>
+          <td>た (ta)</td>
+          <td>ち (chi)</td>
+          <td>つ (tsu)</td>
+          <td>て (te)</td>
+          <td>と (to)</td>
+        </tr>
+        <tr>
+          <td>な (na)</td>
+          <td>に (ni)</td>
+          <td>ぬ (nu)</td>
+          <td>ね (ne)</td>
+          <td>の (no)</td>
+        </tr>
+        <tr>
+          <td>は (ha)</td>
+          <td>ひ (hi)</td>
+          <td>ふ (fu)</td>
+          <td>へ (he)</td>
+          <td>ほ (ho)</td>
+        </tr>
+        <tr>
+          <td>ま (ma)</td>
+          <td>み (mi)</td>
+          <td>む (mu)</td>
+          <td>め (me)</td>
+          <td>も (mo)</td>
+        </tr>
+        <tr>
+          <td>や (ya)</td>
+          <td>-</td>
+          <td>ゆ (yu)</td>
+          <td>-</td>
+          <td>よ (yo)</td>
+        </tr>
+        <tr>
+          <td>ら (ra)</td>
+          <td>り (ri)</td>
+          <td>る (ru)</td>
+          <td>れ (re)</td>
+          <td>ろ (ro)</td>
+        </tr>
+        <tr>
+          <td>わ (wa)</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>を (wo)</td>
+        </tr>
+        <tr>
+          <td>ん (n)</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+      </table>
+
+      <!-- Dakuon dan Handakuon -->
+      <h2>Dakuon dan Handakuon</h2>
+      <p>Dakuon adalah huruf Hiragana yang memiliki tanda <strong>tenten (〃)</strong>, sedangkan Handakuon memiliki tanda <strong>maru (゜)</strong> yang mengubah pelafalannya.</p>
+      <div style="display: flex; gap: 20px;">
+        <!-- Tabel Dakuon -->
+        <table class="hiragana-table">
+          <tr>
+            <th>Huruf</th>
+            <th>Romaji</th>
+          </tr>
+          <tr>
+            <td>が</td>
+            <td>ga</td>
+          </tr>
+          <tr>
+            <td>ぎ</td>
+            <td>gi</td>
+          </tr>
+          <tr>
+            <td>ぐ</td>
+            <td>gu</td>
+          </tr>
+          <tr>
+            <td>げ</td>
+            <td>ge</td>
+          </tr>
+          <tr>
+            <td>ご</td>
+            <td>go</td>
+          </tr>
+          <tr>
+            <td>ざ</td>
+            <td>za</td>
+          </tr>
+          <tr>
+            <td>じ</td>
+            <td>ji</td>
+          </tr>
+          <tr>
+            <td>ず</td>
+            <td>zu</td>
+          </tr>
+          <tr>
+            <td>ぜ</td>
+            <td>ze</td>
+          </tr>
+          <tr>
+            <td>ぞ</td>
+            <td>zo</td>
+          </tr>
+          <tr>
+            <td>だ</td>
+            <td>da</td>
+          </tr>
+          <tr>
+            <td>ぢ</td>
+            <td>ji</td>
+          </tr>
+          <tr>
+            <td>づ</td>
+            <td>zu</td>
+          </tr>
+          <tr>
+            <td>で</td>
+            <td>de</td>
+          </tr>
+          <tr>
+            <td>ど</td>
+            <td>do</td>
+          </tr>
+        </table>
+
+        <!-- Tabel Handakuon -->
+        <table class="hiragana-table">
+          <tr>
+            <th>Huruf</th>
+            <th>Romaji</th>
+          </tr>
+          <tr>
+            <td>ば</td>
+            <td>ba</td>
+          </tr>
+          <tr>
+            <td>び</td>
+            <td>bi</td>
+          </tr>
+          <tr>
+            <td>ぶ</td>
+            <td>bu</td>
+          </tr>
+          <tr>
+            <td>べ</td>
+            <td>be</td>
+          </tr>
+          <tr>
+            <td>ぼ</td>
+            <td>bo</td>
+          </tr>
+          <tr>
+            <td>ぱ</td>
+            <td>pa</td>
+          </tr>
+          <tr>
+            <td>ぴ</td>
+            <td>pi</td>
+          </tr>
+          <tr>
+            <td>ぷ</td>
+            <td>pu</td>
+          </tr>
+          <tr>
+            <td>ぺ</td>
+            <td>pe</td>
+          </tr>
+          <tr>
+            <td>ぽ</td>
+            <td>po</td>
+          </tr>
+        </table>
+      </div>
+      
+      <!-- Yōon -->
+      <h2>Yōon (Huruf Gabungan)</h2>
+      <p>Yōon adalah kombinasi huruf Hiragana yang menggunakan huruf kecil (ゃ, ゅ, ょ) untuk menghasilkan suara gabungan.</p>
+      <table class="hiragana-table">
+        <tr>
+          <th>Huruf</th>
+          <th>Romaji</th>
+        </tr>
+        <tr>
+          <td>きゃ</td>
+          <td>kya</td>
+        </tr>
+        <tr>
+          <td>きゅ</td>
+          <td>kyu</td>
+        </tr>
+        <tr>
+          <td>きょ</td>
+          <td>kyo</td>
+        </tr>
+        <tr>
+          <td>しゃ</td>
+          <td>sha</td>
+        </tr>
+        <tr>
+          <td>しゅ</td>
+          <td>shu</td>
+        </tr>
+        <tr>
+          <td>しょ</td>
+          <td>sho</td>
+        </tr>
+        <tr>
+          <td>ちゃ</td>
+          <td>cha</td>
+        </tr>
+        <tr>
+          <td>ちゅ</td>
+          <td>chu</td>
+        </tr>
+        <tr>
+          <td>ちょ</td>
+          <td>cho</td>
+        </tr>
+        <tr>
+          <td>にゃ</td>
+          <td>nya</td>
+        </tr>
+        <tr>
+          <td>にゅ</td>
+          <td>nyu</td>
+        </tr>
+        <tr>
+          <td>にょ</td>
+          <td>nyo</td>
+        </tr>
+        <tr>
+          <td>ひゃ</td>
+          <td>hya</td>
+        </tr>
+        <tr>
+          <td>ひゅ</td>
+          <td>hyu</td>
+        </tr>
+        <tr>
+          <td>ひょ</td>
+          <td>hyo</td>
+        </tr>
+        <tr>
+          <td>みゃ</td>
+          <td>mya</td>
+        </tr>
+        <tr>
+          <td>みゅ</td>
+          <td>myu</td>
+        </tr>
+        <tr>
+          <td>みょ</td>
+          <td>myo</td>
+        </tr>
+        <tr>
+          <td>りゃ</td>
+          <td>rya</td>
+        </tr>
+        <tr>
+          <td>りゅ</td>
+          <td>ryu</td>
+        </tr>
+        <tr>
+          <td>りょ</td>
+          <td>ryo</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+      <h2>Cara Menulis Hiragana</h2>
+      <p>Setiap huruf Hiragana memiliki urutan goresan yang benar. Biasanya garis horizontal ditulis terlebih dahulu sebelum garis vertikal. Berikut contoh cara menulis beberapa huruf:</p>
+      <div class="stroke-order">
+        <img src="../assets/images/hiragana-a.gif" alt="Cara menulis あ">
+        <img src="../assets/images/hiragana-ka.gif" alt="Cara menulis か">
+        <img src="../assets/images/hiragana-sa.gif" alt="Cara menulis さ">
+      </div>
+
+      <h2>Penggunaan Hiragana</h2>
+      <p>Hiragana digunakan dalam beberapa situasi:</p>
+      <ul>
+        <li>Menulis kata-kata asli Jepang (contoh: さくら - sakura, "bunga sakura").</li>
+        <li>Menulis partikel (contoh: は - wa, partikel penanda topik).</li>
+        <li>Menulis akhiran kata kerja (contoh: たべます - tabemasu, "makan").</li>
+      </ul>
+
+      <h2>Latihan Interaktif</h2>
+      <div class="quiz">
+        <p><strong>Latihan:</strong> Pilih huruf Hiragana yang sesuai dengan romaji berikut:</p>
+        <p id="question"></p>
+        <div class="quiz-options" id="options"></div>
+        <button onclick="generateQuestion()">Acak Lagi</button>
+        <p class="result" id="result"></p>
+      </div>
+
+      <h2>Tips Menghafal Hiragana</h2>
+      <ul>
+        <li>Gunakan flashcard untuk menghafal huruf.</li>
+        <li>Latihan menulis setiap hari.</li>
+        <li>Gunakan aplikasi belajar Hiragana.</li>
+      </ul>
+
+      
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Luzuno. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const hiraganaData = [
+      // Hiragana Dasar
+      { character: 'あ', romaji: 'a' },
+      { character: 'い', romaji: 'i' },
+      { character: 'う', romaji: 'u' },
+      { character: 'え', romaji: 'e' },
+      { character: 'お', romaji: 'o' },
+      { character: 'か', romaji: 'ka' },
+      { character: 'き', romaji: 'ki' },
+      { character: 'く', romaji: 'ku' },
+      { character: 'け', romaji: 'ke' },
+      { character: 'こ', romaji: 'ko' },
+      { character: 'さ', romaji: 'sa' },
+      { character: 'し', romaji: 'shi' },
+      { character: 'す', romaji: 'su' },
+      { character: 'せ', romaji: 'se' },
+      { character: 'そ', romaji: 'so' },
+      { character: 'た', romaji: 'ta' },
+      { character: 'ち', romaji: 'chi' },
+      { character: 'つ', romaji: 'tsu' },
+      { character: 'て', romaji: 'te' },
+      { character: 'と', romaji: 'to' },
+      { character: 'な', romaji: 'na' },
+      { character: 'に', romaji: 'ni' },
+      { character: 'ぬ', romaji: 'nu' },
+      { character: 'ね', romaji: 'ne' },
+      { character: 'の', romaji: 'no' },
+      { character: 'は', romaji: 'ha' },
+      { character: 'ひ', romaji: 'hi' },
+      { character: 'ふ', romaji: 'fu' },
+      { character: 'へ', romaji: 'he' },
+      { character: 'ほ', romaji: 'ho' },
+      { character: 'ま', romaji: 'ma' },
+      { character: 'み', romaji: 'mi' },
+      { character: 'む', romaji: 'mu' },
+      { character: 'め', romaji: 'me' },
+      { character: 'も', romaji: 'mo' },
+      { character: 'や', romaji: 'ya' },
+      { character: 'ゆ', romaji: 'yu' },
+      { character: 'よ', romaji: 'yo' },
+      { character: 'ら', romaji: 'ra' },
+      { character: 'り', romaji: 'ri' },
+      { character: 'る', romaji: 'ru' },
+      { character: 'れ', romaji: 're' },
+      { character: 'ろ', romaji: 'ro' },
+      { character: 'わ', romaji: 'wa' },
+      { character: 'を', romaji: 'wo' },
+      { character: 'ん', romaji: 'n' },
+
+      // Dakuon dan Handakuon
+      { character: 'が', romaji: 'ga' },
+      { character: 'ぎ', romaji: 'gi' },
+      { character: 'ぐ', romaji: 'gu' },
+      { character: 'げ', romaji: 'ge' },
+      { character: 'ご', romaji: 'go' },
+      { character: 'ざ', romaji: 'za' },
+      { character: 'じ', romaji: 'ji' },
+      { character: 'ず', romaji: 'zu' },
+      { character: 'ぜ', romaji: 'ze' },
+      { character: 'ぞ', romaji: 'zo' },
+      { character: 'だ', romaji: 'da' },
+      { character: 'ぢ', romaji: 'ji' },
+      { character: 'づ', romaji: 'zu' },
+      { character: 'で', romaji: 'de' },
+      { character: 'ど', romaji: 'do' },
+      { character: 'ば', romaji: 'ba' },
+      { character: 'び', romaji: 'bi' },
+      { character: 'ぶ', romaji: 'bu' },
+      { character: 'べ', romaji: 'be' },
+      { character: 'ぼ', romaji: 'bo' },
+      { character: 'ぱ', romaji: 'pa' },
+      { character: 'ぴ', romaji: 'pi' },
+      { character: 'ぷ', romaji: 'pu' },
+      { character: 'ぺ', romaji: 'pe' },
+      { character: 'ぽ', romaji: 'po' },
+
+      // Yōon
+      { character: 'きゃ', romaji: 'kya' },
+      { character: 'きゅ', romaji: 'kyu' },
+      { character: 'きょ', romaji: 'kyo' },
+      { character: 'しゃ', romaji: 'sha' },
+      { character: 'しゅ', romaji: 'shu' },
+      { character: 'しょ', romaji: 'sho' },
+      { character: 'ちゃ', romaji: 'cha' },
+      { character: 'ちゅ', romaji: 'chu' },
+      { character: 'ちょ', romaji: 'cho' },
+      { character: 'にゃ', romaji: 'nya' },
+      { character: 'にゅ', romaji: 'nyu' },
+      { character: 'にょ', romaji: 'nyo' },
+      { character: 'ひゃ', romaji: 'hya' },
+      { character: 'ひゅ', romaji: 'hyu' },
+      { character: 'ひょ', romaji: 'hyo' },
+      { character: 'みゃ', romaji: 'mya' },
+      { character: 'みゅ', romaji: 'myu' },
+      { character: 'みょ', romaji: 'myo' },
+      { character: 'りゃ', romaji: 'rya' },
+      { character: 'りゅ', romaji: 'ryu' },
+      { character: 'りょ', romaji: 'ryo' },
+    ];
+
+    let currentQuestion;
+
+    function generateQuestion() {
+      const randomIndex = Math.floor(Math.random() * hiraganaData.length);
+      currentQuestion = hiraganaData[randomIndex];
+
+      document.getElementById('question').innerText = `Romaji: ${currentQuestion.romaji}`;
+
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+
+      const shuffledData = [...hiraganaData].sort(() => Math.random() - 0.5).slice(0, 4);
+      if (!shuffledData.includes(currentQuestion)) {
+        shuffledData[Math.floor(Math.random() * 4)] = currentQuestion;
+      }
+
+      shuffledData.forEach(item => {
+        const button = document.createElement('button');
+        button.innerText = item.character;
+        button.onclick = () => checkAnswer(item.character);
+        options.appendChild(button);
+      });
+
+      document.getElementById('result').innerText = '';
+    }
+
+    function checkAnswer(selectedCharacter) {
+      const result = document.getElementById('result');
+      if (selectedCharacter === currentQuestion.character) {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = `Salah! Jawaban yang benar adalah ${currentQuestion.character}.`;
+        result.style.color = 'red';
+      }
+    }
+
+    // Generate first question on page load
+    window.onload = generateQuestion;
+  </script>
+</body>
+</html>
+

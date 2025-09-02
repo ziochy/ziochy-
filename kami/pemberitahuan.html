@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Luzuno - Kirim Pemberitahuan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+      authDomain: "luzuno-web.firebaseapp.com",
+      projectId: "luzuno-web",
+      storageBucket: "luzuno-web.appspot.com",
+      messagingSenderId: "728661935868",
+      appId: "1:728661935868:web:859ebff3a63b1210acb979"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Elemen DOM
+    const form = document.getElementById('notifForm');
+    const pesanInput = document.getElementById('pesan');
+    const statusDiv = document.getElementById('status');
+    const charCount = document.getElementById('charCount');
+    const loadingIndicator = document.getElementById('loading');
+    const adminPanel = document.getElementById('adminPanel');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const notificationHistoryBtn = document.getElementById('historyBtn');
+    const jenisNotifSelect = document.getElementById('jenisNotif');
+    const targetNotifSelect = document.getElementById('targetNotif');
+    const userIdInput = document.getElementById('userId');
+    const userSearchBtn = document.getElementById('userSearchBtn');
+    const userInfoDiv = document.getElementById('userInfo');
+
+    // Character counter
+    pesanInput.addEventListener('input', () => {
+      const remaining = 500 - pesanInput.value.length;
+      charCount.textContent = `${pesanInput.value.length}/500 karakter`;
+      charCount.style.color = remaining < 50 ? '#ff4757' : '#666';
+    });
+
+    // Handle jenis notifikasi change
+    jenisNotifSelect.addEventListener('change', (e) => {
+      document.querySelectorAll('.jenis-badge').forEach(badge => {
+        badge.classList.remove('active');
+      });
+      if (e.target.value) {
+        document.querySelector(`.jenis-badge[data-value="${e.target.value}"]`).classList.add('active');
+      }
+    });
+
+    // Handle target notifikasi change
+    targetNotifSelect.addEventListener('change', (e) => {
+      document.getElementById('userTargetContainer').style.display = 
+        e.target.value === 'user' ? 'block' : 'none';
+    });
+
+    // Cari user berdasarkan ID
+    userSearchBtn.addEventListener('click', async () => {
+      const userId = userIdInput.value.trim();
+      if (!userId) return;
+
+      try {
+        userSearchBtn.disabled = true;
+        userInfoDiv.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Mencari user...</p>';
+        
+        const userDoc = await getDoc(doc(db, "users", userId));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          userInfoDiv.innerHTML = `
+            <div class="user-found">
+              <img src="${userData.avatar || 'https://via.placeholder.com/50'}" 
+                   alt="${userData.username}" class="user-avatar">
+              <div class="user-details">
+                <h4>${userData.username || 'Tanpa nama'}</h4>
+                <p>${userData.email || 'Tidak ada email'}</p>
+                <small>ID: ${userId}</small>
+              </div>
+            </div>
+          `;
+        } else {
+          userInfoDiv.innerHTML = '<p class="error"><i class="fas fa-exclamation-circle"></i> User tidak ditemukan</p>';
+        }
+      } catch (error) {
+        console.error("Error searching user:", error);
+        userInfoDiv.innerHTML = `<p class="error"><i class="fas fa-exclamation-circle"></i> Error: ${error.message}</p>`;
+      } finally {
+        userSearchBtn.disabled = false;
+      }
+    });
+
+    // Cek auth status
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "/login.html";
+      } else if (user.email !== "riskiziochy@gmail.com") {
+        alert("Akses ditolak: Hanya admin yang diizinkan");
+        window.location.href = "/";
+      } else {
+        adminPanel.style.display = 'block';
+        document.getElementById('adminEmail').textContent = user.email;
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = "/login.html";
+      });
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pesan = pesanInput.value.trim();
+      const jenis = jenisNotifSelect.value;
+      const target = targetNotifSelect.value;
+      const userId = target === 'user' ? userIdInput.value.trim() : null;
+      
+      if (pesan === "") {
+        showStatus("Pesan tidak boleh kosong", 'error');
+        return;
+      }
+      
+      if (pesan.length > 500) {
+        showStatus("Pesan terlalu panjang (maks 500 karakter)", 'error');
+        return;
+      }
+      
+      if (target === 'user' && !userId) {
+        showStatus("Harap masukkan ID user target", 'error');
+        return;
+      }
+      
+      try {
+        loadingIndicator.style.display = 'block';
+        form.querySelector('button').disabled = true;
+        
+        const notifData = {
+          pesan: pesan,
+          jenis: jenis,
+          waktu: serverTimestamp(),
+          admin: auth.currentUser.email,
+          target: target
+        };
+        
+        if (target === 'user') {
+          notifData.userId = userId;
+        }
+        
+        await addDoc(collection(db, "pemberitahuan"), notifData);
+        
+        showStatus("Pemberitahuan berhasil dikirim!", 'success');
+        form.reset();
+        charCount.textContent = "0/500 karakter";
+        userInfoDiv.innerHTML = '';
+        document.querySelectorAll('.jenis-badge').forEach(badge => {
+          badge.classList.remove('active');
+        });
+      } catch (error) {
+        console.error("Error sending notification:", error);
+        showStatus("Gagal mengirim pemberitahuan: " + error.message, 'error');
+      } finally {
+        loadingIndicator.style.display = 'none';
+        form.querySelector('button').disabled = false;
+      }
+    });
+
+    function showStatus(message, type) {
+      statusDiv.textContent = message;
+      statusDiv.className = type;
+      setTimeout(() => {
+        statusDiv.textContent = '';
+        statusDiv.className = '';
+      }, 5000);
+    }
+  </script>
+
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --error: #f72585;
+      --warning: #f8961e;
+      --event: #7209b7;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    #adminPanel {
+      display: none;
+      width: 100%;
+      max-width: 800px;
+      margin: 2rem;
+    }
+    
+    .admin-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .admin-header {
+      background: var(--primary);
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .admin-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .admin-header .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .admin-header .user-info i {
+      font-size: 1.2rem;
+    }
+    
+    .admin-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid white;
+      color: white;
+    }
+    
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .admin-content {
+      padding: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    textarea, select, input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--light-gray);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s ease;
+    }
+    
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    textarea:focus, select:focus, input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .char-counter {
+      text-align: right;
+      font-size: 0.875rem;
+      color: var(--gray);
+      margin-top: 0.25rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    
+    .btn-block {
+      display: block;
+      width: 100%;
+    }
+    
+    #status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+    }
+    
+    #status.success {
+      display: block;
+      background: rgba(76, 201, 240, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(76, 201, 240, 0.3);
+    }
+    
+    #status.error {
+      display: block;
+      background: rgba(247, 37, 133, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(247, 37, 133, 0.3);
+    }
+    
+    #loading {
+      display: none;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(67, 97, 238, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .admin-footer {
+      text-align: center;
+      padding: 1rem;
+      border-top: 1px solid var(--light-gray);
+      color: var(--gray);
+      font-size: 0.875rem;
+    }
+    
+    /* Jenis Notifikasi Styles */
+    .jenis-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .jenis-badge {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid var(--light-gray);
+      font-weight: 500;
+    }
+    
+    .jenis-badge:hover {
+      transform: translateY(-2px);
+    }
+    
+    .jenis-badge.active {
+      border-color: currentColor;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .jenis-badge[data-value="info"] {
+      color: var(--primary);
+    }
+    
+    .jenis-badge[data-value="penting"] {
+      color: var(--error);
+    }
+    
+    .jenis-badge[data-value="update"] {
+      color: var(--warning);
+    }
+    
+    .jenis-badge[data-value="event"] {
+      color: var(--event);
+    }
+    
+    /* User Search Styles */
+    #userTargetContainer {
+      display: none;
+      margin-top: 1rem;
+    }
+    
+    .user-search-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .user-search-container input {
+      flex: 1;
+    }
+    
+    .user-search-container button {
+      width: auto;
+    }
+    
+    #userInfo {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: var(--light-gray);
+    }
+    
+    .user-found {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .user-details h4 {
+      margin-bottom: 0.25rem;
+    }
+    
+    .user-details p, .user-details small {
+      color: var(--gray);
+    }
+    
+    .error {
+      color: var(--error);
+    }
+    
+    @media (max-width: 768px) {
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .admin-actions {
+        width: 100%;
+      }
+      
+      .btn {
+        flex: 1;
+        justify-content: center;
+      }
+      
+      .jenis-container {
+        flex-wrap: wrap;
+      }
+      
+      .jenis-badge {
+        min-width: calc(50% - 0.5rem);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="adminPanel">
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1><i class="fas fa-bell"></i> Panel Admin Luzuno</h1>
+      <div class="user-info">
+        <i class="fas fa-user-shield"></i>
+        <span id="adminEmail">admin@example.com</span>
+      </div>
+    </div>
+    
+    <div class="admin-content">
+      <div class="admin-actions">
+        <button id="historyBtn" class="btn btn-outline">
+          <i class="fas fa-history"></i> Riwayat
+        </button>
+        <button id="logoutBtn" class="btn btn-outline">
+          <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+      </div>
+      
+      <h2 style="margin: 1.5rem 0 1rem; color: var(--primary);">
+        <i class="fas fa-paper-plane"></i> Kirim Pemberitahuan
+      </h2>
+      
+      <form id="notifForm">
+        <!-- Jenis Notifikasi -->
+        <div class="form-group">
+          <label>Jenis Pemberitahuan</label>
+          <select id="jenisNotif" required>
+            <option value="">Pilih jenis pemberitahuan</option>
+            <option value="info">Informasi</option>
+            <option value="penting">Penting</option>
+            <option value="update">Pembaruan</option>
+            <option value="event">Event</option>
+          </select>
+          
+          <div class="jenis-container">
+            <div class="jenis-badge" data-value="info">
+              <i class="fas fa-info-circle"></i> Informasi
+            </div>
+            <div class="jenis-badge" data-value="penting">
+              <i class="fas fa-exclamation-circle"></i> Penting
+            </div>
+            <div class="jenis-badge" data-value="update">
+              <i class="fas fa-sync-alt"></i> Pembaruan
+            </div>
+            <div class="jenis-badge" data-value="event">
+              <i class="fas fa-calendar-alt"></i> Event
+            </div>
+          </div>
+        </div>
+        
+        <!-- Target Notifikasi -->
+        <div class="form-group">
+          <label>Target Pemberitahuan</label>
+          <select id="targetNotif" required>
+            <option value="all">Semua Pengguna</option>
+            <option value="user">User Tertentu</option>
+          </select>
+          
+          <div id="userTargetContainer">
+            <div class="user-search-container">
+              <input type="text" id="userId" placeholder="Masukkan ID User">
+              <button type="button" id="userSearchBtn" class="btn btn-primary">
+                <i class="fas fa-search"></i> Cari
+              </button>
+            </div>
+            <div id="userInfo"></div>
+          </div>
+        </div>
+        
+        <!-- Pesan Notifikasi -->
+        <div class="form-group">
+          <label for="pesan">Pesan Pemberitahuan</label>
+          <textarea id="pesan" placeholder="Tulis pesan pemberitahuan..." required></textarea>
+          <div id="charCount" class="char-counter">0/500 karakter</div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-paper-plane"></i> Kirim Pemberitahuan
+        </button>
+        
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <p>Mengirim pemberitahuan...</p>
+        </div>
+        
+        <div id="status"></div>
+      </form>
+    </div>
+    
+    <div class="admin-footer">
+      Luzuno Web Admin Panel &copy; 2026
+      <a href="panel pemberitahuan.html">panel</a>
+          
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+  

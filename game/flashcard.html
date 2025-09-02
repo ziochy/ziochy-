@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Kanji - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+    :root {
+            --sakura-pink: #ffb7c5;
+            --sakura-dark: #9f4d60;
+            --sakura-bg: #fff4f7;
+            --text-color: #4a2a33;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --sakura-pink: #6c5b7b;
+            --sakura-dark: #355c7d;
+            --sakura-bg: #2d3436;
+            --text-color: #dfe6e9;
+            --card-bg: rgba(45, 52, 54, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sawarabi Mincho', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--sakura-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .level-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .level-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Kiwi Maru', serif;
+            background: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .level-btn.n5::before { background: #ff6b6b; }
+        .level-btn.n4::before { background: #ff9f43; }
+        .level-btn.n3::before { background: #54a0ff; }
+        .level-btn.n2::before { background: #2ecc71; }
+        .level-btn.n1::before { background: #a55eea; }
+
+        .level-btn.active {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .flashcard-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 2rem auto;
+            min-height: 400px;
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 0rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard.swipe-right {
+            transform: translateX(150%) rotate(15deg);
+        }
+
+        .flashcard.swipe-left {
+            transform: translateX(-150%) rotate(-15deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .card-back {
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    padding: 1rem 1.5rem 1rem 3rem; /* Top Right Bottom Left - lebih ke kanan */
+    font-size: 0.9rem;
+    text-align: left; /* Pastikan rata kiri */
+    margin-left: 5px; /* Geser seluruh konten ke kanan */
+}
+
+/* Untuk elemen di dalam card-back */
+.card-back .details {
+    margin-left: 10px; /* Geser konten detail lebih ke kanan */
+}
+
+/* Geser contoh kalimat lebih ke kanan */
+.card-back .example {
+    margin-left: 5px;
+    padding-left: 5px;
+}
+
+/* Geser stroke info ke kanan bawah */
+.card-back .strokes {
+    right: 20px; /* Posisikan lebih dari kanan */
+    left: auto; /* Pastikan tidak ada left positioning */
+}
+        
+.kanji {
+    font-size: 5rem; /* Perkecil ukuran kanji */
+    margin: 0.5rem 0; /* Kurangi margin */
+}
+
+.details {
+    font-size: 0.9rem; /* Ukuran font lebih kecil */
+    width: 95%; /* Lebar dikurangi */
+    margin: 0 auto; /* Pusatkan */
+}
+
+.reading-section, .example {
+    padding: 0.3rem; /* Padding lebih kecil */
+    margin: 0.3rem 0; /* Margin lebih kecil */
+}
+
+.strokes {
+    font-size: 0.8rem; /* Ukuran lebih kecil */
+    bottom: 0.5rem; /* Posisi lebih atas */
+    right: 0.5rem; /* Posisi lebih kiri */
+}
+
+        .reading-title {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            color: var(--sakura-dark);
+        }
+
+        .example {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        
+
+        .progress-container {
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--sakura-pink);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .control-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            background: var(--sakura-dark);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hint-text {
+            text-align: center;
+            margin: 2rem 0;
+            opacity: 0.7;
+        }
+
+        
+    </style>
+</head>
+<body>
+   <!-- Elemen Audio -->
+    <audio id="flipSound" src="flip.mp3" preload="auto"></audio>
+    <audio id="swipeLeftSound" src="card.mp3" preload="auto"></audio>
+    <audio id="swipeRightSound" src="card.mp3" preload="auto"></audio>
+    <audio id="levelChangeSound" src="#" preload="auto"></audio>
+    <audio id="completeSound" src="#" preload="auto"></audio>
+    <audio id="resetSound" src="#" preload="auto"></audio>
+
+    <div class="container">
+        <div class="level-selector">
+            <button class="level-btn n5" data-level="n5">JLPT N5</button>
+            <button class="level-btn n4" data-level="n4">JLPT N4</button>
+            <button class="level-btn n3" data-level="n3">JLPT N3</button>
+            <button class="level-btn n2" data-level="n2">JLPT N2</button>
+            <button class="level-btn n1" data-level="n1">JLPT N1</button>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="flashcard-wrapper" id="flashcardWrapper"></div>
+
+        <div class="hint-text">Geser ke kiri jika sudah hafal ❤️ | Geser ke kanan untuk belajar lagi 💡 | Klik untuk melihat arti</div>
+
+        <div class="controls">
+            <button class="control-btn" id="resetBtn">⟳ Reset</button>
+            <button class="control-btn" id="themeBtn">🌙 Tema</button>
+        </div>
+    </div>
+         
+    <a href="../tes/kartu.html">Flashcard Kosakata </a>
+
+    <script>
+        // Inisialisasi Audio
+        const audio = {
+            flip: document.getElementById('flipSound'),
+            swipeLeft: document.getElementById('swipeLeftSound'),
+            swipeRight: document.getElementById('swipeRightSound'),
+            levelChange: document.getElementById('levelChangeSound'),
+            complete: document.getElementById('completeSound'),
+            reset: document.getElementById('resetSound')
+        };
+
+        const kanjiData = {
+            n5: [
+                { kanji: '一', onyomi: 'イチ, イツ', kunyomi: 'ひと, ひと(つ)', meaning: 'Satu', examples: ['一人 (hitori - satu orang)', '一月 (ichigatsu - Januari)', '一つ (hitotsu - satu benda)'], strokes: 1, jlpt: 'N5' },
+                { kanji: '二', onyomi: 'ニ, ジ', kunyomi: 'ふた, ふた(つ)', meaning: 'Dua', examples: ['二日 (futsuka - tanggal 2)', '二人 (futari - dua orang)', '二つ (futatsu - dua benda)'], strokes: 2, jlpt: 'N5' },
+                { kanji: '三', onyomi: 'サン', kunyomi: 'み, み(つ), みっ(つ)', meaning: 'Tiga', examples: ['三日 (mikka - tanggal 3)', '三つ (mittsu - tiga benda)', '三時 (sanji - pukul 3)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '四', onyomi: 'シ', kunyomi: 'よ, よ(つ), よっ(つ), よん', meaning: 'Empat', examples: ['四時 (yoji - pukul 4)', '四人 (yonin - empat orang)', '四つ (yottsu - empat benda)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '五', onyomi: 'ゴ', kunyomi: 'いつ, いつ(つ)', meaning: 'Lima', examples: ['五日 (itsuka - tanggal 5)', '五つ (itsutsu - lima benda)', '五時 (goji - pukul 5)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '六', onyomi: 'ロク', kunyomi: 'む, む(つ), むっ(つ), むい', meaning: 'Enam', examples: ['六時 (rokuji - pukul 6)', '六日 (muika - tanggal 6)', '六つ (muttsu - enam benda)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '七', onyomi: 'シチ', kunyomi: 'なな, なな(つ), なの', meaning: 'Tujuh', examples: ['七時 (shichiji - pukul 7)', '七日 (nanoka - tanggal 7)', '七つ (nanatsu - tujuh benda)'], strokes: 2, jlpt: 'N5' },
+                { kanji: '八', onyomi: 'ハチ', kunyomi: 'や, や(つ), やっ(つ), よう', meaning: 'Delapan', examples: ['八時 (hachiji - pukul 8)', '八日 (yōka - tanggal 8)', '八つ (yattsu - delapan benda)'], strokes: 2, jlpt: 'N5' },
+                { kanji: '九', onyomi: 'キュウ, ク', kunyomi: 'ここの, ここの(つ)', meaning: 'Sembilan', examples: ['九時 (kuji - pukul 9)', '九日 (kokonoka - tanggal 9)', '九つ (kokonotsu - sembilan benda)'], strokes: 2, jlpt: 'N5' },
+                { kanji: '十', onyomi: 'ジュウ, ジッ', kunyomi: 'とお, と', meaning: 'Sepuluh', examples: ['十時 (jūji - pukul 10)', '十日 (tōka - tanggal 10)', '十人 (jūnin - sepuluh orang)'], strokes: 2, jlpt: 'N5' },
+                { kanji: '百', onyomi: 'ヒャク', kunyomi: 'もも', meaning: 'Ratus', examples: ['百円 (hyakuen - 100 yen)', '百人 (hyakunin - seratus orang)', '三百 (sanbyaku - tiga ratus)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '千', onyomi: 'セン', kunyomi: 'ち', meaning: 'Ribu', examples: ['千円 (sen\'en - 1000 yen)', '千葉 (Chiba - prefektur Chiba)', '三千 (sanzen - tiga ribu)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '万', onyomi: 'マン, バン', kunyomi: 'よろず', meaning: 'Sepuluh Ribu', examples: ['一万 (ichiman - 10,000)', '万国 (bankoku - semua negara)', '百万 (hyakuman - satu juta)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '円', onyomi: 'エン', kunyomi: 'まる', meaning: 'Yen, Bulat', examples: ['千円 (sen\'en - 1000 yen)', '円い (marui - bulat)', '円高 (endaka - yen kuat)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '日', onyomi: 'ニチ, ジツ', kunyomi: 'ひ, か, び', meaning: 'Hari, Matahari', examples: ['日曜日 (nichiyōbi - Minggu)', '日本 (Nihon - Jepang)', '三日 (mikka - tanggal 3)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '月', onyomi: 'ゲツ, ガツ', kunyomi: 'つき', meaning: 'Bulan, Bulan (kalender)', examples: ['月曜日 (getsuyōbi - Senin)', '一月 (ichigatsu - Januari)', '月見 (tsukimi - melihat bulan)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '火', onyomi: 'カ', kunyomi: 'ひ, ほ', meaning: 'Api', examples: ['火曜日 (kayōbi - Selasa)', '火事 (kaji - kebakaran)', '花火 (hanabi - kembang api)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '水', onyomi: 'スイ', kunyomi: 'みず', meaning: 'Air', examples: ['水曜日 (suiyōbi - Rabu)', '水泳 (suiei - berenang)', '水色 (mizuiro - warna biru air)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '木', onyomi: 'モク, ボク', kunyomi: 'き, こ', meaning: 'Pohon, Kayu', examples: ['木曜日 (mokuyōbi - Kamis)', '木の葉 (konoha - daun)', '木材 (mokuzai - kayu bahan)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '金', onyomi: 'キン, コン', kunyomi: 'かね, かな', meaning: 'Uang, Emas', examples: ['金曜日 (kinyōbi - Jumat)', 'お金 (okane - uang)', '金色 (kin\'iro - warna emas)'], strokes: 8, jlpt: 'N5' },
+                { kanji: '土', onyomi: 'ド, ト', kunyomi: 'つち', meaning: 'Tanah', examples: ['土曜日 (doyōbi - Sabtu)', '土 (tsuchi - tanah)', '土産 (miyage - oleh-oleh)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '年', onyomi: 'ネン', kunyomi: 'とし', meaning: 'Tahun', examples: ['今年 (kotoshi - tahun ini)', '去年 (kyonen - tahun lalu)', '三年生 (sannensei - siswa kelas 3)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '時', onyomi: 'ジ', kunyomi: 'とき', meaning: 'Waktu', examples: ['時間 (jikan - waktu)', '三時 (sanji - pukul 3)', '時計 (tokei - jam)'], strokes: 10, jlpt: 'N5' },
+                { kanji: '間', onyomi: 'カン, ケン', kunyomi: 'あいだ, ま', meaning: 'Interval, Ruang', examples: ['時間 (jikan - waktu)', '人間 (ningen - manusia)', '間に合う (maniau - tepat waktu)'], strokes: 12, jlpt: 'N5' },
+                { kanji: '人', onyomi: 'ジン, ニン', kunyomi: 'ひと', meaning: 'Orang', examples: ['日本人 (Nihonjin - orang Jepang)', '三人 (sannin - tiga orang)', '人々 (hitobito - orang-orang)'], strokes: 2, jlpt: 'N5' },
+                { kanji: '男', onyomi: 'ダン, ナン', kunyomi: 'おとこ', meaning: 'Pria', examples: ['男子 (danshi - anak laki-laki)', '男の子 (otoko no ko - anak laki-laki)', '男女 (danjo - pria dan wanita)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '女', onyomi: 'ジョ, ニョ, ニョウ', kunyomi: 'おんな, め', meaning: 'Wanita', examples: ['女子 (joshi - anak perempuan)', '女の子 (onna no ko - anak perempuan)', '女性 (josei - wanita)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '子', onyomi: 'シ, ス', kunyomi: 'こ', meaning: 'Anak', examples: ['子供 (kodomo - anak-anak)', '女子 (joshi - anak perempuan)', '椅子 (isu - kursi)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '父', onyomi: 'フ', kunyomi: 'ちち', meaning: 'Ayah', examples: ['父親 (chichioya - ayah)', 'お父さん (otōsan - ayah (panggilan))', '父母 (fubo - orang tua)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '母', onyomi: 'ボ', kunyomi: 'はは', meaning: 'Ibu', examples: ['母親 (hahaoya - ibu)', 'お母さん (okāsan - ibu (panggilan))', '父母 (fubo - orang tua)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '友', onyomi: 'ユウ', kunyomi: 'とも', meaning: 'Teman', examples: ['友達 (tomodachi - teman)', '友人 (yūjin - teman)', '友情 (yūjō - persahabatan)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '学', onyomi: 'ガク', kunyomi: 'まな(ぶ)', meaning: 'Belajar', examples: ['学生 (gakusei - pelajar)', '学校 (gakkō - sekolah)', '大学 (daigaku - universitas)'], strokes: 8, jlpt: 'N5' },
+                { kanji: '校', onyomi: 'コウ', kunyomi: '-', meaning: 'Sekolah', examples: ['学校 (gakkō - sekolah)', '校長 (kōchō - kepala sekolah)', '校舎 (kōsha - gedung sekolah)'], strokes: 10, jlpt: 'N5' },
+                { kanji: '先', onyomi: 'セン', kunyomi: 'さき', meaning: 'Sebelum, Depan', examples: ['先生 (sensei - guru)', '先週 (senshū - minggu lalu)', '先月 (sengetsu - bulan lalu)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '生', onyomi: 'セイ, ショウ', kunyomi: 'い(きる), う(む), は(える)', meaning: 'Hidup, Lahir', examples: ['学生 (gakusei - pelajar)', '生活 (seikatsu - kehidupan)', '誕生日 (tanjōbi - ulang tahun)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '山', onyomi: 'サン', kunyomi: 'やま', meaning: 'Gunung', examples: ['山 (yama - gunung)', '富士山 (Fujisan - Gunung Fuji)', '火山 (kazan - gunung berapi)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '川', onyomi: 'セン', kunyomi: 'かわ', meaning: 'Sungai', examples: ['川 (kawa - sungai)', '小川 (ogawa - sungai kecil)', '河川 (kasen - sungai)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '田', onyomi: 'デン', kunyomi: 'た', meaning: 'Sawah', examples: ['田んぼ (tanbo - sawah)', '田舎 (inaka - pedesaan)', '水田 (suiden - sawah)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '天', onyomi: 'テン', kunyomi: 'あま', meaning: 'Langit', examples: ['天気 (tenki - cuaca)', '天の川 (amanogawa - bimasakti)', '天国 (tengoku - surga)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '気', onyomi: 'キ, ケ', kunyomi: '-', meaning: 'Semangat, Udara', examples: ['元気 (genki - sehat)', '天気 (tenki - cuaca)', '気分 (kibun - perasaan)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '雨', onyomi: 'ウ', kunyomi: 'あめ', meaning: 'Hujan', examples: ['雨 (ame - hujan)', '大雨 (ōame - hujan deras)', '雨天 (uten - cuaca hujan)'], strokes: 8, jlpt: 'N5' },
+                { kanji: '電', onyomi: 'デン', kunyomi: '-', meaning: 'Listrik', examples: ['電気 (denki - listrik)', '電車 (densha - kereta listrik)', '電話 (denwa - telepon)'], strokes: 13, jlpt: 'N5' },
+                { kanji: '車', onyomi: 'シャ', kunyomi: 'くるま', meaning: 'Mobil, Kendaraan', examples: ['電車 (densha - kereta listrik)', '車 (kuruma - mobil)', '自転車 (jitensha - sepeda)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '語', onyomi: 'ゴ', kunyomi: 'かた(る)', meaning: 'Bahasa', examples: ['日本語 (Nihongo - bahasa Jepang)', '英語 (Eigo - bahasa Inggris)', '会話 (kaiwa - percakapan)'], strokes: 14, jlpt: 'N5' },
+                { kanji: '耳', onyomi: 'ジ', kunyomi: 'みみ', meaning: 'Telinga', examples: ['耳 (mimi - telinga)', '耳鼻科 (jibika - THT)', '耳が痛い (mimi ga itai - sakit telinga)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '目', onyomi: 'モク, ボク', kunyomi: 'め', meaning: 'Mata', examples: ['目 (me - mata)', '目次 (mokuji - daftar isi)', '目薬 (megusuri - obat tetes mata)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '口', onyomi: 'コウ, ク', kunyomi: 'くち', meaning: 'Mulut', examples: ['口 (kuchi - mulut)', '人口 (jinkō - populasi)', '出口 (deguchi - pintu keluar)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '手', onyomi: 'シュ', kunyomi: 'て', meaning: 'Tangan', examples: ['手 (te - tangan)', '手紙 (tegami - surat)', '歌手 (kashu - penyanyi)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '足', onyomi: 'ソク', kunyomi: 'あし', meaning: 'Kaki', examples: ['足 (ashi - kaki)', '足音 (ashioto - suara langkah kaki)', '満足 (manzoku - puas)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '体', onyomi: 'タイ, テイ', kunyomi: 'からだ', meaning: 'Tubuh', examples: ['体 (karada - tubuh)', '体育 (taiiku - olahraga)', '体力 (tairyoku - stamina)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '力', onyomi: 'リョク, リキ', kunyomi: 'ちから', meaning: 'Kekuatan', examples: ['力 (chikara - kekuatan)', '努力 (doryoku - usaha)', '電力 (denryoku - tenaga listrik)'], strokes: 2, jlpt: 'N5' },
+                { kanji: '心', onyomi: 'シン', kunyomi: 'こころ', meaning: 'Hati, Pikiran', examples: ['心 (kokoro - hati)', '安心 (anshin - tenang)', '心理学 (shinrigaku - psikologi)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '名', onyomi: 'メイ, ミョウ', kunyomi: 'な', meaning: 'Nama', examples: ['名前 (namae - nama)', '有名 (yūmei - terkenal)', '名字 (myōji - nama keluarga)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '字', onyomi: 'ジ', kunyomi: 'あざ', meaning: 'Huruf, Karakter', examples: ['漢字 (kanji - karakter Cina)', '文字 (moji - huruf)', '数字 (sūji - angka)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '文', onyomi: 'ブン, モン', kunyomi: 'ふみ', meaning: 'Tulisan', examples: ['作文 (sakubun - menulis esai)', '文化 (bunka - budaya)', '文房具 (bunbōgu - alat tulis)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '本', onyomi: 'ホン', kunyomi: 'もと', meaning: 'Buku, Asli', examples: ['本 (hon - buku)', '日本 (Nihon - Jepang)', '本当 (hontō - sebenarnya)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '村', onyomi: 'ソン', kunyomi: 'むら', meaning: 'Desa', examples: ['村 (mura - desa)', '村人 (murabito - penduduk desa)', '農村 (nōson - desa pertanian)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '町', onyomi: 'チョウ', kunyomi: 'まち', meaning: 'Kota Kecil', examples: ['町 (machi - kota kecil)', '町長 (chōchō - walikota)', '下町 (shitamachi - distrik kota tua)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '市', onyomi: 'シ', kunyomi: 'いち', meaning: 'Kota, Pasar', examples: ['市 (shi - kota)', '市場 (ichiba - pasar)', '都市 (toshi - kota besar)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '社', onyomi: 'シャ', kunyomi: 'やしろ', meaning: 'Kuil, Perusahaan', examples: ['会社 (kaisha - perusahaan)', '神社 (jinja - kuil Shinto)', '社会 (shakai - masyarakat)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '会', onyomi: 'カイ, エ', kunyomi: 'あ(う)', meaning: 'Bertemu, Pertemuan', examples: ['会社 (kaisha - perusahaan)', '会う (au - bertemu)', '会議 (kaigi - rapat)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '店', onyomi: 'テン', kunyomi: 'みせ', meaning: 'Toko', examples: ['店 (mise - toko)', '喫茶店 (kissaten - kafe)', '店員 (ten\'in - karyawan toko)'], strokes: 8, jlpt: 'N5' },
+                { kanji: '駅', onyomi: 'エキ', kunyomi: '-', meaning: 'Stasiun', examples: ['駅 (eki - stasiun)', '駅前 (ekimae - depan stasiun)', '駅長 (ekichō - kepala stasiun)'], strokes: 14, jlpt: 'N5' },
+                { kanji: '道', onyomi: 'ドウ', kunyomi: 'みち', meaning: 'Jalan', examples: ['道 (michi - jalan)', '道路 (dōro - jalan raya)', '道具 (dōgu - alat)'], strokes: 12, jlpt: 'N5' },
+                { kanji: '話', onyomi: 'ワ', kunyomi: 'はな(す), はなし', meaning: 'Bicara, Cerita', examples: ['話す (hanasu - berbicara)', '会話 (kaiwa - percakapan)', '電話 (denwa - telepon)'], strokes: 13, jlpt: 'N5' },
+                { kanji: '聞', onyomi: 'ブン, モン', kunyomi: 'き(く)', meaning: 'Mendengar', examples: ['聞く (kiku - mendengar)', '新聞 (shinbun - koran)', '聞き取り (kikitori - mendengarkan)'], strokes: 14, jlpt: 'N5' },
+                { kanji: '食', onyomi: 'ショク, ジキ', kunyomi: 'た(べる), く(う)', meaning: 'Makan', examples: ['食べる (taberu - makan)', '食事 (shokuji - makan)', '食堂 (shokudō - kantin)'], strokes: 9, jlpt: 'N5' },
+                { kanji: '飲', onyomi: 'イン', kunyomi: 'の(む)', meaning: 'Minum', examples: ['飲む (nomu - minum)', '飲み物 (nomimono - minuman)', '飲食 (inshoku - makan dan minum)'], strokes: 12, jlpt: 'N5' },
+                { kanji: '行', onyomi: 'コウ, ギョウ', kunyomi: 'い(く), おこな(う)', meaning: 'Pergi, Melakukan', examples: ['行く (iku - pergi)', '銀行 (ginkō - bank)', '行動 (kōdō - tindakan)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '来', onyomi: 'ライ', kunyomi: 'く(る)', meaning: 'Datang', examples: ['来る (kuru - datang)', '来年 (rainen - tahun depan)', '来月 (raigetsu - bulan depan)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '見', onyomi: 'ケン', kunyomi: 'み(る)', meaning: 'Melihat', examples: ['見る (miru - melihat)', '見学 (kengaku - studi tur)', '見本 (mihon - contoh)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '言', onyomi: 'ゲン, ゴン', kunyomi: 'い(う)', meaning: 'Berbicara', examples: ['言う (iu - berbicara)', '言葉 (kotoba - kata-kata)', '言語 (gengo - bahasa)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '読', onyomi: 'ドク, トク', kunyomi: 'よ(む)', meaning: 'Membaca', examples: ['読む (yomu - membaca)', '読書 (dokusho - membaca buku)', '読者 (dokusha - pembaca)'], strokes: 14, jlpt: 'N5' },
+                { kanji: '書', onyomi: 'ショ', kunyomi: 'か(く)', meaning: 'Menulis', examples: ['書く (kaku - menulis)', '辞書 (jisho - kamus)', '図書館 (toshokan - perpustakaan)'], strokes: 10, jlpt: 'N5' },
+                { kanji: '買', onyomi: 'バイ', kunyomi: 'か(う)', meaning: 'Membeli', examples: ['買う (kau - membeli)', '買い物 (kaimono - belanja)', '売買 (baibai - jual beli)'], strokes: 12, jlpt: 'N5' },
+                { kanji: '売', onyomi: 'バイ', kunyomi: 'う(る)', meaning: 'Menjual', examples: ['売る (uru - menjual)', '販売 (hanbai - penjualan)', '売店 (baiten - kios)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '新', onyomi: 'シン', kunyomi: 'あたら(しい)', meaning: 'Baru', examples: ['新しい (atarashii - baru)', '新聞 (shinbun - koran)', '新年 (shinnen - tahun baru)'], strokes: 13, jlpt: 'N5' },
+                { kanji: '古', onyomi: 'コ', kunyomi: 'ふる(い)', meaning: 'Tua, Lama', examples: ['古い (furui - tua/lama)', '古代 (kodai - zaman kuno)', '中古 (chūko - bekas)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '大', onyomi: 'ダイ, タイ', kunyomi: 'おお(きい)', meaning: 'Besar', examples: ['大きい (ōkii - besar)', '大学 (daigaku - universitas)', '大好き (daisuki - sangat suka)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '小', onyomi: 'ショウ', kunyomi: 'ちい(さい)', meaning: 'Kecil', examples: ['小さい (chiisai - kecil)', '小学生 (shōgakusei - siswa SD)', '小説 (shōsetsu - novel)'], strokes: 3, jlpt: 'N5' },
+                { kanji: '多', onyomi: 'タ', kunyomi: 'おお(い)', meaning: 'Banyak', examples: ['多い (ōi - banyak)', '多少 (tashō - sedikit banyak)', '多分 (tabun - mungkin)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '少', onyomi: 'ショウ', kunyomi: 'すこ(し), すく(ない)', meaning: 'Sedikit', examples: ['少ない (sukunai - sedikit)', '少し (sukoshi - sedikit)', '少年 (shōnen - anak laki-laki)'], strokes: 4, jlpt: 'N5' },
+                { kanji: '長', onyomi: 'チョウ', kunyomi: 'なが(い)', meaning: 'Panjang, Pemimpin', examples: ['長い (nagai - panjang)', '校長 (kōchō - kepala sekolah)', '長所 (chōsho - kelebihan)'], strokes: 8, jlpt: 'N5' },
+                { kanji: '高', onyomi: 'コウ', kunyomi: 'たか(い)', meaning: 'Tinggi, Mahal', examples: ['高い (takai - tinggi/mahal)', '高校 (kōkō - SMA)', '高速 (kōsoku - kecepatan tinggi)'], strokes: 10, jlpt: 'N5' },
+                { kanji: '安', onyomi: 'アン', kunyomi: 'やす(い)', meaning: 'Murah, Aman', examples: ['安い (yasui - murah)', '安心 (anshin - tenang)', '安全 (anzen - aman)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '好', onyomi: 'コウ', kunyomi: 'す(き)', meaning: 'Suka', examples: ['好き (suki - suka)', '大好き (daisuki - sangat suka)', '友好 (yūkō - persahabatan)'], strokes: 6, jlpt: 'N5' },
+                { kanji: '悪', onyomi: 'アク, オ', kunyomi: 'わる(い)', meaning: 'Buruk, Jahat', examples: ['悪い (warui - buruk)', '悪口 (warukuchi - kata-kata buruk)', '最悪 (saiaku - terburuk)'], strokes: 11, jlpt: 'N5' },
+                { kanji: '白', onyomi: 'ハク, ビャク', kunyomi: 'しろ, しら', meaning: 'Putih', examples: ['白い (shiroi - putih)', '白紙 (hakushi - kertas putih)', '明白 (meihaku - jelas)'], strokes: 5, jlpt: 'N5' },
+                { kanji: '黒', onyomi: 'コク', kunyomi: 'くろ', meaning: 'Hitam', examples: ['黒い (kuroi - hitam)', '黒板 (kokuban - papan tulis)', '暗黒 (ankoku - kegelapan)'], strokes: 11, jlpt: 'N5' },
+                { kanji: '赤', onyomi: 'セキ, シャク', kunyomi: 'あか', meaning: 'Merah', examples: ['赤い (akai - merah)', '赤ちゃん (akachan - bayi)', '真っ赤 (makka - merah menyala)'], strokes: 7, jlpt: 'N5' },
+                { kanji: '青', onyomi: 'セイ, ショウ', kunyomi: 'あお', meaning: 'Biru, Hijau', examples: ['青い (aoi - biru/hijau)', '青年 (seinen - pemuda)', '青信号 (aoshingō - lampu hijau)'], strokes: 8, jlpt: 'N5' }
+            ],
+ n4: [
+    { kanji: '不', onyomi: 'フ', kunyomi: '-', meaning: 'Tidak, Non-', examples: ['不便 (ふべん - tidak nyaman)', '不安 (ふあん - khawatir)', '不満 (ふまん - tidak puas)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '世', onyomi: 'セイ, セ', kunyomi: 'よ', meaning: 'Dunia, Generasi', examples: ['世界 (せかい - dunia)', '世代 (せだい - generasi)', '世話 (せわ - bantuan)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '主', onyomi: 'シュ', kunyomi: 'おも, ぬし', meaning: 'Utama, Pemilik', examples: ['主人 (しゅじん - tuan rumah)', '主要 (しゅよう - utama)', '主に (おもに - terutama)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '事', onyomi: 'ジ', kunyomi: 'こと', meaning: 'Hal, Peristiwa', examples: ['仕事 (しごと - pekerjaan)', '事件 (じけん - insiden)', '食事 (しょくじ - makan)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '京', onyomi: 'キョウ, ケイ', kunyomi: '-', meaning: 'Ibukota', examples: ['東京 (とうきょう - Tokyo)', '京都 (きょうと - Kyoto)', '京阪 (けいはん - Kyoto-Osaka)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '仕', onyomi: 'シ', kunyomi: 'つか(える)', meaning: 'Melayani, Bekerja', examples: ['仕事 (しごと - pekerjaan)', '仕方 (しかた - cara)', '仕える (つかえる - melayani)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '代', onyomi: 'ダイ, タイ', kunyomi: 'か(わる), よ', meaning: 'Era, Mengganti', examples: ['時代 (じだい - era)', '代表 (だいひょう - perwakilan)', '代わり (かわり - pengganti)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '以', onyomi: 'イ', kunyomi: '-', meaning: 'Dengan, Oleh', examples: ['以上 (いじょう - lebih dari)', '以前 (いぜん - sebelumnya)', '以後 (いご - setelah ini)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '会', onyomi: 'カイ, エ', kunyomi: 'あ(う)', meaning: 'Bertemu, Pertemuan', examples: ['会社 (かいしゃ - perusahaan)', '会議 (かいぎ - rapat)', '会う (あう - bertemu)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '住', onyomi: 'ジュウ', kunyomi: 'す(む)', meaning: 'Tinggal', examples: ['住所 (じゅうしょ - alamat)', '住む (すむ - tinggal)', '住宅 (じゅうたく - perumahan)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '体', onyomi: 'タイ, テイ', kunyomi: 'からだ', meaning: 'Tubuh', examples: ['体 (からだ - tubuh)', '体育 (たいいく - olahraga)', '体力 (たいりょく - stamina)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '作', onyomi: 'サク, サ', kunyomi: 'つく(る)', meaning: 'Membuat', examples: ['作品 (さくひん - karya)', '作る (つくる - membuat)', '作家 (さっか - penulis)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '使', onyomi: 'シ', kunyomi: 'つか(う)', meaning: 'Menggunakan', examples: ['使用 (しよう - penggunaan)', '使う (つかう - menggunakan)', '大使 (たいし - duta besar)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '借', onyomi: 'シャク', kunyomi: 'か(りる)', meaning: 'Meminjam', examples: ['借りる (かりる - meminjam)', '借金 (しゃっきん - hutang)', '貸借 (たいしゃく - peminjaman)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '元', onyomi: 'ゲン, ガン', kunyomi: 'もと', meaning: 'Asal, Mantan', examples: ['元気 (げんき - sehat)', '元日 (がんじつ - tahun baru)', '元々 (もともと - awalnya)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '兄', onyomi: 'ケイ, キョウ', kunyomi: 'あに', meaning: 'Kakak laki-laki', examples: ['兄 (あに - kakak laki-laki)', '兄弟 (きょうだい - saudara)', '義兄 (ぎけい - kakak ipar)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '公', onyomi: 'コウ', kunyomi: 'おおやけ', meaning: 'Publik, Umum', examples: ['公園 (こうえん - taman umum)', '公開 (こうかい - publikasi)', '公務員 (こうむいん - pegawai negeri)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '写', onyomi: 'シャ', kunyomi: 'うつ(す)', meaning: 'Menyalin, Foto', examples: ['写真 (しゃしん - foto)', '写す (うつす - menyalin)', '描写 (びょうしゃ - deskripsi)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '冬', onyomi: 'トウ', kunyomi: 'ふゆ', meaning: 'Musim dingin', examples: ['冬 (ふゆ - musim dingin)', '冬季 (とうき - musim dingin)', '冬休み (ふゆやすみ - libur musim dingin)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '切', onyomi: 'セツ, サイ', kunyomi: 'き(る)', meaning: 'Memotong', examples: ['切る (きる - memotong)', '大切 (たいせつ - penting)', '親切 (しんせつ - baik hati)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '別', onyomi: 'ベツ', kunyomi: 'わか(れる)', meaning: 'Terpisah, Berbeda', examples: ['別れる (わかれる - berpisah)', '特別 (とくべつ - khusus)', '別々 (べつべつ - terpisah)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '力', onyomi: 'リョク, リキ', kunyomi: 'ちから', meaning: 'Kekuatan', examples: ['力 (ちから - kekuatan)', '努力 (どりょく - usaha)', '協力 (きょうりょく - kerjasama)'], strokes: 2, jlpt: 'N4' },
+    { kanji: '勉', onyomi: 'ベン', kunyomi: 'つと(める)', meaning: 'Berusaha', examples: ['勉強 (べんきょう - belajar)', '勤勉 (きんべん - rajin)', '勉学 (べんがく - studi)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '動', onyomi: 'ドウ', kunyomi: 'うご(く)', meaning: 'Bergerak', examples: ['動く (うごく - bergerak)', '運動 (うんどう - olahraga)', '自動 (じどう - otomatis)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '医', onyomi: 'イ', kunyomi: '-', meaning: 'Dokter', examples: ['医者 (いしゃ - dokter)', '医院 (いいん - klinik)', '医学 (いがく - ilmu kedokteran)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '去', onyomi: 'キョ, コ', kunyomi: 'さ(る)', meaning: 'Pergi, Masa lalu', examples: ['去年 (きょねん - tahun lalu)', '過去 (かこ - masa lalu)', '去る (さる - pergi)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '口', onyomi: 'コウ, ク', kunyomi: 'くち', meaning: 'Mulut', examples: ['口 (くち - mulut)', '人口 (じんこう - populasi)', '入り口 (いりぐち - pintu masuk)'], strokes: 3, jlpt: 'N4' },
+    { kanji: '古', onyomi: 'コ', kunyomi: 'ふる(い)', meaning: 'Tua, Lama', examples: ['古い (ふるい - tua/lama)', '古代 (こだい - zaman kuno)', '中古 (ちゅうこ - bekas)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '台', onyomi: 'ダイ, タイ', kunyomi: '-', meaning: 'Dudukan, Taiwan', examples: ['台所 (だいどころ - dapur)', '台湾 (たいわん - Taiwan)', '台風 (たいふう - topan)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '同', onyomi: 'ドウ', kunyomi: 'おな(じ)', meaning: 'Sama', examples: ['同じ (おなじ - sama)', '同時 (どうじ - bersamaan)', '同意 (どうい - persetujuan)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '味', onyomi: 'ミ', kunyomi: 'あじ, あじ(わう)', meaning: 'Rasa', examples: ['味 (あじ - rasa)', '意味 (いみ - arti)', '趣味 (しゅみ - hobi)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '品', onyomi: 'ヒン', kunyomi: 'しな', meaning: 'Barang, Mutu', examples: ['商品 (しょうひん - barang dagangan)', '品物 (しなもの - barang)', '品質 (ひんしつ - kualitas)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '員', onyomi: 'イン', kunyomi: '-', meaning: 'Anggota', examples: ['会社員 (かいしゃいん - karyawan)', '員数 (いんずう - jumlah orang)', '部員 (ぶいん - anggota klub)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '問', onyomi: 'モン', kunyomi: 'と(う), とん', meaning: 'Bertanya', examples: ['質問 (しつもん - pertanyaan)', '問題 (もんだい - masalah)', '問う (とう - bertanya)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '図', onyomi: 'ズ, ト', kunyomi: 'はか(る)', meaning: 'Gambar, Rencana', examples: ['地図 (ちず - peta)', '図書館 (としょかん - perpustakaan)', '図る (はかる - merencanakan)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '地', onyomi: 'チ, ジ', kunyomi: '-', meaning: 'Tanah, Tempat', examples: ['地下 (ちか - bawah tanah)', '地震 (じしん - gempa bumi)', '土地 (とち - tanah)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '堂', onyomi: 'ドウ', kunyomi: '-', meaning: 'Aula, Gedung', examples: ['食堂 (しょくどう - kantin)', '講堂 (こうどう - auditorium)', '殿堂 (でんどう - aula)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '場', onyomi: 'ジョウ', kunyomi: 'ば', meaning: 'Tempat', examples: ['場所 (ばしょ - tempat)', '会場 (かいじょう - tempat pertemuan)', '工場 (こうじょう - pabrik)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '売', onyomi: 'バイ', kunyomi: 'う(る)', meaning: 'Menjual', examples: ['売る (うる - menjual)', '販売 (はんばい - penjualan)', '売店 (ばいてん - kios)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '夏', onyomi: 'カ, ゲ', kunyomi: 'なつ', meaning: 'Musim panas', examples: ['夏 (なつ - musim panas)', '夏休み (なつやすみ - libur musim panas)', '夏季 (かき - musim panas)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '夕', onyomi: 'セキ', kunyomi: 'ゆう', meaning: 'Petang', examples: ['夕方 (ゆうがた - sore hari)', '夕食 (ゆうしょく - makan malam)', '夕日 (ゆうひ - matahari terbenam)'], strokes: 3, jlpt: 'N4' },
+    { kanji: '多', onyomi: 'タ', kunyomi: 'おお(い)', meaning: 'Banyak', examples: ['多い (おおい - banyak)', '多少 (たしょう - sedikit banyak)', '多分 (たぶん - mungkin)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '夜', onyomi: 'ヤ', kunyomi: 'よ, よる', meaning: 'Malam', examples: ['夜 (よる - malam)', '今夜 (こんや - malam ini)', '夜中 (よなか - tengah malam)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '妹', onyomi: 'マイ', kunyomi: 'いもうと', meaning: 'Adik perempuan', examples: ['妹 (いもうと - adik perempuan)', '姉妹 (しまい - saudara perempuan)', '義妹 (ぎまい - adik ipar)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '姉', onyomi: 'シ', kunyomi: 'あね', meaning: 'Kakak perempuan', examples: ['姉 (あね - kakak perempuan)', '姉妹 (しまい - saudara perempuan)', '義姉 (ぎし - kakak ipar)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '始', onyomi: 'シ', kunyomi: 'はじ(める)', meaning: 'Mulai', examples: ['始める (はじめる - memulai)', '開始 (かいし - permulaan)', '始まり (はじまり - awal)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '字', onyomi: 'ジ', kunyomi: 'あざ', meaning: 'Huruf, Karakter', examples: ['漢字 (かんじ - karakter Cina)', '文字 (もじ - huruf)', '数字 (すうじ - angka)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '安', onyomi: 'アン', kunyomi: 'やす(い)', meaning: 'Murah, Aman', examples: ['安い (やすい - murah)', '安心 (あんしん - tenang)', '安全 (あんぜん - aman)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '室', onyomi: 'シツ', kunyomi: 'むろ', meaning: 'Ruang', examples: ['教室 (きょうしつ - ruang kelas)', '室内 (しつない - dalam ruangan)', '和室 (わしつ - ruang gaya Jepang)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '家', onyomi: 'カ, ケ', kunyomi: 'いえ, や', meaning: 'Rumah, Keluarga', examples: ['家 (いえ - rumah)', '家族 (かぞく - keluarga)', '作家 (さっか - penulis)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '少', onyomi: 'ショウ', kunyomi: 'すこ(し), すく(ない)', meaning: 'Sedikit', examples: ['少ない (すくない - sedikit)', '少し (すこし - sedikit)', '少年 (しょうねん - anak laki-laki)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '屋', onyomi: 'オク', kunyomi: 'や', meaning: 'Atap, Toko', examples: ['屋上 (おくじょう - atap)', '本屋 (ほんや - toko buku)', '屋根 (やね - atap rumah)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '工', onyomi: 'コウ, ク', kunyomi: '-', meaning: 'Kerja, Industri', examples: ['工場 (こうじょう - pabrik)', '工業 (こうぎょう - industri)', '大工 (だいく - tukang kayu)'], strokes: 3, jlpt: 'N4' },
+    { kanji: '帰', onyomi: 'キ', kunyomi: 'かえ(る)', meaning: 'Pulang', examples: ['帰る (かえる - pulang)', '帰国 (きこく - pulang ke negara asal)', '帰宅 (きたく - pulang ke rumah)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '広', onyomi: 'コウ', kunyomi: 'ひろ(い)', meaning: 'Luas', examples: ['広い (ひろい - luas)', '広場 (ひろば - lapangan)', '広告 (こうこく - iklan)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '店', onyomi: 'テン', kunyomi: 'みせ', meaning: 'Toko', examples: ['店 (みせ - toko)', '喫茶店 (きっさてん - kafe)', '店員 (てんいん - karyawan toko)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '度', onyomi: 'ド, ト', kunyomi: 'たび', meaning: 'Derajat, Kali', examples: ['温度 (おんど - suhu)', '一度 (いちど - sekali)', '度々 (たびたび - sering)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '建', onyomi: 'ケン, コン', kunyomi: 'た(てる)', meaning: 'Membangun', examples: ['建物 (たてもの - bangunan)', '建設 (けんせつ - konstruksi)', '建立 (こんりゅう - pendirian)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '弟', onyomi: 'テイ, ダイ', kunyomi: 'おとうと', meaning: 'Adik laki-laki', examples: ['弟 (おとうと - adik laki-laki)', '弟子 (でし - murid)', '兄弟 (きょうだい - saudara)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '強', onyomi: 'キョウ, ゴウ', kunyomi: 'つよ(い)', meaning: 'Kuat', examples: ['強い (つよい - kuat)', '勉強 (べんきょう - belajar)', '強化 (きょうか - penguatan)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '待', onyomi: 'タイ', kunyomi: 'ま(つ)', meaning: 'Menunggu', examples: ['待つ (まつ - menunggu)', '招待 (しょうたい - undangan)', '待合室 (まちあいしつ - ruang tunggu)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '心', onyomi: 'シン', kunyomi: 'こころ', meaning: 'Hati, Pikiran', examples: ['心 (こころ - hati)', '安心 (あんしん - tenang)', '心理学 (しんりがく - psikologi)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '思', onyomi: 'シ', kunyomi: 'おも(う)', meaning: 'Berpikir', examples: ['思う (おもう - berpikir)', '思想 (しそう - pemikiran)', '思い出 (おもいで - kenangan)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '急', onyomi: 'キュウ', kunyomi: 'いそ(ぐ)', meaning: 'Mendesak, Cepat', examples: ['急ぐ (いそぐ - tergesa-gesa)', '急行 (きゅうこう - ekspres)', '救急 (きゅうきゅう - pertolongan darurat)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '悪', onyomi: 'アク, オ', kunyomi: 'わる(い)', meaning: 'Buruk, Jahat', examples: ['悪い (わるい - buruk)', '悪口 (わるくち - kata-kata buruk)', '最悪 (さいあく - terburuk)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '意', onyomi: 'イ', kunyomi: '-', meaning: 'Pikiran, Maksud', examples: ['意味 (いみ - arti)', '意見 (いけん - pendapat)', '注意 (ちゅうい - perhatian)'], strokes: 13, jlpt: 'N4' },
+    { kanji: '手', onyomi: 'シュ', kunyomi: 'て', meaning: 'Tangan', examples: ['手 (て - tangan)', '手紙 (てがみ - surat)', '歌手 (かしゅ - penyanyi)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '持', onyomi: 'ジ', kunyomi: 'も(つ)', meaning: 'Memegang', examples: ['持つ (もつ - memegang)', '所持 (しょじ - kepemilikan)', '持参 (じさん - membawa)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '教', onyomi: 'キョウ', kunyomi: 'おし(える)', meaning: 'Mengajar', examples: ['教える (おしえる - mengajar)', '教育 (きょういく - pendidikan)', '宗教 (しゅうきょう - agama)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '文', onyomi: 'ブン, モン', kunyomi: 'ふみ', meaning: 'Tulisan', examples: ['作文 (さくぶん - menulis esai)', '文化 (ぶんか - budaya)', '文房具 (ぶんぼうぐ - alat tulis)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '料', onyomi: 'リョウ', kunyomi: '-', meaning: 'Biaya, Bahan', examples: ['料金 (りょうきん - biaya)', '材料 (ざいりょう - bahan)', '料理 (りょうり - masakan)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '新', onyomi: 'シン', kunyomi: 'あたら(しい)', meaning: 'Baru', examples: ['新しい (あたらしい - baru)', '新聞 (しんぶん - koran)', '新年 (しんねん - tahun baru)'], strokes: 13, jlpt: 'N4' },
+    { kanji: '方', onyomi: 'ホウ', kunyomi: 'かた', meaning: 'Arah, Cara', examples: ['方法 (ほうほう - metode)', '方向 (ほうこう - arah)', '方言 (ほうげん - dialek)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '旅', onyomi: 'リョ', kunyomi: 'たび', meaning: 'Perjalanan', examples: ['旅行 (りょこう - perjalanan)', '旅館 (りょかん - ryokan)', '旅人 (たびびと - pelancong)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '族', onyomi: 'ゾク', kunyomi: '-', meaning: 'Suku, Keluarga', examples: ['家族 (かぞく - keluarga)', '民族 (みんぞく - etnis)', '親族 (しんぞく - kerabat)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '早', onyomi: 'ソウ, サッ', kunyomi: 'はや(い)', meaning: 'Cepat, Pagi', examples: ['早い (はやい - cepat)', '早朝 (そうちょう - pagi buta)', '早速 (さっそく - segera)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '明', onyomi: 'メイ, ミョウ', kunyomi: 'あか(るい)', meaning: 'Terang', examples: ['明るい (あかるい - terang)', '明日 (あした - besok)', '説明 (せつめい - penjelasan)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '映', onyomi: 'エイ', kunyomi: 'うつ(る)', meaning: 'Memantulkan, Film', examples: ['映画 (えいが - film)', '反映 (はんえい - refleksi)', '映す (うつす - memantulkan)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '春', onyomi: 'シュン', kunyomi: 'はる', meaning: 'Musim semi', examples: ['春 (はる - musim semi)', '春休み (はるやすみ - libur musim semi)', '青春 (せいしゅん - masa muda)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '昼', onyomi: 'チュウ', kunyomi: 'ひる', meaning: 'Siang', examples: ['昼 (ひる - siang)', '昼食 (ちゅうしょく - makan siang)', '昼間 (ひるま - siang hari)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '曜', onyomi: 'ヨウ', kunyomi: '-', meaning: 'Hari dalam minggu', examples: ['日曜日 (にちようび - Minggu)', '曜日 (ようび - hari dalam minggu)', '月曜日 (げつようび - Senin)'], strokes: 18, jlpt: 'N4' },
+    { kanji: '有', onyomi: 'ユウ, ウ', kunyomi: 'あ(る)', meaning: 'Ada, Memiliki', examples: ['有名 (ゆうめい - terkenal)', '有る (ある - ada)', '所有 (しょゆう - kepemilikan)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '服', onyomi: 'フク', kunyomi: '-', meaning: 'Pakaian', examples: ['服 (ふく - pakaian)', '服装 (ふくそう - pakaian)', '制服 (せいふく - seragam)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '朝', onyomi: 'チョウ', kunyomi: 'あさ', meaning: 'Pagi', examples: ['朝 (あさ - pagi)', '朝食 (ちょうしょく - sarapan)', '毎朝 (まいあさ - setiap pagi)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '業', onyomi: 'ギョウ, ゴウ', kunyomi: 'わざ', meaning: 'Pekerjaan, Industri', examples: ['工業 (こうぎょう - industri)', '授業 (じゅぎょう - pelajaran)', '卒業 (そつぎょう - kelulusan)'], strokes: 13, jlpt: 'N4' },
+    { kanji: '楽', onyomi: 'ラク, ガク', kunyomi: 'たの(しい)', meaning: 'Menyenangkan, Musik', examples: ['楽しい (たのしい - menyenangkan)', '音楽 (おんがく - musik)', '気楽 (きらく - santai)'], strokes: 13, jlpt: 'N4' },
+    { kanji: '歌', onyomi: 'カ', kunyomi: 'うた', meaning: 'Lagu', examples: ['歌 (うた - lagu)', '歌手 (かしゅ - penyanyi)', '歌舞伎 (かぶき - kabuki)'], strokes: 14, jlpt: 'N4' },
+    { kanji: '止', onyomi: 'シ', kunyomi: 'と(まる)', meaning: 'Berhenti', examples: ['止まる (とまる - berhenti)', '禁止 (きんし - larangan)', '中止 (ちゅうし - pembatalan)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '正', onyomi: 'セイ, ショウ', kunyomi: 'ただ(しい)', meaning: 'Benar', examples: ['正しい (ただしい - benar)', '正月 (しょうがつ - tahun baru)', '修正 (しゅうせい - koreksi)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '歩', onyomi: 'ホ, ブ', kunyomi: 'ある(く)', meaning: 'Berjalan', examples: ['歩く (あるく - berjalan)', '散歩 (さんぽ - jalan-jalan)', '歩道 (ほどう - trotoar)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '死', onyomi: 'シ', kunyomi: 'し(ぬ)', meaning: 'Mati', examples: ['死ぬ (しぬ - mati)', '死亡 (しぼう - kematian)', '生死 (せいし - hidup dan mati)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '注', onyomi: 'チュウ', kunyomi: 'そそ(ぐ)', meaning: 'Menuang, Catatan', examples: ['注意 (ちゅうい - perhatian)', '注ぐ (そそぐ - menuang)', '注文 (ちゅうもん - pesanan)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '洋', onyomi: 'ヨウ', kunyomi: '-', meaning: 'Barat, Lautan', examples: ['洋服 (ようふく - pakaian Barat)', '大西洋 (たいせいよう - Samudra Atlantik)', '洋食 (ようしょく - makanan Barat)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '海', onyomi: 'カイ', kunyomi: 'うみ', meaning: 'Laut', examples: ['海 (うみ - laut)', '海外 (かいがい - luar negeri)', '海水 (かいすい - air laut)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '漢', onyomi: 'カン', kunyomi: '-', meaning: 'Cina, Pria', examples: ['漢字 (かんじ - karakter Cina)', '漢方 (かんぽう - pengobatan Cina)', '漢文 (かんぶん - sastra Cina)'], strokes: 13, jlpt: 'N4' },
+    { kanji: '牛', onyomi: 'ギュウ', kunyomi: 'うし', meaning: 'Sapi', examples: ['牛 (うし - sapi)', '牛肉 (ぎゅうにく - daging sapi)', '牛乳 (ぎゅうにゅう - susu sapi)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '物', onyomi: 'ブツ, モツ', kunyomi: 'もの', meaning: 'Benda', examples: ['物 (もの - benda)', '動物 (どうぶつ - hewan)', '植物 (しょくぶつ - tumbuhan)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '特', onyomi: 'トク', kunyomi: '-', meaning: 'Khusus', examples: ['特別 (とくべつ - khusus)', '特徴 (とくちょう - karakteristik)', '特急 (とっきゅう - ekspres)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '犬', onyomi: 'ケン', kunyomi: 'いぬ', meaning: 'Anjing', examples: ['犬 (いぬ - anjing)', '番犬 (ばんけん - anjing penjaga)', '子犬 (こいぬ - anak anjing)'], strokes: 4, jlpt: 'N4' },
+    { kanji: '理', onyomi: 'リ', kunyomi: '-', meaning: 'Logika, Alasan', examples: ['理由 (りゆう - alasan)', '理解 (りかい - pemahaman)', '理論 (りろん - teori)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '用', onyomi: 'ヨウ', kunyomi: 'もち(いる)', meaning: 'Menggunakan', examples: ['用いる (もちいる - menggunakan)', '使用 (しよう - penggunaan)', '利用 (りよう - pemanfaatan)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '田', onyomi: 'デン', kunyomi: 'た', meaning: 'Sawah', examples: ['田んぼ (たんぼ - sawah)', '田舎 (いなか - pedesaan)', '水田 (すいでん - sawah)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '町', onyomi: 'チョウ', kunyomi: 'まち', meaning: 'Kota kecil', examples: ['町 (まち - kota kecil)', '町長 (ちょうちょう - walikota)', '下町 (��たまち - distrik kota tua)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '画', onyomi: 'ガ, カク', kunyomi: '-', meaning: 'Gambar, Batas', examples: ['映画 (えいが - film)', '計画 (けいかく - rencana)', '画家 (がか - pelukis)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '界', onyomi: 'カイ', kunyomi: '-', meaning: 'Dunia, Batas', examples: ['世界 (せかい - dunia)', '業界 (ぎょうかい - industri)', '限界 (げんかい - batas)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '病', onyomi: 'ビョウ, ヘイ', kunyomi: 'や(む)', meaning: 'Penyakit', examples: ['病気 (びょうき - sakit)', '病院 (びょういん - rumah sakit)', '看病 (かんびょう - merawat orang sakit)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '発', onyomi: 'ハツ, ホツ', kunyomi: '-', meaning: 'Keberangkatan, Penemuan', examples: ['出発 (しゅっぱつ - keberangkatan)', '発明 (はつめい - penemuan)', '発音 (はつおん - pengucapan)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '的', onyomi: 'テキ', kunyomi: 'まと', meaning: 'Target, Akhiran', examples: ['目的 (もくてき - tujuan)', '的確 (てきかく - tepat)', '的 (まと - target)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '目', onyomi: 'モク, ボク', kunyomi: 'め', meaning: 'Mata', examples: ['目 (め - mata)', '目次 (もくじ - daftar isi)', '目的 (もくてき - tujuan)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '真', onyomi: 'シン', kunyomi: 'ま', meaning: 'Benar, Asli', examples: ['真実 (しんじつ - kebenaran)', '真ん中 (まんなか - tepat di tengah)', '真剣 (しんけん - serius)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '着', onyomi: 'チャク', kunyomi: 'き(る)', meaning: 'Mengenakan, Tiba', examples: ['着る (きる - mengenakan)', '到着 (とうちゃく - kedatangan)', '着物 (きもの - kimono)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '知', onyomi: 'チ', kunyomi: 'し(る)', meaning: 'Mengetahui', examples: ['知る (しる - mengetahui)', '知識 (ちしき - pengetahuan)', '知事 (ちじ - gubernur)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '研', onyomi: 'ケン', kunyomi: 'と(ぐ)', meaning: 'Mengasah, Meneliti', examples: ['研究 (けんきゅう - penelitian)', '研修 (けんしゅう - pelatihan)', '研ぐ (とぐ - mengasah)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '社', onyomi: 'シャ', kunyomi: 'やしろ', meaning: 'Perusahaan, Kuil', examples: ['会社 (かいしゃ - perusahaan)', '神社 (じんじゃ - kuil Shinto)', '社会 (しゃかい - masyarakat)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '私', onyomi: 'シ', kunyomi: 'わたし', meaning: 'Saya, Pribadi', examples: ['私 (わたし - saya)', '私立 (しりつ - swasta)', '私用 (しよう - urusan pribadi)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '秋', onyomi: 'シュウ', kunyomi: 'あき', meaning: 'Musim gugur', examples: ['秋 (あき - musim gugur)', '秋季 (しゅうき - musim gugur)', '秋分 (しゅうぶん - ekuinoks musim gugur)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '究', onyomi: 'キュウ, ク', kunyomi: 'きわ(める)', meaning: 'Menyelidiki', examples: ['研究 (けんきゅう - penelitian)', '究明 (きゅうめい - penyelidikan)', '究極 (きゅうきょく - akhir)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '空', onyomi: 'クウ', kunyomi: 'そら, あ(く)', meaning: 'Langit, Kosong', examples: ['空 (そら - langit)', '空港 (くうこう - bandara)', '空く (あく - menjadi kosong)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '立', onyomi: 'リツ, リュウ', kunyomi: 'た(つ)', meaning: 'Berdiri', examples: ['立つ (たつ - berdiri)', '国立 (こくりつ - nasional)', '建立 (こんりゅう - pendirian)'], strokes: 5, jlpt: 'N4' },
+    { kanji: '答', onyomi: 'トウ', kunyomi: 'こた(える)', meaning: 'Menjawab', examples: ['答える (こたえる - menjawab)', '回答 (かいとう - jawaban)', '答案 (とうあん - lembar jawaban)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '紙', onyomi: 'シ', kunyomi: 'かみ', meaning: 'Kertas', examples: ['紙 (かみ - kertas)', '新聞紙 (しんぶんし - koran)', '手紙 (てがみ - surat)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '終', onyomi: 'シュウ', kunyomi: 'お(わる)', meaning: 'Akhir', examples: ['終わる (おわる - berakhir)', '最終 (さいしゅう - terakhir)', '終電 (しゅうでん - kereta terakhir)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '習', onyomi: 'シュウ', kunyomi: 'なら(う)', meaning: 'Belajar', examples: ['習う (ならう - belajar)', '練習 (れんしゅう - latihan)', '習慣 (しゅうかん - kebiasaan)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '考', onyomi: 'コウ', kunyomi: 'かんが(える)', meaning: 'Memikirkan', examples: ['考える (かんがえる - memikirkan)', '思考 (しこう - pemikiran)', '参考 (さんこう - referensi)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '者', onyomi: 'シャ', kunyomi: 'もの', meaning: 'Orang', examples: ['学者 (がくしゃ - sarjana)', '記者 (きしゃ - wartawan)', '若者 (わかもの - orang muda)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '肉', onyomi: 'ニク', kunyomi: '-', meaning: 'Daging', examples: ['肉 (にく - daging)', '牛肉 (ぎゅうにく - daging sapi)', '筋肉 (きんにく - otot)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '自', onyomi: 'ジ, シ', kunyomi: 'みずか(ら)', meaning: 'Sendiri', examples: ['自分 (じぶん - diri sendiri)', '自動 (じどう - otomatis)', '自然 (しぜん - alam)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '色', onyomi: 'ショク, シキ', kunyomi: 'いろ', meaning: 'Warna', examples: ['色 (いろ - warna)', '色彩 (しきさい - warna-warni)', '景色 (けしき - pemandangan)'], strokes: 6, jlpt: 'N4' },
+    { kanji: '花', onyomi: 'カ', kunyomi: 'はな', meaning: 'Bunga', examples: ['花 (はな - bunga)', '花瓶 (かびん - vas bunga)', '花見 (はなみ - melihat bunga)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '英', onyomi: 'エイ', kunyomi: '-', meaning: 'Inggris, Unggul', examples: ['英語 (えいご - bahasa Inggris)', '英雄 (えいゆう - pahlawan)', '英会話 (えいかいわ - percakapan Inggris)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '茶', onyomi: 'チャ, サ', kunyomi: '-', meaning: 'Teh', examples: ['お茶 (おちゃ - teh)', '茶色 (ちゃいろ - warna coklat)', '喫茶店 (きっさてん - kafe)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '親', onyomi: 'シン', kunyomi: 'おや, した(しい)', meaning: 'Orang tua, Dekat', examples: ['親 (おや - orang tua)', '親切 (しんせつ - baik hati)', '両親 (りょうしん - orang tua)'], strokes: 16, jlpt: 'N4' },
+    { kanji: '言', onyomi: 'ゲン, ゴン', kunyomi: 'い(う)', meaning: 'Berbicara', examples: ['言う (いう - berbicara)', '言葉 (ことば - kata-kata)', '言語 (げんご - bahasa)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '計', onyomi: 'ケイ', kunyomi: 'はか(る)', meaning: 'Mengukur, Rencana', examples: ['計画 (けいかく - rencana)', '計算 (けいさん - perhitungan)', '時計 (とけい - jam)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '試', onyomi: 'シ', kunyomi: 'ため(す)', meaning: 'Mencoba, Uji', examples: ['試す (ためす - mencoba)', '試験 (しけん - ujian)', '試合 (しあい - pertandingan)'], strokes: 13, jlpt: 'N4' },
+    { kanji: '買', onyomi: 'バイ', kunyomi: 'か(う)', meaning: 'Membeli', examples: ['買う (かう - membeli)', '買い物 (かいもの - belanja)', '売買 (ばいばい - jual beli)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '貸', onyomi: 'タイ', kunyomi: 'か(す)', meaning: 'Meminjamkan', examples: ['貸す (かす - meminjamkan)', '貸し出し (かしだし - peminjaman)', '賃貸 (ちんたい - sewa)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '質', onyomi: 'シツ, シチ', kunyomi: 'たち', meaning: 'Kualitas, Jaminan', examples: ['質問 (しつもん - pertanyaan)', '品質 (ひんしつ - kualitas)', '質屋 (しちや - pegadaian)'], strokes: 15, jlpt: 'N4' },
+    { kanji: '赤', onyomi: 'セキ, シャク', kunyomi: 'あか', meaning: 'Merah', examples: ['赤い (あかい - merah)', '赤ちゃん (あかちゃん - bayi)', '真っ赤 (まっか - merah menyala)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '走', onyomi: 'ソウ', kunyomi: 'はし(る)', meaning: 'Berlari', examples: ['走る (はしる - berlari)', '競走 (きょうそう - balapan)', '走行 (そうこう - berjalan)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '起', onyomi: 'キ', kunyomi: 'お(きる)', meaning: 'Bangun', examples: ['起きる (おきる - bangun)', '起こす (おこす - membangunkan)', '起立 (きりつ - berdiri)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '足', onyomi: 'ソク', kunyomi: 'あし', meaning: 'Kaki', examples: ['足 (あし - kaki)', '足音 (あしおと - suara langkah kaki)', '満足 (まんぞく - puas)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '転', onyomi: 'テン', kunyomi: 'ころ(がる)', meaning: 'Berputar, Jatuh', examples: ['転ぶ (ころぶ - jatuh)', '運転 (うんてん - mengemudi)', '転職 (てんしょく - pindah pekerjaan)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '近', onyomi: 'キン', kunyomi: 'ちか(い)', meaning: 'Dekat', examples: ['近い (ちかい - dekat)', '最近 (さいきん - baru-baru ini)', '近所 (きんじょ - tetangga)'], strokes: 7, jlpt: 'N4' },
+    { kanji: '送', onyomi: 'ソウ', kunyomi: 'おく(る)', meaning: 'Mengirim', examples: ['送る (おくる - mengirim)', '送信 (そうしん - pengiriman)', '見送る (みおくる - mengantar)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '通', onyomi: 'ツウ, ツ', kunyomi: 'とお(る)', meaning: 'Melewati, Komuter', examples: ['通る (とおる - melewati)', '通勤 (つうきん - komuter)', '普通 (ふつう - biasa)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '週', onyomi: 'シュウ', kunyomi: '-', meaning: 'Minggu', examples: ['週末 (しゅうまつ - akhir pekan)', '毎週 (まいしゅう - setiap minggu)', '今週 (こんしゅう - minggu ini)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '運', onyomi: 'ウン', kunyomi: 'はこ(ぶ)', meaning: 'Mengangkut, Nasib', examples: ['運ぶ (はこぶ - mengangkut)', '運動 (うんどう - olahraga)', '運転 (うんてん - mengemudi)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '道', onyomi: 'ドウ', kunyomi: 'みち', meaning: 'Jalan', examples: ['道 (みち - jalan)', '道路 (どうろ - jalan raya)', '道具 (どうぐ - alat)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '重', onyomi: 'ジュウ, チョウ', kunyomi: 'おも(い)', meaning: 'Berat, Penting', examples: ['重い (おもい - berat)', '重要 (じゅうよう - penting)', '体重 (たいじゅう - berat badan)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '野', onyomi: 'ヤ', kunyomi: 'の', meaning: 'Lapangan, Liar', examples: ['野原 (のはら - padang rumput)', '野菜 (やさい - sayuran)', '野外 (やがい - luar ruangan)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '銀', onyomi: 'ギン', kunyomi: '-', meaning: 'Perak', examples: ['銀行 (ぎんこう - bank)', '銀色 (ぎんいろ - warna perak)', '銀座 (ぎんざ - Ginza)'], strokes: 14, jlpt: 'N4' },
+    { kanji: '開', onyomi: 'カイ', kunyomi: 'ひら(く)', meaning: 'Membuka', examples: ['開く (ひらく - membuka)', '開始 (かいし - permulaan)', '開発 (かいはつ - pengembangan)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '院', onyomi: 'イン', kunyomi: '-', meaning: 'Institusi', examples: ['病院 (びょういん - rumah sakit)', '大学院 (だいがくいん - pascasarjana)', '寺院 (じいん - kuil)'], strokes: 10, jlpt: 'N4' },
+    { kanji: '集', onyomi: 'シュウ', kunyomi: 'あつ(まる)', meaning: 'Mengumpulkan', examples: ['集まる (あつまる - berkumpul)', '集中 (しゅうちゅう - konsentrasi)', '集合 (しゅうごう - pertemuan)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '青', onyomi: 'セイ, ショウ', kunyomi: 'あお', meaning: 'Biru, Hijau', examples: ['青い (あおい - biru/hijau)', '青年 (せいねん - pemuda)', '青信号 (あおしんごう - lampu hijau)'], strokes: 8, jlpt: 'N4' },
+    { kanji: '音', onyomi: 'オン, イン', kunyomi: 'おと, ね', meaning: 'Suara', examples: ['音 (おと - suara)', '音楽 (おんがく - musik)', '発音 (はつおん - pengucapan)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '題', onyomi: 'ダイ', kunyomi: '-', meaning: 'Topik, Judul', examples: ['問題 (もんだい - masalah)', '題名 (だいめい - judul)', '話題 (わだい - topik pembicaraan)'], strokes: 18, jlpt: 'N4' },
+    { kanji: '風', onyomi: 'フウ, フ', kunyomi: 'かぜ', meaning: 'Angin, Gaya', examples: ['風 (かぜ - angin)', '台風 (たいふう - topan)', '和風 (わふう - gaya Jepang)'], strokes: 9, jlpt: 'N4' },
+    { kanji: '飯', onyomi: 'ハン', kunyomi: 'めし', meaning: 'Nasi, Makanan', examples: ['ご飯 (ごはん - nasi/makanan)', '朝飯 (あさめし - sarapan)', '飯店 (はんてん - restoran)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '飲', onyomi: 'イン', kunyomi: 'の(む)', meaning: 'Minum', examples: ['飲む (のむ - minum)', '飲み物 (のみもの - minuman)', '飲食 (いんしょく - makan dan minum)'], strokes: 12, jlpt: 'N4' },
+    { kanji: '館', onyomi: 'カン', kunyomi: '-', meaning: 'Gedung', examples: ['図書館 (としょかん - perpustakaan)', '映画館 (えいがかん - bioskop)', '旅館 (りょかん - ryokan)'], strokes: 16, jlpt: 'N4' },
+    { kanji: '駅', onyomi: 'エキ', kunyomi: '-', meaning: 'Stasiun', examples: ['駅 (えき - stasiun)', '駅前 (えきまえ - depan stasiun)', '駅長 (えきちょう - kepala stasiun)'], strokes: 14, jlpt: 'N4' },
+    { kanji: '験', onyomi: 'ケン', kunyomi: '-', meaning: 'Uji, Pengalaman', examples: ['試験 (しけん - ujian)', '体験 (たいけん - pengalaman)', '実験 (じっけん - eksperimen)'], strokes: 18, jlpt: 'N4' },
+    { kanji: '魚', onyomi: 'ギョ', kunyomi: 'さかな', meaning: 'Ikan', examples: ['魚 (さかな - ikan)', '金魚 (きんぎょ - ikan mas)', '魚市場 (うおいちば - pasar ikan)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '鳥', onyomi: 'チョウ', kunyomi: 'とり', meaning: 'Burung', examples: ['鳥 (とり - burung)', '小鳥 (ことり - burung kecil)', '野鳥 (やちょう - burung liar)'], strokes: 11, jlpt: 'N4' },
+    { kanji: '黒', onyomi: 'コク', kunyomi: 'くろ', meaning: 'Hitam', examples: ['黒い (くろい - hitam)', '黒板 (こくばん - papan tulis)', '暗黒 (あんこく - kegelapan)'], strokes: 11, jlpt: 'N4' }
+],
+
+                n3: [
+    { kanji: '与', onyomi: 'ヨ', kunyomi: 'あた(える)', meaning: 'Memberi, Berpartisipasi', examples: ['与える (ataeru - memberikan)', '関与 (kan\'yo - partisipasi)', '授与 (juyo - penganugerahan)'], strokes: 3, jlpt: 'N3' },
+    { kanji: '両', onyomi: 'リョウ', kunyomi: 'てる, ふた(つ)', meaning: 'Kedua, Dua', examples: ['両方 (ryōhō - kedua sisi)', '両親 (ryōshin - orang tua)', '車両 (sharyō - kendaraan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '乗', onyomi: 'ジョウ', kunyomi: 'の(る)', meaning: 'Naik, Menumpang', examples: ['乗る (noru - naik)', '乗車 (jōsha - naik kendaraan)', '乗客 (jōkyaku - penumpang)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '予', onyomi: 'ヨ', kunyomi: 'あらかじ(め)', meaning: 'Sebelumnya, Rencana', examples: ['予約 (yoyaku - reservasi)', '予想 (yosō - prediksi)', '予備 (yobi - cadangan)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '争', onyomi: 'ソウ', kunyomi: 'あらそ(う)', meaning: 'Berselisih, Bertengkar', examples: ['争う (arasou - berselisih)', '戦争 (sensō - perang)', '競争 (kyōsō - kompetisi)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '互', onyomi: 'ゴ', kunyomi: 'たが(い)', meaning: 'Saling, Timbal balik', examples: ['互い (tagai - satu sama lain)', '相互 (sōgo - timbal balik)', '交互 (kōgo - bergantian)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '亡', onyomi: 'ボウ, モウ', kunyomi: 'な(い)', meaning: 'Meninggal, Hilang', examples: ['亡くなる (nakunaru - meninggal)', '死亡 (shibō - kematian)', '亡命 (bōmei - pengasingan)'], strokes: 3, jlpt: 'N3' },
+    { kanji: '交', onyomi: 'コウ', kunyomi: 'まじ(わる)', meaning: 'Bergaul, Bertukar', examples: ['交わる (majiwaru - bergaul)', '交換 (kōkan - pertukaran)', '交通 (kōtsū - lalu lintas)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '他', onyomi: 'タ', kunyomi: 'ほか', meaning: 'Lain, Yang lain', examples: ['他の (hoka no - yang lain)', '他人 (tanin - orang lain)', '外国 (gaikoku - luar negeri)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '付', onyomi: 'フ', kunyomi: 'つ(ける)', meaning: 'Menempel, Menyertakan', examples: ['付ける (tsukeru - menempel)', '付近 (fukin - sekitar)', '受付 (uketsuke - resepsionis)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '件', onyomi: 'ケン', kunyomi: '-', meaning: 'Kasus, Masalah', examples: ['事件 (jiken - insiden)', '条件 (jōken - syarat)', '用件 (yōken - urusan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '任', onyomi: 'ニン', kunyomi: 'まか(せる)', meaning: 'Tanggung jawab, Mempercayakan', examples: ['任せる (makaseru - mempercayakan)', '責任 (sekinin - tanggung jawab)', '担任 (tannin - wali kelas)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '伝', onyomi: 'デン', kunyomi: 'つた(わる)', meaning: 'Menyampaikan, Tradisi', examples: ['伝える (tsutaeru - menyampaikan)', '伝統 (dentō - tradisi)', '伝言 (dengon - pesan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '似', onyomi: 'ジ', kunyomi: 'に(る)', meaning: 'Mirip, Serupa', examples: ['似る (niru - mirip)', '類似 (ruiji - kesamaan)', '似顔絵 (nigaoe - potret)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '位', onyomi: 'イ', kunyomi: 'くらい', meaning: 'Peringkat, Posisi', examples: ['位 (kurai - peringkat)', '地位 (chii - posisi)', '一位 (ichi\'i - peringkat pertama)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '余', onyomi: 'ヨ', kunyomi: 'あま(る)', meaning: 'Sisa, Lebih', examples: ['余る (amaru - bersisa)', '余裕 (yoyū - kelonggaran)', '残余 (zan\'yo - sisa)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '例', onyomi: 'レイ', kunyomi: 'たと(える)', meaning: 'Contoh, Kasus', examples: ['例 (rei - contoh)', '例外 (reigai - pengecualian)', '例えば (tatoeba - misalnya)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '供', onyomi: 'キョウ, ク', kunyomi: 'そな(える)', meaning: 'Menyediakan, Pengiring', examples: ['供える (sonaeru - mempersembahkan)', '提供 (teikyō - penyediaan)', '供述 (kyōjutsu - kesaksian)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '便', onyomi: 'ベン, ビン', kunyomi: 'たよ(り)', meaning: 'Kenyamanan, Surat', examples: ['便利 (benri - nyaman)', '郵便 (yūbin - pos)', '便所 (benjo - toilet)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '係', onyomi: 'ケイ', kunyomi: 'かか(る)', meaning: 'Petugas, Bertanggung jawab', examples: ['係 (kakari - petugas)', '関係 (kankei - hubungan)', '係員 (kakariin - petugas)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '信', onyomi: 'シン', kunyomi: '-', meaning: 'Percaya, Kepercayaan', examples: ['信じる (shinjiru - percaya)', '信用 (shin\'yō - kepercayaan)', '通信 (tsūshin - komunikasi)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '倒', onyomi: 'トウ', kunyomi: 'たお(れる)', meaning: 'Jatuh, Menumbangkan', examples: ['倒れる (taoreru - jatuh)', '倒産 (tōsan - kebangkrutan)', '転倒 (tentō - terjatuh)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '候', onyomi: 'コウ', kunyomi: 'そうろう', meaning: 'Menunggu, Musim', examples: ['候補 (kōho - kandidat)', '天候 (tenkō - cuaca)', '時候 (jikō - musim)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '値', onyomi: 'チ', kunyomi: 'ね, あたい', meaning: 'Harga, Nilai', examples: ['値段 (nedan - harga)', '価値 (kachi - nilai)', '数値 (sūchi - angka)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '偉', onyomi: 'イ', kunyomi: 'えら(い)', meaning: 'Hebat, Agung', examples: ['偉い (erai - hebat)', '偉大 (idai - agung)', '偉業 (igyō - pencapaian besar)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '側', onyomi: 'ソク', kunyomi: 'がわ, そば', meaning: 'Sisi, Samping', examples: ['側 (gawa - sisi)', '両側 (ryōgawa - kedua sisi)', '側面 (sokumen - aspek)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '偶', onyomi: 'グウ', kunyomi: 'たま', meaning: 'Kebetulan, Pasangan', examples: ['偶然 (gūzen - kebetulan)', '偶像 (gūzō - patung)', '配偶者 (haigūsha - pasangan)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '備', onyomi: 'ビ', kunyomi: 'そな(える)', meaning: 'Mempersiapkan, Dilengkapi', examples: ['準備 (junbi - persiapan)', '備える (sonaeru - mempersiapkan)', '設備 (setsubi - fasilitas)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '働', onyomi: 'ドウ', kunyomi: 'はたら(く)', meaning: 'Bekerja', examples: ['働く (hataraku - bekerja)', '労働 (rōdō - tenaga kerja)', '共働き (tomobataraki - kerja suami istri)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '優', onyomi: 'ユウ', kunyomi: 'やさ(しい)', meaning: 'Lembut, Unggul', examples: ['優しい (yasashii - lembut)', '優れる (sugureru - unggul)', '優先 (yūsen - prioritas)'], strokes: 17, jlpt: 'N3' },
+    { kanji: '光', onyomi: 'コウ', kunyomi: 'ひか(る)', meaning: 'Cahaya', examples: ['光る (hikaru - bersinar)', '日光 (nikkō - sinar matahari)', '光線 (kōsen - sinar)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '全', onyomi: 'ゼン', kunyomi: 'まった(く)', meaning: 'Seluruh, Lengkap', examples: ['全部 (zenbu - semuanya)', '安全 (anzen - aman)', '完全 (kanzen - lengkap)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '共', onyomi: 'キョウ', kunyomi: 'とも', meaning: 'Bersama, Sama', examples: ['共に (tomo ni - bersama)', '公共 (kōkyō - publik)', '共通 (kyōtsū - umum)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '具', onyomi: 'グ', kunyomi: '-', meaning: 'Peralatan, Lengkap', examples: ['道具 (dōgu - alat)', '具合 (guai - kondisi)', '具体的 (gutaiteki - konkret)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '内', onyomi: 'ナイ', kunyomi: 'うち', meaning: 'Dalam, Di dalam', examples: ['内 (uchi - dalam)', '内容 (naiyō - isi)', '国内 (kokunai - domestik)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '冷', onyomi: 'レイ', kunyomi: 'つめ(たい)', meaning: 'Dingin', examples: ['冷たい (tsumetai - dingin)', '冷蔵庫 (reizōko - kulkas)', '冷える (hieru - menjadi dingin)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '処', onyomi: 'ショ', kunyomi: 'ところ', meaning: 'Menangani, Tempat', examples: ['処理 (shori - penanganan)', '処分 (shobun - pembuangan)', '処方 (shohō - resep)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '列', onyomi: 'レツ', kunyomi: '-', meaning: 'Baris, Deretan', examples: ['列 (retsu - baris)', '行列 (gyōretsu - antrian)', '列車 (ressha - kereta api)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '初', onyomi: 'ショ', kunyomi: 'はじ(めて)', meaning: 'Pertama, Awal', examples: ['初めて (hajimete - pertama kali)', '最初 (saisho - paling awal)', '初心者 (shoshinsha - pemula)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '判', onyomi: 'ハン', kunyomi: 'わか(る)', meaning: 'Menilai, Memutuskan', examples: ['判断 (handan - penilaian)', '判子 (hanko - stempel)', '裁判 (saiban - pengadilan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '利', onyomi: 'リ', kunyomi: 'き(く)', meaning: 'Manfaat, Bunga', examples: ['利益 (rieki - keuntungan)', '利用 (riyō - penggunaan)', '利口 (rikō - pintar)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '到', onyomi: 'トウ', kunyomi: 'いた(る)', meaning: 'Sampai, Mencapai', examples: ['到着 (tōchaku - kedatangan)', '到達 (tōtatsu - pencapaian)', '到来 (tōrai - kedatangan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '制', onyomi: 'セイ', kunyomi: '-', meaning: 'Sistem, Kendali', examples: ['制限 (seigen - batasan)', '制度 (seido - sistem)', '制御 (seigyo - kontrol)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '刻', onyomi: 'コク', kunyomi: 'きざ(む)', meaning: 'Mengukir, Waktu', examples: ['刻む (kizamu - mengukir)', '時刻 (jikoku - waktu)', '深刻 (shinkoku - serius)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '割', onyomi: 'カツ', kunyomi: 'わ(る)', meaning: 'Membagi, Persentase', examples: ['割る (waru - membagi)', '割合 (wariai - persentase)', '分割 (bunkatsu - pembagian)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '加', onyomi: 'カ', kunyomi: 'くわ(える)', meaning: 'Menambahkan', examples: ['加える (kuwaeru - menambahkan)', '追加 (tsuika - tambahan)', '参加 (sanka - partisipasi)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '助', onyomi: 'ジョ', kunyomi: 'たす(ける)', meaning: 'Membantu', examples: ['助ける (tasukeru - membantu)', '援助 (enjo - bantuan)', '助手 (joshu - asisten)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '努', onyomi: 'ド', kunyomi: 'つと(める)', meaning: 'Berusaha', examples: ['努力 (doryoku - usaha)', '勤勉 (kinben - rajin)', '努める (tsutomeru - berusaha)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '労', onyomi: 'ロウ', kunyomi: 'ねぎら(う)', meaning: 'Tenaga kerja, Lelah', examples: ['労働 (rōdō - tenaga kerja)', '疲労 (hirō - kelelahan)', '労う (negirau - menghargai)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '務', onyomi: 'ム', kunyomi: 'つと(める)', meaning: 'Tugas, Pekerjaan', examples: ['義務 (gimu - kewajiban)', '事務 (jimu - administrasi)', '務める (tsutomeru - bekerja)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '勝', onyomi: 'ショウ', kunyomi: 'か(つ)', meaning: 'Menang', examples: ['勝つ (katsu - menang)', '勝利 (shōri - kemenangan)', '優勝 (yūshō - juara)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '勤', onyomi: 'キン', kunyomi: 'つと(める)', meaning: 'Bekerja, Rajin', examples: ['勤める (tsutomeru - bekerja)', '通勤 (tsūkin - komuter)', '勤務 (kinmu - pekerjaan)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '化', onyomi: 'カ, ケ', kunyomi: 'ば(ける)', meaning: 'Perubahan', examples: ['変化 (henka - perubahan)', '文化 (bunka - budaya)', '化学 (kagaku - kimia)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '単', onyomi: 'タン', kunyomi: '-', meaning: 'Tunggal, Sederhana', examples: ['単純 (tanjun - sederhana)', '単位 (tan\'i - satuan)', '単語 (tango - kosakata)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '危', onyomi: 'キ', kunyomi: 'あぶ(ない)', meaning: 'Berbahaya', examples: ['危ない (abunai - berbahaya)', '危険 (kiken - bahaya)', '危機 (kiki - krisis)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '原', onyomi: 'ゲン', kunyomi: 'はら', meaning: 'Asal, Lapangan', examples: ['原因 (gen\'in - penyebab)', '原宿 (Harajuku - Harajuku)', '原子 (genshi - atom)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '参', onyomi: 'サン', kunyomi: 'まい(る)', meaning: 'Ikut serta, Mengunjungi', examples: ['参加 (sanka - partisipasi)', '参る (mairu - mengunjungi)', '参考 (sankō - referensi)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '反', onyomi: 'ハン', kunyomi: 'そ(る)', meaning: 'Melawan, Berlawanan', examples: ['反対 (hantai - oposisi)', '反応 (hannō - reaksi)', '反る (soru - melengkung)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '収', onyomi: 'シュウ', kunyomi: 'おさ(める)', meaning: 'Menerima, Mengumpulkan', examples: ['収入 (shūnyū - pendapatan)', '収める (osameru - menerima)', '回収 (kaishū - pengumpulan)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '取', onyomi: 'シュ', kunyomi: 'と(る)', meaning: 'Mengambil', examples: ['取る (toru - mengambil)', '取材 (shuzai - pengumpulan bahan)', '取得 (shutoku - perolehan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '受', onyomi: 'ジュ', kunyomi: 'う(ける)', meaning: 'Menerima', examples: ['受ける (ukeru - menerima)', '受験 (juken - ujian masuk)', '受付 (uketsuke - resepsionis)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '可', onyomi: 'カ', kunyomi: '-', meaning: 'Mungkin, Dapat diterima', examples: ['可能 (kanō - mungkin)', '許可 (kyoka - izin)', '不可 (fuka - tidak dapat diterima)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '号', onyomi: 'ゴウ', kunyomi: '-', meaning: 'Nomor, Nama', examples: ['番号 (bangō - nomor)', '号車 (gōsha - gerbong kereta)', '記号 (kigō - simbol)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '合', onyomi: 'ゴウ', kunyomi: 'あ(う)', meaning: 'Cocok, Gabungan', examples: ['合う (au - cocok)', '合同 (gōdō - gabungan)', '試合 (shiai - pertandingan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '向', onyomi: 'コウ', kunyomi: 'む(く)', meaning: 'Menghadap, Arah', examples: ['向く (muku - menghadap)', '方向 (hōkō - arah)', '傾向 (keikō - kecenderungan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '君', onyomi: 'クン', kunyomi: 'きみ', meaning: 'Anda, Tuan', examples: ['君 (kimi - kamu)', '君主 (kunshu - penguasa)', '大君 (taikun - shogun)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '否', onyomi: 'ヒ', kunyomi: 'いな', meaning: 'Tidak, Menolak', examples: ['否定 (hitei - negasi)', '否む (inamu - menolak)', '可否 (kahi - persetujuan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '吸', onyomi: 'キュウ', kunyomi: 'す(う)', meaning: 'Menghisap, Menarik', examples: ['吸う (suu - menghisap)', '呼吸 (kokyū - pernapasan)', '吸収 (kyūshū - penyerapan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '吹', onyomi: 'スイ', kunyomi: 'ふ(く)', meaning: 'Meniup', examples: ['吹く (fuku - meniup)', '吹奏楽 (suisōgaku - musik tiup)', '風吹き (kazefuki - berangin)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '告', onyomi: 'コク', kunyomi: 'つ(げる)', meaning: 'Mengumumkan', examples: ['告げる (tsugeru - mengumumkan)', '広告 (kōkoku - iklan)', '報告 (hōkoku - laporan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '呼', onyomi: 'コ', kunyomi: 'よ(ぶ)', meaning: 'Memanggil', examples: ['呼ぶ (yobu - memanggil)', '呼吸 (kokyū - pernapasan)', '呼び出し (yobidashi - pemanggilan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '命', onyomi: 'メイ, ミョウ', kunyomi: 'いのち', meaning: 'Hidup, Perintah', examples: ['命 (inochi - hidup)', '生命 (seimei - kehidupan)', '命令 (meirei - perintah)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '和', onyomi: 'ワ', kunyomi: 'やわ(らぐ)', meaning: 'Harmoni, Jepang', examples: ['和やか (nagoyaka - harmonis)', '平和 (heiwa - perdamaian)', '和食 (washoku - makanan Jepang)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '商', onyomi: 'ショウ', kunyomi: 'あきな(う)', meaning: 'Dagang, Bisnis', examples: ['商業 (shōgyō - bisnis)', '商店 (shōten - toko)', '商売 (shōbai - perdagangan)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '喜', onyomi: 'キ', kunyomi: 'よろこ(ぶ)', meaning: 'Suka, Gembira', examples: ['喜ぶ (yorokobu - gembira)', '歓喜 (kanki - kegembiraan)', '喜劇 (kigeki - komedi)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '回', onyomi: 'カイ', kunyomi: 'まわ(る)', meaning: 'Putaran, Kali', examples: ['回る (mawaru - berputar)', '一回 (ikkai - sekali)', '回収 (kaishū - pengumpulan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '因', onyomi: 'イン', kunyomi: 'よ(る)', meaning: 'Sebab, Faktor', examples: ['原因 (gen\'in - penyebab)', '要因 (yōin - faktor)', '因る (yoru - disebabkan oleh)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '困', onyomi: 'コン', kunyomi: 'こま(る)', meaning: 'Kesulitan', examples: ['困る (komaru - dalam kesulitan)', '困難 (konnan - kesulitan)', '貧困 (hinkon - kemiskinan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '園', onyomi: 'エン', kunyomi: 'その', meaning: 'Taman, Kebun', examples: ['公園 (kōen - taman)', '動物園 (dōbutsuen - kebun binatang)', '幼稚園 (yōchien - taman kanak-kanak)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '在', onyomi: 'ザイ', kunyomi: 'あ(る)', meaning: 'Ada, Berada', examples: ['存在 (sonzai - keberadaan)', '在住 (zaijū - tinggal)', '在庫 (zaiko - stok)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '報', onyomi: 'ホウ', kunyomi: 'むく(いる)', meaning: 'Laporan, Balasan', examples: ['報告 (hōkoku - laporan)', '報酬 (hōshū - imbalan)', '予報 (yohō - prediksi)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '増', onyomi: 'ゾウ', kunyomi: 'ふ(える), ま(す)', meaning: 'Bertambah, Meningkat', examples: ['増加 (zōka - peningkatan)', '増える (fueru - bertambah)', '増税 (zōzei - kenaikan pajak)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '声', onyomi: 'セイ', kunyomi: 'こえ', meaning: 'Suara', examples: ['声 (koe - suara)', '歌声 (utagoe - suara menyanyi)', '声明 (seimei - pernyataan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '変', onyomi: 'ヘン', kunyomi: 'か(わる)', meaning: 'Berubah, Aneh', examples: ['変化 (henka - perubahan)', '変わる (kawaru - berubah)', '大変 (taihen - sangat/sulit)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '夢', onyomi: 'ム', kunyomi: 'ゆめ', meaning: 'Mimpi', examples: ['夢 (yume - mimpi)', '夢中 (muchū - asyik/terbuai)', '悪夢 (akumu - mimpi buruk)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '太', onyomi: 'タイ', kunyomi: 'ふと(い)', meaning: 'Gemuk, Tebal', examples: ['太い (futoi - tebal/gemuk)', '太陽 (taiyō - matahari)', '太鼓 (taiko - drum)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '夫', onyomi: 'フ, フウ', kunyomi: 'おっと', meaning: 'Suami', examples: ['夫 (otto - suami)', '夫妻 (fusai - suami istri)', '夫人 (fujin - nyonya)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '失', onyomi: 'シツ', kunyomi: 'うしな(う)', meaning: 'Kehilangan', examples: ['失う (ushinau - kehilangan)', '失礼 (shitsurei - tidak sopan)', '失敗 (shippai - kegagalan)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '好', onyomi: 'コウ', kunyomi: 'す(き), この(む)', meaning: 'Suka', examples: ['好き (suki - suka)', '好む (konomu - menyukai)', '友好 (yūkō - persahabatan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '妻', onyomi: 'サイ', kunyomi: 'つま', meaning: 'Istri', examples: ['妻 (tsuma - istri)', '夫妻 (fusai - suami istri)', '妻子 (saishi - istri dan anak)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '娘', onyomi: 'ジョウ', kunyomi: 'むすめ', meaning: 'Anak perempuan', examples: ['娘 (musume - anak perempuan)', 'お嬢さん (ojōsan - putri/nona)', '娘婿 (musumemuko - menantu laki-laki)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '婚', onyomi: 'コン', kunyomi: '-', meaning: 'Pernikahan', examples: ['結婚 (kekkon - pernikahan)', '婚姻 (kon\'in - ikatan pernikahan)', '離婚 (rikon - perceraian)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '婦', onyomi: 'フ', kunyomi: '-', meaning: 'Wanita, Istri', examples: ['婦人 (fujin - wanita)', '主婦 (shufu - ibu rumah tangga)', '夫婦 (fūfu - suami istri)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '存', onyomi: 'ソン, ゾン', kunyomi: '-', meaning: 'Ada, Pikiran', examples: ['存在 (sonzai - keberadaan)', '保存 (hozon - penyimpanan)', '存じる (zonjiru - mengetahui)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '宅', onyomi: 'タク', kunyomi: '-', meaning: 'Rumah', examples: ['自宅 (jitaku - rumah sendiri)', '住宅 (jūtaku - perumahan)', '宅配 (takuhai - pengiriman ke rumah)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '守', onyomi: 'シュ', kunyomi: 'まも(る)', meaning: 'Menjaga, Melindungi', examples: ['守る (mamoru - melindungi)', '留守 (rusu - tidak ada di rumah)', '保守 (hoshu - pemeliharaan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '完', onyomi: 'カン', kunyomi: '-', meaning: 'Sempurna, Selesai', examples: ['完全 (kanzen - sempurna)', '完了 (kanryō - penyelesaian)', '完璧 (kanpeki - sempurna)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '官', onyomi: 'カン', kunyomi: '-', meaning: 'Pemerintah, Pejabat', examples: ['官庁 (kanchō - kantor pemerintah)', '警官 (keikan - polisi)', '官僚 (kanryō - birokrat)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '定', onyomi: 'テイ, ジョウ', kunyomi: 'さだ(める)', meaning: 'Menetapkan, Tetap', examples: ['定める (sadameru - menetapkan)', '決定 (kettei - keputusan)', '定価 (teika - harga tetap)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '実', onyomi: 'ジツ', kunyomi: 'み, みの(る)', meaning: 'Nyata, Buah', examples: ['実際 (jissai - kenyataan)', '実る (minoru - berbuah)', '現実 (genjitsu - realitas)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '客', onyomi: 'キャク, カク', kunyomi: '-', meaning: 'Tamu, Pelanggan', examples: ['客 (kyaku - tamu)', '乗客 (jōkyaku - penumpang)', '客観 (kyakkan - objektif)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '害', onyomi: 'ガイ', kunyomi: '-', meaning: 'Bahaya, Kerusakan', examples: ['被害 (higai - kerusakan)', '害する (gaisuru - merusak)', '公害 (kōgai - polusi)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '容', onyomi: 'ヨウ', kunyomi: '-', meaning: 'Penampilan, Kapasitas', examples: ['内容 (naiyō - isi/konten)', '容積 (yōseki - kapasitas)', '容疑者 (yōgisha - tersangka)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '宿', onyomi: 'シュク', kunyomi: 'やど', meaning: 'Penginapan, Menginap', examples: ['宿 (yado - penginapan)', '宿題 (shukudai - pekerjaan rumah)', '宿泊 (shukuhaku - menginap)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '寄', onyomi: 'キ', kunyomi: 'よ(る)', meaning: 'Mendekati, Menyumbang', examples: ['寄る (yoru - mendekati)', '寄付 (kifu - sumbangan)', '寄宿 (kishuku - asrama)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '富', onyomi: 'フ, フウ', kunyomi: 'と(む)', meaning: 'Kekayaan', examples: ['富裕 (fuyū - kaya)', '富む (tomu - menjadi kaya)', '豊富 (hōfu - melimpah)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '寒', onyomi: 'カン', kunyomi: 'さむ(い)', meaning: 'Dingin', examples: ['寒い (samui - dingin)', '寒気 (kanki - udara dingin)', '寒波 (kanpa - gelombang dingin)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '寝', onyomi: 'シン', kunyomi: 'ね(る)', meaning: 'Tidur', examples: ['寝る (neru - tidur)', '就寝 (shūshin - pergi tidur)', '寝室 (shinshitsu - kamar tidur)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '察', onyomi: 'サツ', kunyomi: '-', meaning: 'Menyelidiki, Menebak', examples: ['警察 (keisatsu - polisi)', '観察 (kansatsu - observasi)', '推察 (suisatsu - dugaan)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '対', onyomi: 'タイ, ツイ', kunyomi: '-', meaning: 'Berhadapan, Lawan', examples: ['対する (taisuru - berhadapan dengan)', '反対 (hantai - oposisi)', '対話 (taiwa - dialog)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '局', onyomi: 'キョク', kunyomi: '-', meaning: 'Kantor, Situasi', examples: ['郵便局 (yūbinkyoku - kantor pos)', '局所 (kyokusho - bagian tertentu)', '当局 (tōkyoku - otoritas)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '居', onyomi: 'キョ', kunyomi: 'い(る)', meaning: 'Berdiam, Tinggal', examples: ['居る (iru - berada)', '居住 (kyojū - tempat tinggal)', '居間 (ima - ruang tamu)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '差', onyomi: 'サ', kunyomi: 'さ(す)', meaning: 'Perbedaan, Mencelupkan', examples: ['差別 (sabetsu - diskriminasi)', '差す (sasu - menuang/menusuk)', '格差 (kakusa - kesenjangan)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '市', onyomi: 'シ', kunyomi: 'いち', meaning: 'Kota, Pasar', examples: ['市場 (ichiba - pasar)', '都市 (toshi - kota besar)', '市役所 (shiyakusho - balai kota)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '師', onyomi: 'シ', kunyomi: '-', meaning: 'Guru, Ahli', examples: ['教師 (kyōshi - guru)', '医師 (ishi - dokter)', '師匠 (shishō - master)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '席', onyomi: 'セキ', kunyomi: '-', meaning: 'Tempat duduk', examples: ['座席 (zaseki - tempat duduk)', '出席 (shusseki - kehadiran)', '欠席 (kesseki - ketidakhadiran)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '常', onyomi: 'ジョウ', kunyomi: 'つね', meaning: 'Biasa, Selalu', examples: ['日常 (nichijō - sehari-hari)', '非常 (hijō - darurat)', '常に (tsuneni - selalu)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '平', onyomi: 'ヘイ, ビョウ', kunyomi: 'たい(ら), ひら', meaning: 'Datar, Damai', examples: ['平和 (heiwa - perdamaian)', '平ら (taira - datar)', '平均 (heikin - rata-rata)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '幸', onyomi: 'コウ', kunyomi: 'さいわ(い), しあわ(せ)', meaning: 'Kebahagiaan, Keberuntungan', examples: ['幸せ (shiawase - bahagia)', '幸福 (kōfuku - kebahagiaan)', '不幸 (fukō - kesedihan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '幾', onyomi: 'キ', kunyomi: 'いく', meaning: 'Berapa, Beberapa', examples: ['幾つ (ikutsu - berapa)', '幾何 (kika - geometri)', '幾度 (ikudo - beberapa kali)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '座', onyomi: 'ザ', kunyomi: 'すわ(る)', meaning: 'Duduk, Tempat duduk', examples: ['座る (suwaru - duduk)', '座席 (zaseki - tempat duduk)', '星座 (seiza - rasi bintang)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '庭', onyomi: 'テイ', kunyomi: 'にわ', meaning: 'Taman, Halaman', examples: ['庭 (niwa - taman)', '家庭 (katei - rumah tangga)', '庭園 (teien - taman)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '式', onyomi: 'シキ', kunyomi: '-', meaning: 'Upacara, Formula', examples: ['結婚式 (kekkonshiki - pernikahan)', '公式 (kōshiki - resmi)', '方程式 (hōteishiki - persamaan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '引', onyomi: 'イン', kunyomi: 'ひ(く)', meaning: 'Menarik', examples: ['引く (hiku - menarik)', '引用 (in\'yō - kutipan)', '引退 (intai - pensiun)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '当', onyomi: 'トウ', kunyomi: 'あ(たる)', meaning: 'Saat ini, Tepat', examples: ['当たる (ataru - tepat/menghantam)', '当時 (tōji - pada waktu itu)', '相当 (sōtō - sesuai)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '形', onyomi: 'ケイ, ギョウ', kunyomi: 'かたち', meaning: 'Bentuk', examples: ['形 (katachi - bentuk)', '形式 (keishiki - format)', '人形 (ningyō - boneka)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '役', onyomi: 'ヤク, エキ', kunyomi: '-', meaning: 'Peran, Tugas', examples: ['役割 (yakuwari - peran)', '役立つ (yakudatsu - berguna)', '役員 (yakuin - petugas)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '彼', onyomi: 'ヒ', kunyomi: 'かれ', meaning: 'Dia (laki-laki)', examples: ['彼 (kare - dia laki-laki)', '彼女 (kanojo - dia perempuan)', '彼方 (kanata - jauh di sana)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '徒', onyomi: 'ト', kunyomi: '-', meaning: 'Pengikut, Sia-sia', examples: ['徒歩 (toho - berjalan kaki)', '生徒 (seito - murid)', '徒労 (torō - usaha sia-sia)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '得', onyomi: 'トク', kunyomi: 'え(る)', meaning: 'Mendapatkan, Keuntungan', examples: ['得る (eru - mendapatkan)', '得意 (tokui - ahli/bangga)', '利益 (rieki - keuntungan)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '御', onyomi: 'ギョ, ゴ', kunyomi: 'おん', meaning: 'Terhormat, Awalan kehormatan', examples: ['御飯 (gohan - nasi)', '御手洗 (otearai - toilet)', '御免 (gomen - maaf)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '必', onyomi: 'ヒツ', kunyomi: 'かなら(ず)', meaning: 'Pasti, Harus', examples: ['必ず (kanarazu - pasti)', '必要 (hitsuyō - perlu)', '必然 (hitsuzen - tak terelakkan)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '忘', onyomi: 'ボウ', kunyomi: 'わす(れる)', meaning: 'Lupa', examples: ['忘れる (wasureru - lupa)', '忘年会 (bōnenkai - pesta akhir tahun)', '忘却 (bōkyaku - kelupaan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '忙', onyomi: 'ボウ', kunyomi: 'いそが(しい)', meaning: 'Sibuk', examples: ['忙しい (isogashii - sibuk)', '多忙 (tabō - sangat sibuk)', '繁忙 (hanbō - sibuk)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '念', onyomi: 'ネン', kunyomi: '-', meaning: 'Pikiran, Perhatian', examples: ['念願 (nengan - keinginan kuat)', '記念 (kinen - peringatan)', '念のため (nenno tame - untuk berjaga-jaga)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '怒', onyomi: 'ド', kunyomi: 'いか(る), おこ(る)', meaning: 'Marah', examples: ['怒る (okoru/ikaru - marah)', '激怒 (gekido - kemarahan besar)', '怒鳴る (donaru - berteriak marah)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '怖', onyomi: 'フ', kunyomi: 'こわ(い)', meaning: 'Takut', examples: ['怖い (kowai - menakutkan)', '恐怖 (kyōfu - ketakutan)', '怖がる (kowagaru - merasa takut)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '性', onyomi: 'セイ, ショウ', kunyomi: '-', meaning: 'Jenis kelamin, Sifat', examples: ['性格 (seikaku - kepribadian)', '女性 (josei - wanita)', '可能性 (kanōsei - kemungkinan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '恐', onyomi: 'キョウ', kunyomi: 'おそ(れる)', meaning: 'Takut, Khawatir', examples: ['恐れる (osoreru - takut)', '恐怖 (kyōfu - ketakutan)', '恐竜 (kyōryū - dinosaurus)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '恥', onyomi: 'チ', kunyomi: 'は(じる)', meaning: 'Malu', examples: ['恥 (haji - malu)', '恥ずかしい (hazukashii - memalukan)', '羞恥心 (shūchishin - rasa malu)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '息', onyomi: 'ソク', kunyomi: 'いき', meaning: 'Nafas', examples: ['息 (iki - nafas)', '休息 (kyūsoku - istirahat)', '息子 (musuko - anak laki-laki)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '悲', onyomi: 'ヒ', kunyomi: 'かな(しい)', meaning: 'Sedih', examples: ['悲しい (kanashii - sedih)', '悲劇 (higeki - tragedi)', '悲観 (hikan - pesimis)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '情', onyomi: 'ジョウ, セイ', kunyomi: 'なさ(け)', meaning: 'Perasaan, Situasi', examples: ['感情 (kanjō - emosi)', '情報 (jōhō - informasi)', '情熱 (jōnetsu - gairah)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '想', onyomi: 'ソウ', kunyomi: '-', meaning: 'Pemikiran, Konsep', examples: ['想像 (sōzō - imajinasi)', '思想 (shisō - ideologi)', '予想 (yosō - prediksi)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '愛', onyomi: 'アイ', kunyomi: '-', meaning: 'Cinta', examples: ['愛 (ai - cinta)', '愛情 (aijō - kasih sayang)', '恋愛 (ren\'ai - percintaan)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '感', onyomi: 'カン', kunyomi: '-', meaning: 'Perasaan, Sensasi', examples: ['感じる (kanjiru - merasakan)', '感情 (kanjō - emosi)', '感謝 (kansha - terima kasih)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '慣', onyomi: 'カン', kunyomi: 'な(れる)', meaning: 'Terbiasa', examples: ['慣れる (nareru - terbiasa)', '習慣 (shūkan - kebiasaan)', '慣用 (kan\'yō - penggunaan umum)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '成', onyomi: 'セイ, ジョウ', kunyomi: 'な(る)', meaning: 'Menjadi, Mencapai', examples: ['成る (naru - menjadi)', '成功 (seikō - sukses)', '成長 (seichō - pertumbuhan)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '戦', onyomi: 'セン', kunyomi: 'たたか(う)', meaning: 'Perang, Bertarung', examples: ['戦う (tatakau - bertarung)', '戦争 (sensō - perang)', '戦略 (senryaku - strategi)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '戻', onyomi: 'レイ', kunyomi: 'もど(る)', meaning: 'Kembali', examples: ['戻る (modoru - kembali)', '返戻 (henrei - pengembalian)', '立ち戻る (tachimodoru - kembali ke)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '所', onyomi: 'ショ', kunyomi: 'ところ', meaning: 'Tempat', examples: ['場所 (basho - tempat)', '所有 (shoyū - kepemilikan)', '研究所 (kenkyūjo - laboratorium)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '才', onyomi: 'サイ', kunyomi: '-', meaning: 'Bakat, Usia', examples: ['才能 (sainō - bakat)', '天才 (tensai - jenius)', '歳 (sai - usia)'], strokes: 3, jlpt: 'N3' },
+    { kanji: '打', onyomi: 'ダ', kunyomi: 'う(つ)', meaning: 'Memukul', examples: ['打つ (utsu - memukul)', '打撃 (dageki - pukulan)', '電話を打つ (denwa o utsu - menelepon)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '払', onyomi: 'フツ', kunyomi: 'はら(う)', meaning: 'Membayar, Menyapu', examples: ['払う (harau - membayar/menyapu)', '支払い (shiharai - pembayaran)', '払拭 (fusshoku - penghapusan)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '投', onyomi: 'トウ', kunyomi: 'な(げる)', meaning: 'Melempar', examples: ['投げる (nageru - melempar)', '投資 (tōshi - investasi)', '投票 (tōhyō - pemungutan suara)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '折', onyomi: 'セツ', kunyomi: 'お(る)', meaning: 'Melipat, Patah', examples: ['折る (oru - mematahkan)', '折り返し (orikaeshi - putar balik)', '骨折 (kossetsu - patah tulang)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '抜', onyomi: 'バツ', kunyomi: 'ぬ(く)', meaning: 'Mencabut, Melewati', examples: ['抜く (nuku - mencabut)', '選抜 (senbatsu - seleksi)', '抜群 (batsugun - luar biasa)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '抱', onyomi: 'ホウ', kunyomi: 'だ(く), いだ(く)', meaning: 'Memeluk', examples: ['抱く (daku/idaku - memeluk)', '抱負 (hōfu - aspirasi)', '抱擁 (hōyō - pelukan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '押', onyomi: 'オウ', kunyomi: 'お(す)', meaning: 'Mendorong', examples: ['押す (osu - mendorong)', '押し入れ (oshiire - lemari)', '押印 (ōin - cap)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '招', onyomi: 'ショウ', kunyomi: 'まね(く)', meaning: 'Mengundang', examples: ['招く (maneku - mengundang)', '招待 (shōtai - undangan)', '招集 (shōshū - panggilan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '石', onyomi: 'セキ, シャク, コク', kunyomi: 'いし', meaning: 'Batu', examples: ['石 (ishi - batu)', '宝石 (hōseki - permata)', '石油 (sekiyu - minyak bumi)'], strokes: 5, jlpt: 'N3' },
+{ kanji: '破', onyomi: 'ハ', kunyomi: 'やぶ(る)', meaning: 'Merusak, Melanggar', examples: ['破る (yaburu - merusak)', '破壊 (hakai - penghancuran)', '突破 (toppa - terobosan)'], strokes: 10, jlpt: 'N3' },
+{ kanji: '確', onyomi: 'カク', kunyomi: 'たし(か)', meaning: 'Pasti, Konfirmasi', examples: ['確か (tashika - pasti)', '確認 (kakunin - konfirmasi)', '正確 (seikaku - akurat)'], strokes: 15, jlpt: 'N3' },
+{ kanji: '示', onyomi: 'ジ, シ', kunyomi: 'しめ(す)', meaning: 'Menunjukkan', examples: ['示す (shimesu - menunjukkan)', '表示 (hyōji - tampilan)', '指示 (shiji - instruksi)'], strokes: 5, jlpt: 'N3' },
+{ kanji: '礼', onyomi: 'レイ, ライ', kunyomi: '-', meaning: 'Hormat, Terima kasih', examples: ['お礼 (orei - ucapan terima kasih)', '礼儀 (reigi - sopan santun)', '結婚式 (kekkonshiki - pernikahan)'], strokes: 5, jlpt: 'N3' },
+{ kanji: '祖', onyomi: 'ソ', kunyomi: '-', meaning: 'Leluhur', examples: ['祖先 (sosen - leluhur)', '祖父 (sofu - kakek)', '祖国 (sokoku - tanah air)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '神', onyomi: 'シン, ジン', kunyomi: 'かみ', meaning: 'Tuhan, Dewa', examples: ['神 (kami - dewa)', '神社 (jinja - kuil Shinto)', '精神 (seishin - jiwa)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '福', onyomi: 'フク', kunyomi: '-', meaning: 'Keberuntungan', examples: ['福 (fuku - keberuntungan)', '幸福 (kōfuku - kebahagiaan)', '福袋 (fukubukuro - tas keberuntungan)'], strokes: 13, jlpt: 'N3' },
+{ kanji: '科', onyomi: 'カ', kunyomi: '-', meaning: 'Departemen, Bidang studi', examples: ['科学 (kagaku - sains)', '教科書 (kyōkasho - buku teks)', '外科 (geka - bedah)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '程', onyomi: 'テイ', kunyomi: 'ほど', meaning: 'Tingkat, Jarak', examples: ['程度 (teido - tingkat)', '日程 (nittei - jadwal)', '程遠い (hodotōi - jauh)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '種', onyomi: 'シュ', kunyomi: 'たね', meaning: 'Jenis, Benih', examples: ['種類 (shurui - jenis)', '種子 (shushi - benih)', '人種 (jinshu - ras)'], strokes: 14, jlpt: 'N3' },
+{ kanji: '積', onyomi: 'セキ', kunyomi: 'つ(む)', meaning: 'Menumpuk, Mengalikan', examples: ['積む (tsumu - menumpuk)', '面積 (menseki - luas area)', '積極的 (sekkyokuteki - aktif)'], strokes: 16, jlpt: 'N3' },
+{ kanji: '突', onyomi: 'トツ', kunyomi: 'つ(く)', meaning: 'Menusuk, Tiba-tiba', examples: ['突く (tsuku - menusuk)', '突然 (totsuzen - tiba-tiba)', '衝突 (shōtotsu - tabrakan)'], strokes: 8, jlpt: 'N3' },
+{ kanji: '窓', onyomi: 'ソウ', kunyomi: 'まど', meaning: 'Jendela', examples: ['窓 (mado - jendela)', '窓口 (madoguchi - loket)', '同窓会 (dōsōkai - reuni)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '笑', onyomi: 'ショウ', kunyomi: 'わら(う)', meaning: 'Tertawa', examples: ['笑う (warau - tertawa)', '微笑 (bishō - senyuman)', '苦笑 (kushō - senyum pahit)'], strokes: 10, jlpt: 'N3' },
+{ kanji: '等', onyomi: 'トウ', kunyomi: 'ひと(しい)', meaning: 'Dll., Sama', examples: ['等しい (hitoshii - sama)', '平等 (byōdō - kesetaraan)', '高等 (kōtō - tinggi)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '箱', onyomi: 'ソウ', kunyomi: 'はこ', meaning: 'Kotak', examples: ['箱 (hako - kotak)', '郵便箱 (yūbinbako - kotak pos)', '箱入り (hakoiri - dalam kotak)'], strokes: 15, jlpt: 'N3' },
+{ kanji: '米', onyomi: 'ベイ, マイ', kunyomi: 'こめ', meaning: 'Beras, Amerika', examples: ['米 (kome - beras)', '米国 (beikoku - Amerika)', '白米 (hakumai - beras putih)'], strokes: 6, jlpt: 'N3' },
+{ kanji: '精', onyomi: 'セイ, ショウ', kunyomi: '-', meaning: 'Esensi, Roh', examples: ['精神 (seishin - jiwa)', '精密 (seimitsu - presisi)', '精一杯 (seiippai - sekuat tenaga)'], strokes: 14, jlpt: 'N3' },
+{ kanji: '約', onyomi: 'ヤク', kunyomi: '-', meaning: 'Perjanjian, Sekitar', examples: ['約束 (yakusoku - janji)', '契約 (keiyaku - kontrak)', '約 (yaku - sekitar)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '組', onyomi: 'ソ', kunyomi: 'く(む)', meaning: 'Kelompok, Menyusun', examples: ['組む (kumu - menyusun)', '番組 (bangumi - program)', '組合 (kumiai - serikat)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '経', onyomi: 'ケイ, キョウ', kunyomi: 'へ(る)', meaning: 'Melewati, Manajemen', examples: ['経る (heru - melewati)', '経済 (keizai - ekonomi)', '経験 (keiken - pengalaman)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '給', onyomi: 'キュウ', kunyomi: '-', meaning: 'Gaji, Penyediaan', examples: ['給料 (kyūryō - gaji)', '供給 (kyōkyū - pasokan)', '給食 (kyūshoku - makan siang sekolah)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '絵', onyomi: 'カイ, エ', kunyomi: '-', meaning: 'Gambar', examples: ['絵 (e - gambar)', '絵画 (kaiga - lukisan)', '漫画 (manga - komik)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '絶', onyomi: 'ゼツ', kunyomi: 'た(える)', meaning: 'Memutus, Mutlak', examples: ['絶える (taeru - terputus)', '絶対 (zettai - mutlak)', '拒絶 (kyozetsu - penolakan)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '続', onyomi: 'ゾク', kunyomi: 'つづ(く)', meaning: 'Melanjutkan', examples: ['続く (tsuzuku - berlanjut)', '続ける (tsuzukeru - melanjutkan)', '連続 (renzoku - serial)'], strokes: 13, jlpt: 'N3' },
+{ kanji: '緒', onyomi: 'ショ, チョ', kunyomi: 'お', meaning: 'Awal, Tali', examples: ['緒 (o - tali)', '情緒 (jōcho - perasaan)', '一緒 (issho - bersama)'], strokes: 15, jlpt: 'N3' },
+{ kanji: '罪', onyomi: 'ザイ', kunyomi: 'つみ', meaning: 'Dosa, Kejahatan', examples: ['罪 (tsumi - dosa)', '犯罪 (hanzai - kejahatan)', '無罪 (muzai - tidak bersalah)'], strokes: 13, jlpt: 'N3' },
+{ kanji: '置', onyomi: 'チ', kunyomi: 'お(く)', meaning: 'Meletakkan', examples: ['置く (oku - meletakkan)', '位置 (ichi - posisi)', '装置 (sōchi - peralatan)'], strokes: 13, jlpt: 'N3' },
+{ kanji: '美', onyomi: 'ビ', kunyomi: 'うつく(しい)', meaning: 'Indah', examples: ['美しい (utsukushii - indah)', '美術 (bijutsu - seni)', '美人 (bijin - wanita cantik)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '老', onyomi: 'ロウ', kunyomi: 'お(いる)', meaning: 'Tua', examples: ['老人 (rōjin - orang tua)', '老化 (rōka - penuaan)', '老いる (oiru - menjadi tua)'], strokes: 6, jlpt: 'N3' },
+{ kanji: '耳', onyomi: 'ジ', kunyomi: 'みみ', meaning: 'Telinga', examples: ['耳 (mimi - telinga)', '耳鼻科 (jibika - THT)', '耳が痛い (mimi ga itai - sakit telinga)'], strokes: 6, jlpt: 'N3' },
+{ kanji: '職', onyomi: 'ショク', kunyomi: '-', meaning: 'Pekerjaan', examples: ['職業 (shokugyō - pekerjaan)', '職場 (shokuba - tempat kerja)', '就職 (shūshoku - mendapatkan pekerjaan)'], strokes: 18, jlpt: 'N3' },
+{ kanji: '育', onyomi: 'イク', kunyomi: 'そだ(つ)', meaning: 'Membesarkan', examples: ['育てる (sodateru - membesarkan)', '教育 (kyōiku - pendidikan)', '育児 (ikuji - pengasuhan anak)'], strokes: 8, jlpt: 'N3' },
+{ kanji: '背', onyomi: 'ハイ', kunyomi: 'せ', meaning: 'Punggung, Tinggi', examples: ['背中 (senaka - punggung)', '背景 (haikei - latar belakang)', '背が高い (se ga takai - tinggi)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '能', onyomi: 'ノウ', kunyomi: '-', meaning: 'Kemampuan', examples: ['能力 (nōryoku - kemampuan)', '可能 (kanō - mungkin)', '才能 (sainō - bakat)'], strokes: 10, jlpt: 'N3' },
+{ kanji: '腹', onyomi: 'フク', kunyomi: 'はら', meaning: 'Perut', examples: ['腹 (hara - perut)', '腹痛 (fukutsū - sakit perut)', '満腹 (manpuku - kenyang)'], strokes: 13, jlpt: 'N3' },
+{ kanji: '舞', onyomi: 'ブ', kunyomi: 'ま(う)', meaning: 'Menari', examples: ['舞う (mau - menari)', '舞台 (butai - panggung)', '歌舞伎 (kabuki - Kabuki)'], strokes: 15, jlpt: 'N3' },
+{ kanji: '船', onyomi: 'セン', kunyomi: 'ふね', meaning: 'Kapal', examples: ['船 (fune - kapal)', '船舶 (senpaku - kapal laut)', '船便 (funabin - pengiriman laut)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '良', onyomi: 'リョウ', kunyomi: 'よ(い)', meaning: 'Baik', examples: ['良い (yoi - baik)', '良く (yoku - dengan baik)', '改良 (kairyō - perbaikan)'], strokes: 7, jlpt: 'N3' },
+{ kanji: '若', onyomi: 'ジャク', kunyomi: 'わか(い)', meaning: 'Muda', examples: ['若い (wakai - muda)', '若者 (wakamono - pemuda)', '老若 (rōnyaku - tua dan muda)'], strokes: 8, jlpt: 'N3' },
+{ kanji: '苦', onyomi: 'ク', kunyomi: 'くる(しい)', meaning: 'Pahit, Menderita', examples: ['苦い (nigai - pahit)', '苦しい (kurushii - menderita)', '苦労 (kurō - kesulitan)'], strokes: 8, jlpt: 'N3' },
+{ kanji: '草', onyomi: 'ソウ', kunyomi: 'くさ', meaning: 'Rumput', examples: ['草 (kusa - rumput)', '草原 (sōgen - padang rumput)', '雑草 (zassō - gulma)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '落', onyomi: 'ラク', kunyomi: 'お(ちる)', meaning: 'Jatuh', examples: ['落ちる (ochiru - jatuh)', '落第 (rakudai - gagal ujian)', '落下 (rakka - jatuh)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '葉', onyomi: 'ヨウ', kunyomi: 'は', meaning: 'Daun', examples: ['葉 (ha - daun)', '紅葉 (momiji - daun merah)', '落葉 (rakuyō - daun gugur)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '薬', onyomi: 'ヤク', kunyomi: 'くすり', meaning: 'Obat', examples: ['薬 (kusuri - obat)', '薬局 (yakkyoku - apotek)', '医薬品 (iyakuhin - produk farmasi)'], strokes: 16, jlpt: 'N3' },
+{ kanji: '術', onyomi: 'ジュツ', kunyomi: '-', meaning: 'Teknik, Seni', examples: ['技術 (gijutsu - teknologi)', '手術 (shujutsu - operasi)', '美術 (bijutsu - seni)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '表', onyomi: 'ヒョウ', kunyomi: 'おもて', meaning: 'Tabel, Permukaan', examples: ['表 (omote - permukaan)', '表現 (hyōgen - ekspresi)', '時刻表 (jikokuhyō - jadwal)'], strokes: 8, jlpt: 'N3' },
+{ kanji: '要', onyomi: 'ヨウ', kunyomi: 'かなめ', meaning: 'Penting, Diperlukan', examples: ['要る (iru - diperlukan)', '必要 (hitsuyō - perlu)', '要点 (yōten - poin penting)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '規', onyomi: 'キ', kunyomi: '-', meaning: 'Aturan', examples: ['規則 (kisoku - aturan)', '規定 (kitei - ketentuan)', '規制 (kisei - regulasi)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '覚', onyomi: 'カク', kunyomi: 'おぼ(える)', meaning: 'Mengingat', examples: ['覚える (oboeru - mengingat)', '感覚 (kankaku - perasaan)', '目覚める (mezameru - bangun)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '観', onyomi: 'カン', kunyomi: '-', meaning: 'Mengamati', examples: ['観察 (kansatsu - observasi)', '観光 (kankō - pariwisata)', '主観 (shukan - subjektif)'], strokes: 18, jlpt: 'N3' },
+{ kanji: '解', onyomi: 'カイ, ゲ', kunyomi: 'と(く)', meaning: 'Memahami, Melepaskan', examples: ['解く (toku - melepaskan)', '理解 (rikai - pemahaman)', '解決 (kaiketsu - solusi)'], strokes: 13, jlpt: 'N3' },
+{ kanji: '記', onyomi: 'キ', kunyomi: 'しる(す)', meaning: 'Mencatat', examples: ['記す (shirusu - mencatat)', '日記 (nikki - diary)', '記者 (kisha - wartawan)'], strokes: 10, jlpt: 'N3' },
+{ kanji: '訪', onyomi: 'ホウ', kunyomi: 'おとず(れる)', meaning: 'Mengunjungi', examples: ['訪れる (otozureru - mengunjungi)', '訪問 (hōmon - kunjungan)', '来訪 (raihō - kedatangan)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '許', onyomi: 'キョ', kunyomi: 'ゆる(す)', meaning: 'Mengizinkan', examples: ['許す (yurusu - mengizinkan)', '許可 (kyoka - izin)', '特許 (tokkyo - paten)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '認', onyomi: 'ニン', kunyomi: 'みと(める)', meaning: 'Mengakui', examples: ['認める (mitomeru - mengakui)', '確認 (kakunin - konfirmasi)', '承認 (shōnin - persetujuan)'], strokes: 14, jlpt: 'N3' },
+{ kanji: '誤', onyomi: 'ゴ', kunyomi: 'あやま(る)', meaning: 'Kesalahan', examples: ['誤る (ayamaru - membuat kesalahan)', '誤解 (gokai - kesalahpahaman)', '錯誤 (sakugo - kesalahan)'], strokes: 14, jlpt: 'N3' },
+{ kanji: '説', onyomi: 'セツ, ゼイ', kunyomi: 'と(く)', meaning: 'Penjelasan', examples: ['説明 (setsumei - penjelasan)', '小説 (shōsetsu - novel)', '伝説 (densetsu - legenda)'], strokes: 14, jlpt: 'N3' },
+{ kanji: '調', onyomi: 'チョウ', kunyomi: 'しら(べる)', meaning: 'Menyelidiki, Nada', examples: ['調べる (shiraberu - menyelidiki)', '調査 (chōsa - penelitian)', '調子 (chōshi - kondisi)'], strokes: 15, jlpt: 'N3' },
+{ kanji: '談', onyomi: 'ダン', kunyomi: '-', meaning: 'Pembicaraan', examples: ['相談 (sōdan - konsultasi)', '会談 (kaidan - pertemuan)', '対談 (taidan - wawancara)'], strokes: 15, jlpt: 'N3' },
+{ kanji: '論', onyomi: 'ロン', kunyomi: '-', meaning: 'Teori, Diskusi', examples: ['討論 (tōron - debat)', '理論 (riron - teori)', '論文 (ronbun - tesis)'], strokes: 15, jlpt: 'N3' },
+{ kanji: '識', onyomi: 'シキ', kunyomi: '-', meaning: 'Pengetahuan', examples: ['知識 (chishiki - pengetahuan)', '認識 (ninshiki - kesadaran)', '常識 (jōshiki - akal sehat)'], strokes: 19, jlpt: 'N3' },
+{ kanji: '警', onyomi: 'ケイ', kunyomi: '-', meaning: 'Peringatan', examples: ['警察 (keisatsu - polisi)', '警告 (keikoku - peringatan)', '警官 (keikan - petugas polisi)'], strokes: 19, jlpt: 'N3' },
+{ kanji: '議', onyomi: 'ギ', kunyomi: '-', meaning: 'Diskusi', examples: ['会議 (kaigi - rapat)', '議論 (giron - diskusi)', '議員 (giin - anggota dewan)'], strokes: 20, jlpt: 'N3' },
+{ kanji: '負', onyomi: 'フ', kunyomi: 'ま(ける)', meaning: 'Kalah, Bertanggung jawab', examples: ['負ける (makeru - kalah)', '勝負 (shōbu - pertandingan)', '負担 (futan - beban)'], strokes: 9, jlpt: 'N3' },
+{ kanji: '財', onyomi: 'ザイ', kunyomi: '-', meaning: 'Kekayaan', examples: ['財布 (saifu - dompet)', '財産 (zaisan - aset)', '財政 (zaisei - keuangan)'], strokes: 10, jlpt: 'N3' },
+{ kanji: '貧', onyomi: 'ヒン, ビン', kunyomi: 'まず(しい)', meaning: 'Miskin', examples: ['貧しい (mazushii - miskin)', '貧困 (hinkon - kemiskinan)', '貧血 (hinketsu - anemia)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '責', onyomi: 'セキ', kunyomi: 'せ(める)', meaning: 'Tanggung jawab', examples: ['責任 (sekinin - tanggung jawab)', '責める (semeru - menyalahkan)', '無責任 (musekinin - tidak bertanggung jawab)'], strokes: 11, jlpt: 'N3' },
+{ kanji: '費', onyomi: 'ヒ', kunyomi: 'つい(やす)', meaning: 'Biaya', examples: ['費用 (hiyō - biaya)', '消費 (shōhi - konsumsi)', '学費 (gakuhi - biaya sekolah)'], strokes: 12, jlpt: 'N3' },
+{ kanji: '資', onyomi: 'シ', kunyomi: '-', meaning: 'Sumber daya', examples: ['資源 (shigen - sumber daya)', '資金 (shikin - dana)', '投資 (tōshi - investasi)'], strokes: 13, jlpt: 'N3' },
+{ kanji: '賛', onyomi: 'サン', kunyomi: '-', meaning: 'Mendukung', examples: ['賛成 (sansei - setuju)', '賛美 (sanbi - pujian)', '協賛 (kyōsan - sponsor)'], strokes: 15, jlpt: 'N3' },
+    { kanji: '越', onyomi: 'エツ', kunyomi: 'こ(す)', meaning: 'Melewati', examples: ['越す (kosu - melewati)', '引越し (hikkoshi - pindah rumah)', '卓越 (takue)', '越境 (ekkyō - melintasi perbatasan)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '路', onyomi: 'ロ', kunyomi: 'じ', meaning: 'Jalan', examples: ['道路 (dōro - jalan)', '路線 (rosen - rute)', '進路 (shinro - arah)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '身', onyomi: 'シン', kunyomi: 'み', meaning: 'Tubuh, Diri', examples: ['身 (mi - tubuh)', '出身 (shusshin - asal)', '独身 (dokushin - lajang)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '辞', onyomi: 'ジ', kunyomi: 'や(める)', meaning: 'Mengundurkan diri', examples: ['辞める (yameru - mengundurkan diri)', '辞書 (jisho - kamus)', '辞職 (jishoku - pengunduran diri)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '込', onyomi: '-', kunyomi: 'こ(む)', meaning: 'Penuh, Ramai', examples: ['込む (komu - penuh/ramai)', '申し込み (mōshikomi - pendaftaran)', '打ち込む (uchikomu - tekun)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '迎', onyomi: 'ゲイ', kunyomi: 'むか(える)', meaning: 'Menyambut', examples: ['迎える (mukaeru - menyambut)', '歓迎 (kangei - sambutan)', '出迎え (demukae - menjemput)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '返', onyomi: 'ヘン', kunyomi: 'かえ(す)', meaning: 'Mengembalikan', examples: ['返す (kaesu - mengembalikan)', '返事 (henji - balasan)', '返却 (henkyaku - pengembalian)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '迷', onyomi: 'メイ', kunyomi: 'まよ(う)', meaning: 'Bingung, Tersesat', examples: ['迷う (mayou - bingung)', '迷惑 (meiwaku - gangguan)', '迷子 (maigo - anak hilang)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '追', onyomi: 'ツイ', kunyomi: 'お(う)', meaning: 'Mengejar', examples: ['追う (ou - mengejar)', '追加 (tsuika - tambahan)', '追求 (tsuikyū - pengejaran)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '退', onyomi: 'タイ', kunyomi: 'しりぞ(く)', meaning: 'Mundur, Pensiun', examples: ['退く (shirizoku - mundur)', '退職 (taishoku - pensiun)', '後退 (kōtai - kemunduran)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '逃', onyomi: 'トウ', kunyomi: 'に(げる)', meaning: 'Melarikan diri', examples: ['逃げる (nigeru - melarikan diri)', '逃亡 (tōbō - pelarian)', '逃す (nogasu - melewatkan)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '途', onyomi: 'ト', kunyomi: '-', meaning: 'Jalan', examples: ['途中 (tochū - di tengah jalan)', '用途 (yōto - kegunaan)', '前途 (zento - masa depan)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '速', onyomi: 'ソク', kunyomi: 'はや(い)', meaning: 'Cepat', examples: ['速い (hayai - cepat)', '速度 (sokudo - kecepatan)', '迅速 (jinsoku - cepat)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '連', onyomi: 'レン', kunyomi: 'つら(なる)', meaning: 'Terhubung', examples: ['連なる (tsuranaru - berjejer)', '連絡 (renraku - kontak)', '連想 (rensō - asosiasi)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '進', onyomi: 'シン', kunyomi: 'すす(む)', meaning: 'Maju', examples: ['進む (susumu - maju)', '進歩 (shinpo - kemajuan)', '進行 (shinkō - perkembangan)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '遅', onyomi: 'チ', kunyomi: 'おく(れる)', meaning: 'Terlambat', examples: ['遅れる (okureru - terlambat)', '遅刻 (chikoku - keterlambatan)', '遅い (osoi - lambat)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '遊', onyomi: 'ユウ', kunyomi: 'あそ(ぶ)', meaning: 'Bermain', examples: ['遊ぶ (asobu - bermain)', '遊園地 (yūenchi - taman hiburan)', '交遊 (kōyū - persahabatan)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '過', onyomi: 'カ', kunyomi: 'す(ぎる)', meaning: 'Berlebihan', examples: ['過ぎる (sugiru - melebihi)', '過去 (kako - masa lalu)', '過労 (karō - kerja berlebihan)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '達', onyomi: 'タツ', kunyomi: '-', meaning: 'Mencapai', examples: ['達成 (tassei - pencapaian)', '発達 (hattatsu - perkembangan)', '友達 (tomodachi - teman)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '違', onyomi: 'イ', kunyomi: 'ちが(う)', meaning: 'Berbeda', examples: ['違う (chigau - berbeda)', '間違い (machigai - kesalahan)', '違反 (ihan - pelanggaran)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '遠', onyomi: 'エン', kunyomi: 'とお(い)', meaning: 'Jauh', examples: ['遠い (tooi - jauh)', '遠慮 (enryo - kerendahan hati)', '遠足 (ensoku - piknik)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '適', onyomi: 'テキ', kunyomi: '-', meaning: 'Cocok', examples: ['適切 (tekisetsu - tepat)', '適当 (tekitō - sesuai)', '快適 (kaiteki - nyaman)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '選', onyomi: 'セン', kunyomi: 'えら(ぶ)', meaning: 'Memilih', examples: ['選ぶ (erabu - memilih)', '選択 (sentaku - pilihan)', '選挙 (senkyo - pemilihan)'], strokes: 15, jlpt: 'N3' },
+    { kanji: '部', onyomi: 'ブ', kunyomi: '-', meaning: 'Bagian', examples: ['部分 (bubun - bagian)', '部屋 (heya - kamar)', '全部 (zenbu - seluruhnya)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '都', onyomi: 'ト, ツ', kunyomi: 'みやこ', meaning: 'Ibukota', examples: ['都 (miyako - ibukota)', '都会 (tokai - kota besar)', '首都 (shuto - ibukota negara)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '配', onyomi: 'ハイ', kunyomi: 'くば(る)', meaning: 'Mendistribusikan', examples: ['配る (kubaru - mendistribusikan)', '配達 (haitatsu - pengiriman)', '心配 (shinpai - khawatir)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '酒', onyomi: 'シュ', kunyomi: 'さけ', meaning: 'Minuman beralkohol', examples: ['酒 (sake - minuman beralkohol)', '日本酒 (nihonshu - sake Jepang)', '酒屋 (sakaya - toko minuman)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '閉', onyomi: 'ヘイ', kunyomi: 'し(める)', meaning: 'Menutup', examples: ['閉める (shimeru - menutup)', '閉店 (heiten - tutup toko)', '閉会 (heikai - penutupan)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '関', onyomi: 'カン', kunyomi: 'せき', meaning: 'Terkait, Pintu gerbang', examples: ['関係 (kankei - hubungan)', '関心 (kanshin - minat)', '関西 (kansai - wilayah Kansai)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '阪', onyomi: 'ハン', kunyomi: 'さか', meaning: 'Bukit', examples: ['阪 (saka - bukit)', '大阪 (Ōsaka - Osaka)', '阪神 (Hanshin - wilayah Osaka-Kobe)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '降', onyomi: 'コウ', kunyomi: 'お(りる)', meaning: 'Turun', examples: ['降りる (oriru - turun)', '降水 (kōsui - presipitasi)', '降参 (kōsan - menyerah)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '限', onyomi: 'ゲン', kunyomi: 'かぎ(る)', meaning: 'Batas', examples: ['限る (kagiru - membatasi)', '限度 (gendo - batas)', '限定 (gentei - terbatas)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '除', onyomi: 'ジョ', kunyomi: 'のぞ(く)', meaning: 'Menghapus', examples: ['除く (nozoku - menghapus)', '掃除 (sōji - membersihkan)', '解除 (kaijo - penghapusan)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '険', onyomi: 'ケン', kunyomi: 'けわ(しい)', meaning: 'Berbahaya', examples: ['険しい (kewashii - berbahaya)', '危険 (kiken - bahaya)', '保険 (hoken - asuransi)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '陽', onyomi: 'ヨウ', kunyomi: '-', meaning: 'Matahari, Positif', examples: ['太陽 (taiyō - matahari)', '陽気 (yōki - ceria)', '陽極 (yōkyoku - anoda)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '際', onyomi: 'サイ', kunyomi: 'きわ', meaning: 'Saat, Batas', examples: ['際 (kiwa - batas)', '国際 (kokusai - internasional)', '実際 (jissai - sebenarnya)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '雑', onyomi: 'ザツ', kunyomi: '-', meaning: 'Campuran', examples: ['雑誌 (zasshi - majalah)', '雑音 (zatsuon - kebisingan)', '複雑 (fukuzatsu - kompleks)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '難', onyomi: 'ナン', kunyomi: 'むずか(しい)', meaning: 'Sulit', examples: ['難しい (muzukashii - sulit)', '困難 (konnan - kesulitan)', '非難 (hinan - kritik)'], strokes: 18, jlpt: 'N3' },
+    { kanji: '雪', onyomi: 'セツ', kunyomi: 'ゆき', meaning: 'Salju', examples: ['雪 (yuki - salju)', '大雪 (ōyuki - salju lebat)', '雪国 (yukiguni - negeri salju)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '静', onyomi: 'セイ', kunyomi: 'しず(か)', meaning: 'Tenang', examples: ['静か (shizuka - tenang)', '安静 (ansei - istirahat)', '静脈 (jōmyaku - vena)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '非', onyomi: 'ヒ', kunyomi: '-', meaning: 'Bukan, Negatif', examples: ['非常 (hijō - darurat)', '非公開 (hikōkai - tidak terbuka)', '否定 (hitei - negasi)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '面', onyomi: 'メン', kunyomi: 'おも', meaning: 'Permukaan, Wajah', examples: ['面 (omo - wajah)', '面接 (mensetsu - wawancara)', '方面 (hōmen - arah)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '靴', onyomi: 'カ', kunyomi: 'くつ', meaning: 'Sepatu', examples: ['靴 (kutsu - sepatu)', '靴下 (kutsushita - kaus kaki)', '長靴 (nagagutsu - sepatu bot)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '頂', onyomi: 'チョウ', kunyomi: 'いただ(く)', meaning: 'Puncak, Menerima', examples: ['頂く (itadaku - menerima)', '頂上 (chōjō - puncak)', '頂点 (chōten - titik tertinggi)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '頭', onyomi: 'トウ', kunyomi: 'あたま', meaning: 'Kepala', examples: ['頭 (atama - kepala)', '頭痛 (zutsū - sakit kepala)', '頭脳 (zunō - otak)'], strokes: 16, jlpt: 'N3' },
+    { kanji: '頼', onyomi: 'ライ', kunyomi: 'たの(む)', meaning: 'Meminta', examples: ['頼む (tanomu - meminta)', '信頼 (shinrai - kepercayaan)', '依頼 (irai - permintaan)'], strokes: 16, jlpt: 'N3' },
+    { kanji: '顔', onyomi: 'ガン', kunyomi: 'かお', meaning: 'Wajah', examples: ['顔 (kao - wajah)', '洗顔 (sengan - mencuci muka)', '笑顔 (egao - senyuman)'], strokes: 18, jlpt: 'N3' },
+    { kanji: '願', onyomi: 'ガン', kunyomi: 'ねが(う)', meaning: 'Permohonan', examples: ['願う (negau - memohon)', '願望 (ganbō - keinginan)', 'お願い (onegai - permintaan)'], strokes: 19, jlpt: 'N3' },
+    { kanji: '類', onyomi: 'ルイ', kunyomi: '-', meaning: 'Jenis', examples: ['種類 (shurui - jenis)', '人類 (jinrui - umat manusia)', '類似 (ruiji - kesamaan)'], strokes: 18, jlpt: 'N3' },
+    { kanji: '飛', onyomi: 'ヒ', kunyomi: 'と(ぶ)', meaning: 'Terbang', examples: ['飛ぶ (tobu - terbang)', '飛行機 (hikōki - pesawat)', '飛躍 (hiyaku - lompatan)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '首', onyomi: 'シュ', kunyomi: 'くび', meaning: 'Leher', examples: ['首 (kubi - leher)', '首都 (shuto - ibukota)', '首相 (shushō - perdana menteri)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '馬', onyomi: 'バ', kunyomi: 'うま', meaning: 'Kuda', examples: ['馬 (uma - kuda)', '競馬 (keiba - balap kuda)', '馬鹿 (baka - bodoh)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '髪', onyomi: 'ハツ', kunyomi: 'かみ', meaning: 'Rambut', examples: ['髪 (kami - rambut)', '散髪 (sanpatsu - potong rambut)', '長髪 (chōhatsu - rambut panjang)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '鳴', onyomi: 'メイ', kunyomi: 'な(く)', meaning: 'Bersuara', examples: ['鳴く (naku - bersuara)', '悲鳴 (himei - jeritan)', '共鳴 (kyōmei - resonansi)'], strokes: 14, jlpt: 'N3' },
+                    { kanji: '指', onyomi: 'シ', kunyomi: 'ゆび', meaning: 'Jari, Menunjuk', examples: ['指 (yubi - jari)', '指示 (shiji - instruksi)', '指定 (shitei - penunjukan)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '捕', onyomi: 'ホ', kunyomi: 'つか(まえる)', meaning: 'Menangkap', examples: ['捕まえる (tsukamaeru - menangkap)', '逮捕 (taiho - penangkapan)', '捕獲 (hokaku - penangkapan)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '掛', onyomi: 'カイ', kunyomi: 'か(ける)', meaning: 'Menggantung', examples: ['掛ける (kakeru - menggantung)', '電話を掛ける (denwa o kakeru - menelepon)', '関係が掛かる (kankei ga kakaru - terlibat)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '探', onyomi: 'タン', kunyomi: 'さが(す)', meaning: 'Mencari', examples: ['探す (sagasu - mencari)', '探検 (tanken - eksplorasi)', '探偵 (tantei - detektif)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '支', onyomi: 'シ', kunyomi: 'ささ(える)', meaning: 'Mendukung', examples: ['支える (sasaeru - mendukung)', '支店 (shiten - cabang)', '支払い (shiharai - pembayaran)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '放', onyomi: 'ホウ', kunyomi: 'はな(す)', meaning: 'Melepaskan', examples: ['放す (hanasu - melepaskan)', '放送 (hōsō - siaran)', '解放 (kaihō - pembebasan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '政', onyomi: 'セイ', kunyomi: 'まつりごと', meaning: 'Pemerintah', examples: ['政治 (seiji - politik)', '政府 (seifu - pemerintah)', '行政 (gyōsei - administrasi)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '敗', onyomi: 'ハイ', kunyomi: 'やぶ(れる)', meaning: 'Kalah', examples: ['敗れる (yabureru - kalah)', '失敗 (shippai - kegagalan)', '敗北 (haiboku - kekalahan)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '散', onyomi: 'サン', kunyomi: 'ち(る)', meaning: 'Berserakan', examples: ['散る (chiru - berserakan)', '散歩 (sanpo - jalan-jalan)', '解散 (kaisan - pembubaran)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '数', onyomi: 'スウ', kunyomi: 'かず', meaning: 'Angka', examples: ['数字 (sūji - angka)', '数学 (sūgaku - matematika)', '多数 (tasū - mayoritas)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '断', onyomi: 'ダン', kunyomi: 'ことわ(る)', meaning: 'Menolak', examples: ['断る (kotowaru - menolak)', '判断 (handan - penilaian)', '中断 (chūdan - interupsi)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '易', onyomi: 'イ', kunyomi: 'やさ(しい)', meaning: 'Mudah', examples: ['易しい (yasashii - mudah)', '容易 (yōi - mudah)', '貿易 (bōeki - perdagangan)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '昔', onyomi: 'セキ', kunyomi: 'むかし', meaning: 'Dulu', examples: ['昔 (mukashi - dulu)', '昔話 (mukashibanashi - cerita lama)', '昔々 (mukashimukashi - zaman dahulu kala)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '昨', onyomi: 'サク', kunyomi: '-', meaning: 'Kemarin', examples: ['昨日 (kinō - kemarin)', '昨年 (sakunen - tahun lalu)', '一昨日 (ototoi - kemarin dulu)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '晩', onyomi: 'バン', kunyomi: '-', meaning: 'Malam', examples: ['晩 (ban - malam)', '晩ご飯 (bangohan - makan malam)', '昨晩 (sakuban - tadi malam)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '景', onyomi: 'ケイ', kunyomi: '-', meaning: 'Pemandangan', examples: ['景色 (keshiki - pemandangan)', '景気 (keiki - kondisi ekonomi)', '背景 (haikei - latar belakang)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '晴', onyomi: 'セイ', kunyomi: 'は(れる)', meaning: 'Cerah', examples: ['晴れる (hareru - cerah)', '晴天 (seiten - cuaca cerah)', '快晴 (kaisei - cerah bersih)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '暗', onyomi: 'アン', kunyomi: 'くら(い)', meaning: 'Gelap', examples: ['暗い (kurai - gelap)', '暗記 (anki - menghafal)', '暗殺 (ansatsu - pembunuhan)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '暮', onyomi: 'ボ', kunyomi: 'く(れる)', meaning: 'Hidup, Senja', examples: ['暮らす (kurasu - hidup)', '夕暮れ (yūgure - senja)', '歳暮 (seibo - akhir tahun)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '曲', onyomi: 'キョク', kunyomi: 'ま(がる)', meaning: 'Lagu, Melengkung', examples: ['曲がる (magaru - melengkung)', '曲線 (kyokusen - kurva)', '作曲 (sakkyoku - komposisi musik)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '更', onyomi: 'コウ', kunyomi: 'さら', meaning: 'Lebih, Ganti', examples: ['更に (sara ni - lebih)', '変更 (henkō - perubahan)', '更新 (kōshin - pembaruan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '最', onyomi: 'サイ', kunyomi: 'もっと(も)', meaning: 'Paling', examples: ['最も (mottomo - paling)', '最高 (saikō - terbaik)', '最後 (saigo - terakhir)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '望', onyomi: 'ボウ', kunyomi: 'のぞ(む)', meaning: 'Harapan', examples: ['望む (nozomu - berharap)', '希望 (kibō - harapan)', '望遠鏡 (bōenkyō - teleskop)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '期', onyomi: 'キ', kunyomi: '-', meaning: 'Periode', examples: ['期間 (kikan - periode)', '期待 (kitai - harapan)', '学期 (gakki - semester)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '未', onyomi: 'ミ', kunyomi: '-', meaning: 'Belum', examples: ['未来 (mirai - masa depan)', '未知 (michi - tidak diketahui)', '未満 (miman - kurang dari)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '末', onyomi: 'マツ', kunyomi: 'すえ', meaning: 'Akhir', examples: ['末 (sue - akhir)', '週末 (shūmatsu - akhir pekan)', '年末 (nenmatsu - akhir tahun)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '束', onyomi: 'ソク', kunyomi: 'たば', meaning: 'Ikat', examples: ['束 (taba - ikatan)', '約束 (yakusoku - janji)', '結束 (kessoku - persatuan)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '杯', onyomi: 'ハイ', kunyomi: 'さかずき', meaning: 'Gelas', examples: ['杯 (sakazuki - gelas sake)', '乾杯 (kanpai - bersulang)', '一杯 (ippai - satu gelas)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '果', onyomi: 'カ', kunyomi: 'は(たす)', meaning: 'Buah, Hasil', examples: ['果物 (kudamono - buah)', '結果 (kekka - hasil)', '果たす (hatasu - mencapai)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '格', onyomi: 'カク', kunyomi: '-', meaning: 'Tingkat', examples: ['格差 (kakusa - kesenjangan)', '資格 (shikaku - kualifikasi)', '価格 (kakaku - harga)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '構', onyomi: 'コウ', kunyomi: 'かま(う)', meaning: 'Struktur', examples: ['構う (kamau - peduli)', '構造 (kōzō - struktur)', '構成 (kōsei - komposisi)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '様', onyomi: 'ヨウ', kunyomi: 'さま', meaning: 'Cara, Tuan', examples: ['様々 (samazama - berbagai)', '様子 (yōsu - keadaan)', 'お客様 (okyakusama - tamu)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '権', onyomi: 'ケン', kunyomi: '-', meaning: 'Hak', examples: ['権利 (kenri - hak)', '権力 (kenryoku - kekuasaan)', '人権 (jinken - hak asasi)'], strokes: 15, jlpt: 'N3' },
+    { kanji: '横', onyomi: 'オウ', kunyomi: 'よこ', meaning: 'Samping', examples: ['横 (yoko - samping)', '横断 (ōdan - penyeberangan)', '横浜 (Yokohama - Yokohama)'], strokes: 15, jlpt: 'N3' },
+    { kanji: '機', onyomi: 'キ', kunyomi: 'はた', meaning: 'Mesin', examples: ['機械 (kikai - mesin)', '機会 (kikai - kesempatan)', '飛行機 (hikōki - pesawat)'], strokes: 16, jlpt: 'N3' },
+    { kanji: '欠', onyomi: 'ケツ', kunyomi: 'か(ける)', meaning: 'Kurang', examples: ['欠ける (kakeru - kurang)', '欠席 (kesseki - absen)', '欠点 (ketten - kekurangan)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '次', onyomi: 'ジ', kunyomi: 'つぎ', meaning: 'Berikutnya', examples: ['次 (tsugi - berikutnya)', '次回 (jikai - berikutnya)', '順次 (junji - berturut-turut)'], strokes: 6, jlpt: 'N3' },
+    { kanji: '欲', onyomi: 'ヨク', kunyomi: 'ほ(しい)', meaning: 'Keinginan', examples: ['欲しい (hoshii - ingin)', '欲望 (yokubō - keinginan)', '食欲 (shokuyoku - nafsu makan)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '歯', onyomi: 'シ', kunyomi: 'は', meaning: 'Gigi', examples: ['歯 (ha - gigi)', '歯医者 (haisha - dokter gigi)', '歯ブラシ (haburashi - sikat gigi)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '歳', onyomi: 'サイ', kunyomi: 'とし', meaning: 'Tahun, Usia', examples: ['歳 (toshi - tahun/usia)', '二十歳 (hatachi - 20 tahun)', '歳末 (saimatsu - akhir tahun)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '残', onyomi: 'ザン', kunyomi: 'のこ(る)', meaning: 'Sisa', examples: ['残る (nokoru - tersisa)', '残業 (zangyō - lembur)', '残念 (zannen - disayangkan)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '段', onyomi: 'ダン', kunyomi: '-', meaning: 'Tingkat', examples: ['段階 (dankai - tahap)', '階段 (kaidan - tangga)', '一段と (ichidanto - lebih)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '殺', onyomi: 'サツ', kunyomi: 'ころ(す)', meaning: 'Membunuh', examples: ['殺す (korosu - membunuh)', '殺人 (satsujin - pembunuhan)', '自殺 (jisatsu - bunuh diri)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '民', onyomi: 'ミン', kunyomi: 'たみ', meaning: 'Rakyat', examples: ['国民 (kokumin - warga negara)', '民主 (minshu - demokrasi)', '民間 (minkan - swasta)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '求', onyomi: 'キュウ', kunyomi: 'もと(める)', meaning: 'Mencari', examples: ['求める (motomeru - mencari)', '要求 (yōkyū - permintaan)', '求人 (kyūjin - lowongan kerja)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '決', onyomi: 'ケツ', kunyomi: 'き(める)', meaning: 'Memutuskan', examples: ['決める (kimeru - memutuskan)', '決定 (kettei - keputusan)', '決心 (kesshin - tekad)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '治', onyomi: 'チ', kunyomi: 'なお(る)', meaning: 'Mengobati', examples: ['治る (naoru - sembuh)', '治療 (chiryō - pengobatan)', '政治 (seiji - politik)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '法', onyomi: 'ホウ', kunyomi: '-', meaning: 'Hukum', examples: ['法律 (hōritsu - hukum)', '方法 (hōhō - metode)', '文法 (bunpō - tata bahasa)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '泳', onyomi: 'エイ', kunyomi: 'およ(ぐ)', meaning: 'Berenang', examples: ['泳ぐ (oyogu - berenang)', '水泳 (suiei - berenang)', '泳法 (eihō - gaya renang)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '洗', onyomi: 'セン', kunyomi: 'あら(う)', meaning: 'Mencuci', examples: ['洗う (arau - mencuci)', '洗濯 (sentaku - mencuci pakaian)', '洗面所 (senmenjo - kamar mandi)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '活', onyomi: 'カツ', kunyomi: '-', meaning: 'Hidup', examples: ['活動 (katsudō - aktivitas)', '生活 (seikatsu - kehidupan)', '活躍 (katsuyaku - aktif)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '流', onyomi: 'リュウ', kunyomi: 'なが(れる)', meaning: 'Mengalir', examples: ['流れる (nagareru - mengalir)', '流行 (ryūkō - tren)', '流動 (ryūdō - aliran)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '浮', onyomi: 'フ', kunyomi: 'う(く)', meaning: 'Mengapung', examples: ['浮く (uku - mengapung)', '浮気 (uwaki - selingkuh)', '浮力 (furyoku - daya apung)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '消', onyomi: 'ショウ', kunyomi: 'き(える)', meaning: 'Menghilang', examples: ['消える (kieru - menghilang)', '消火器 (shōkaki - pemadam api)', '消去法 (shōkyohō - eliminasi)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '深', onyomi: 'シン', kunyomi: 'ふか(い)', meaning: 'Dalam', examples: ['深い (fukai - dalam)', '深刻 (shinkoku - serius)', '深さ (fukasa - kedalaman)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '済', onyomi: 'サイ', kunyomi: 'す(む)', meaning: 'Selesai', examples: ['済む (sumu - selesai)', '経済 (keizai - ekonomi)', '返済 (hensai - pembayaran kembali)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '渡', onyomi: 'ト', kunyomi: 'わた(る)', meaning: 'Menyeberang', examples: ['渡る (wataru - menyeberang)', '引渡し (hikiwatashi - penyerahan)', '渡航 (tokō - perjalanan luar negeri)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '港', onyomi: 'コウ', kunyomi: 'みなと', meaning: 'Pelabuhan', examples: ['港 (minato - pelabuhan)', '空港 (kūkō - bandara)', '港湾 (kōwan - pelabuhan)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '満', onyomi: 'マン', kunyomi: 'み(ちる)', meaning: 'Penuh', examples: ['満ちる (michiru - penuh)', '満足 (manzoku - puas)', '満月 (mangetsu - bulan purnama)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '演', onyomi: 'エン', kunyomi: '-', meaning: 'Pertunjukan', examples: ['演じる (enjiru - memerankan)', '演奏 (ensō - pertunjukan musik)', '演説 (enzetsu - pidato)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '点', onyomi: 'テン', kunyomi: '-', meaning: 'Titik', examples: ['点 (ten - titik)', '点数 (tensū - skor)', '重点 (jūten - penekanan)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '然', onyomi: 'ゼン', kunyomi: '-', meaning: 'Demikian', examples: ['自然 (shizen - alam)', '突然 (totsuzen - tiba-tiba)', '当然 (tōzen - wajar)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '煙', onyomi: 'エン', kunyomi: 'けむ(り)', meaning: 'Asap', examples: ['煙 (kemuri - asap)', '禁煙 (kin\'en - larangan merokok)', '煙突 (entotsu - cerobong asap)'], strokes: 13, jlpt: 'N3' },
+    { kanji: '熱', onyomi: 'ネツ', kunyomi: 'あつ(い)', meaning: 'Panas', examples: ['熱い (atsui - panas)', '熱心 (nesshin - antusias)', '熱帯 (nettai - tropis)'], strokes: 15, jlpt: 'N3' },
+    { kanji: '犯', onyomi: 'ハン', kunyomi: 'おか(す)', meaning: 'Melanggar', examples: ['犯す (okasu - melanggar)', '犯人 (hannin - pelaku kejahatan)', '犯罪 (hanzai - kejahatan)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '状', onyomi: 'ジョウ', kunyomi: '-', meaning: 'Kondisi', examples: ['状態 (jōtai - kondisi)', '状��� (jōkyō - situasi)', '症状 (shōjō - gejala)'], strokes: 7, jlpt: 'N3' },
+    { kanji: '猫', onyomi: 'ビョウ', kunyomi: 'ねこ', meaning: 'Kucing', examples: ['猫 (neko - kucing)', '子猫 (koneko - anak kucing)', '野良猫 (noraneko - kucing liar)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '王', onyomi: 'オウ', kunyomi: '-', meaning: 'Raja', examples: ['王 (ō - raja)', '王国 (ōkoku - kerajaan)', '王子 (ōji - pangeran)'], strokes: 4, jlpt: 'N3' },
+    { kanji: '現', onyomi: 'ゲン', kunyomi: 'あらわ(れる)', meaning: 'Sekarang', examples: ['現れる (arawareru - muncul)', '現在 (genzai - sekarang)', '現金 (genkin - tunai)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '球', onyomi: 'キュウ', kunyomi: 'たま', meaning: 'Bola', examples: ['球 (tama - bola)', '野球 (yakyū - baseball)', '地球 (chikyū - bumi)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '産', onyomi: 'サン', kunyomi: 'う(む)', meaning: 'Produksi', examples: ['産む (umu - melahirkan)', '生産 (seisan - produksi)', '特産 (tokusan - produk lokal)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '由', onyomi: 'ユ', kunyomi: 'よし', meaning: 'Alasan', examples: ['理由 (riyū - alasan)', '経由 (keiyu - via)', '自由 (jiyū - kebebasan)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '申', onyomi: 'シン', kunyomi: 'もう(す)', meaning: 'Mengatakan', examples: ['申す (mōsu - mengatakan [humble])', '申請 (shinsei - aplikasi)', '申し込み (mōshikomi - pendaftaran)'], strokes: 5, jlpt: 'N3' },
+    { kanji: '留', onyomi: 'リュウ', kunyomi: 'と(める)', meaning: 'Tinggal', examples: ['留める (tomeru - menghentikan)', '留学 (ryūgaku - belajar di luar negeri)', '留守 (rusu - tidak ada di rumah)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '番', onyomi: 'バン', kunyomi: '-', meaning: 'Nomor', examples: ['番号 (bangō - nomor)', '一番 (ichiban - nomor satu)', '交番 (kōban - pos polisi)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '疑', onyomi: 'ギ', kunyomi: 'うたが(う)', meaning: 'Meragukan', examples: ['疑う (utagau - meragukan)', '疑問 (gimon - pertanyaan)', '容疑者 (yōgisha - tersangka)'], strokes: 14, jlpt: 'N3' },
+    { kanji: '疲', onyomi: 'ヒ', kunyomi: 'つか(れる)', meaning: 'Lelah', examples: ['疲れる (tsukareru - lelah)', '疲労 (hirō - kelelahan)', '疲弊 (hihei - kelelahan)'], strokes: 10, jlpt: 'N3' },
+    { kanji: '痛', onyomi: 'ツウ', kunyomi: 'いた(い)', meaning: 'Sakit', examples: ['痛い (itai - sakit)', '頭痛 (zutsū - sakit kepala)', '痛感 (tsūkan - merasakan)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '登', onyomi: 'トウ', kunyomi: 'のぼ(る)', meaning: 'Mendaki', examples: ['登る (noboru - mendaki)', '登校 (tōkō - pergi ke sekolah)', '登録 (tōroku - registrasi)'], strokes: 12, jlpt: 'N3' },
+    { kanji: '皆', onyomi: 'カイ', kunyomi: 'みな', meaning: 'Semua', examples: ['皆 (mina - semua)', '皆さん (minasan - semuanya)', '皆無 (kaimu - tidak ada sama sekali)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '盗', onyomi: 'トウ', kunyomi: 'ぬす(む)', meaning: 'Mencuri', examples: ['盗む (nusumu - mencuri)', '強盗 (gōtō - perampokan)', '盗作 (tōsaku - plagiat)'], strokes: 11, jlpt: 'N3' },
+    { kanji: '直', onyomi: 'チョク', kunyomi: 'ただ(ちに)', meaning: 'Langsung', examples: ['直ちに (tadachini - segera)', '直接 (chokusetsu - langsung)', '正直 (shōjiki - jujur)'], strokes: 8, jlpt: 'N3' },
+    { kanji: '相', onyomi: 'ソウ', kunyomi: 'あい', meaning: 'Saling', examples: ['相談 (sōdan - konsultasi)', '相変わらず (aikawarazu - seperti biasa)', '相手 (aite - lawan bicara)'], strokes: 9, jlpt: 'N3' },
+    { kanji: '眠', onyomi: 'ミン', kunyomi: 'ねむ(る)', meaning: 'Tidur', examples: ['眠る (nemuru - tidur)', '睡眠 (suimin - tidur)', '不眠症 (fuminshō - insomnia)'], strokes: 10, jlpt: 'N3' }
+    ],
+                
+            n2: [
+                { kanji: '懸', onyomi: 'ケン, ケ', kunyomi: 'か(かる), か(ける)', meaning: 'Tergantung, Khawatir', examples: ['懸念 (kenen - kekhawatiran)', '懸かる (kakaru - tergantung)', '懸賞 (kenshō - hadiah)'], strokes: 20, jlpt: 'N2' }
+            ],
+            n1: [
+                { kanji: '鬱', onyomi: 'ウツ', kunyomi: 'うっ, ふさ(ぐ)', meaning: 'Depresi, Suram', examples: ['鬱病 (utsubyō - depresi)', '鬱蒼 (ussō - rimbun)', '鬱憤 (uppun - kemarahan yang terpendam)'], strokes: 29, jlpt: 'N1' }
+            ]
+        };
+
+           let currentLevel = 'n5';
+        let currentCards = [];
+        let knownCards = [];
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        // Fungsi untuk menyimpan progres semua level
+        function saveProgress() {
+            const progress = JSON.parse(localStorage.getItem('kanjiProgress')) || {};
+            
+            // Simpan progres level saat ini
+            progress[currentLevel] = {
+                currentCards: [...currentCards],
+                knownCards: [...knownCards]
+            };
+            
+            localStorage.setItem('kanjiProgress', JSON.stringify(progress));
+        }
+
+        // Fungsi untuk memuat progres level saat ini
+        function loadProgress() {
+            const progress = JSON.parse(localStorage.getItem('kanjiProgress')) || {};
+            
+            // Jika ada progres untuk level saat ini, gunakan
+            if (progress[currentLevel]) {
+                currentCards = [...progress[currentLevel].currentCards];
+                knownCards = [...progress[currentLevel].knownCards];
+            } else {
+                // Jika tidak, inisialisasi baru
+                currentCards = [...kanjiData[currentLevel]];
+                knownCards = [];
+            }
+            
+            updateLevelButtons();
+            updateProgress();
+            showNextCard();
+        }
+
+        // Fungsi untuk memuat deck level tertentu
+        function loadDeckForLevel(level) {
+            // Simpan progres level sebelumnya
+            saveProgress();
+            
+            // Load progres dari localStorage
+            const progress = JSON.parse(localStorage.getItem('kanjiProgress')) || {};
+            
+            currentLevel = level;
+            
+            // Jika ada progres untuk level ini, gunakan
+            if (progress[level]) {
+                currentCards = [...progress[level].currentCards];
+                knownCards = [...progress[level].knownCards];
+            } else {
+                // Jika tidak, inisialisasi baru
+                currentCards = [...kanjiData[level]];
+                knownCards = [];
+            }
+            
+            updateLevelButtons();
+            updateProgress();
+            showNextCard();
+        }
+
+        // Fungsi untuk mereset level saat ini
+        function resetCurrentLevel() {
+            currentCards = [...kanjiData[currentLevel]];
+            knownCards = [];
+            saveProgress();
+            updateProgress();
+            showNextCard();
+            audio.reset.play();
+        }
+
+        function updateLevelButtons() {
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.level === currentLevel) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        
+            function createFlashcard(kanji) {
+    const card = document.createElement('div');
+    card.className = 'flashcard';
+    
+    // Format bacaan kunyomi dan onyomi dengan pemisah yang jelas
+    const formatReadings = (readings) => {
+        return readings.split(',').map(r => r.trim()).join(', ');
+    };
+
+    // Format contoh lengkap dengan arti
+    let examplesHTML = kanji.examples.map(ex => {
+        const [japanese, meaning] = ex.split(' - ');
+        return `<div class="example">
+            <span class="japanese-ex">${japanese}</span>
+            <span class="meaning"> - ${meaning}</span>
+        </div>`;
+    }).join('');
+    
+    card.innerHTML = `
+        <div class="card-front">
+            <div class="kanji">${kanji.kanji}</div>
+            <div class="strokes">${kanji.strokes}✍️ | JLPT ${kanji.jlpt}</div>
+        </div>
+        <div class="card-back">
+            <div class="details">
+                <div class="reading-section">
+                    <span class="reading-title">音読み (Onyomi):</span> 
+                    <span class="reading-value">${formatReadings(kanji.onyomi)}</span>
+                </div>
+                <div class="reading-section">
+                    <span class="reading-title">訓読み (Kunyomi):</span> 
+                    <span class="reading-value">${formatReadings(kanji.kunyomi)}</span>
+                </div>
+                <div class="reading-section">
+                    <span class="reading-title">Arti:</span> 
+                    <span class="meaning-value">${kanji.meaning}</span>
+                </div>
+                <div class="examples-title">Contoh Penggunaan:</div>
+                <div class="examples-container">
+                    ${examplesHTML}
+                </div>
+            </div>
+            <div class="strokes">${kanji.strokes}✍️ | JLPT ${kanji.jlpt}</div>
+        </div>
+    `;
+    return card;
+}
+            
+
+  
+
+        function handleSwipe(direction) {
+            const currentCard = document.querySelector('.flashcard');
+            currentCard.classList.add(`swipe-${direction}`);
+            
+            direction === 'left' ? audio.swipeLeft.play() : audio.swipeRight.play();
+
+            setTimeout(() => {
+                if (direction === 'left') {
+                    knownCards.push(currentCards.shift());
+                } else {
+                    currentCards.push(currentCards.shift());
+                }
+                updateProgress();
+                showNextCard();
+                saveProgress();
+            }, 600);
+        }
+
+        function showNextCard() {
+            const wrapper = document.getElementById('flashcardWrapper');
+            wrapper.innerHTML = '';
+            
+            if (currentCards.length > 0) {
+                const card = createFlashcard(currentCards[0]);
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                    audio.flip.play();
+                });
+                addSwipeListeners(card);
+                wrapper.appendChild(card);
+            } else {
+                audio.complete.play();
+                wrapper.innerHTML = `<div class="flashcard" style="display: flex; align-items: center; justify-content: center;">
+                    <h2>🎉 Sudah selesai! 🎉</h2>
+                </div>`;
+            }
+        }
+
+        function addSwipeListeners(element) {
+            element.addEventListener('mousedown', startDrag);
+            element.addEventListener('touchstart', startDrag);
+            element.addEventListener('mousemove', duringDrag);
+            element.addEventListener('touchmove', duringDrag);
+            element.addEventListener('mouseup', endDrag);
+            element.addEventListener('touchend', endDrag);
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            currentX = startX;
+        }
+
+        function duringDrag(e) {
+            if (!isDragging) return;
+            const x = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const delta = x - currentX;
+            currentX = x;
+            
+            const card = document.querySelector('.flashcard');
+            const rotate = delta * 0.1;
+            card.style.transform = `translateX(${delta}px) rotate(${rotate}deg)`;
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const card = document.querySelector('.flashcard');
+            const delta = currentX - startX;
+            
+            if (Math.abs(delta) > 100) {
+                handleSwipe(delta > 0 ? 'right' : 'left');
+            } else {
+                card.style.transform = '';
+            }
+        }
+
+        function updateProgress() {
+            const total = kanjiData[currentLevel].length;
+            const known = knownCards.length;
+            const progress = (known / total) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Toggle tema gelap/terang
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                audio.levelChange.play();
+                document.querySelector('.level-btn.active').classList.remove('active');
+                this.classList.add('active');
+                loadDeckForLevel(this.dataset.level);
+            });
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', resetCurrentLevel);
+
+        document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+
+        // Muat tema yang disimpan
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Muat progres saat halaman dimuat
+        loadProgress();
+    </script>
+</body>
+</html>

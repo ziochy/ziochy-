@@ -1,0 +1,106 @@
+/* Header Styles */
+.header {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    padding: 10px 20px; /* Padding kiri-kanan ditambahkan */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Header tetap di atas */
+    top: 0; /* Mepet ke atas */
+    left: 0; /* Mepet ke kiri */
+    right: 0; /* Mepet ke kanan */
+    z-index: 1000; /* Pastikan header di atas elemen lain */
+    display: flex; /* Menggunakan flexbox */
+    justify-content: space-between; /* Logo di kiri, navbar di kanan */
+    align-items: center; /* Tengahkan vertikal */
+}
+
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar ul li {
+    display: inline;
+}
+
+.navbar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    color: #ffdd57;
+}
+
+/* Main Content Styles */
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 40px;
+    color: #3498db;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kanji-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kanji-container:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.kanji {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #080808;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.meaning {
+    font-size: 1.2rem;
+    color: #080808;
+    margin-bottom: 10px;
+}
+
+.reading {
+    font-size: 1rem;
+    color: #080808;
+    margin-bottom: 10px;
+}
+
+.reading span {
+    font-weight: bold;
+    color: #080808;
+}
+
+.example {
+    font-size: 1rem;
+    color: #080808;
+    margin-top: 10px;
+}
+
+.example span {
+    font-weight: bold;
+    color: #080808;
+}

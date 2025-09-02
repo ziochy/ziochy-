@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latihan Susun Kata - Luzuno</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .category {
+      margin-bottom: 40px;
+    }
+    .category h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid #e74c3c;
+      padding-bottom: 10px;
+    }
+    .quiz {
+      background-color: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 5px;
+    }
+    .quiz button:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+    .quiz button:hover:not(:disabled) {
+      background-color: #2980b9;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .score {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .correct-answer {
+      color: green;
+    }
+    .wrong-answer {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">Luzuno</h1>
+      <nav class="navbar">
+        <ul>
+          <li><a href="../index.html">Beranda</a></li>
+          <li><a href="tata-bahasa.html">Tata bahasa</a></li>
+          <li><a href="kosakata-5.html">Kosakata</a></li>
+          <li><a href="renshuu-5.html">Latihan</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content">
+    <div class="container">
+      <h1>Latihan Susun Kata</h1>
+      <p>Susun kata-kata berikut menjadi kalimat yang benar. Klik tombol secara berurutan untuk menyusun kalimat.</p>
+
+      <!-- Soal Susun Kata -->
+      <div class="category">
+        <h2>Soal Susun Kata</h2>
+        <div id="word-questions"></div>
+      </div>
+
+      <!-- Tombol Submit dan Hasil -->
+      <div class="score">
+        <button onclick="checkSentence()">Submit Jawaban</button>
+        <p id="final-result"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2023 Luzuno. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Bank Soal Susun Kata
+    const wordQuestions = [
+      {
+        indonesia: "Saya pergi ke sekolah dengan teman.",
+        words: ["がっこう", "いきます", "と", "ともだち", "へ"],
+        answer: "ともだち と がっこう へ いきます。"
+      },
+      {
+        indonesia: "Saya minum kopi di restoran.",
+        words: ["コーヒー", "で", "レストラン", "を", "のみます"],
+        answer: "レストラン で コーヒー を のみます。"
+      },
+      {
+        indonesia: "Saya membaca buku di perpustakaan.",
+        words: ["ほん", "を", "よみます", "で", "としょかん"],
+        answer: "としょかん で ほん を よみます。"
+      },
+      {
+        indonesia: "Saya menonton film dengan adik.",
+        words: ["を", "えいが", "いもうと", "と", "みます"],
+        answer: "いもうと と えいが を みます。"
+      },
+      {
+        indonesia: "Saya makan siang di kantin.",
+        words: ["ひるごはん", "を", "しょくどう", "で", "たべます"],
+        answer: "しょくどう で ひるごはん を たべます。"
+      },
+      {
+        indonesia: "Saya pergi ke toko dengan ibu.",
+        words: ["おかあさん", "と", "みせ", "へ", "いきます"],
+        answer: "おかあさん と みせ へ いきます。"
+      },
+      {
+        indonesia: "Saya menulis surat di rumah.",
+        words: ["を", "てがみ", "いえ", "で", "かきます"],
+        answer: "いえ で てがみ を かきます。"
+      },
+      {
+        indonesia: "Saya belajar bahasa Jepang di kelas.",
+        words: ["にほんご", "を", "べんきょうします", "で", "きょうしつ"],
+        answer: "きょうしつ で にほんご を べんきょうします。"
+      },
+      {
+        indonesia: "Saya bermain game dengan teman.",
+        words: ["ゲーム", "を", "ともだち", "と", "あそびます"],
+        answer: "ともだち と ゲーム を あそびます。"
+      },
+      {
+        indonesia: "Saya membeli roti di toko.",
+        words: ["かいます", "を", "みせ", "で", "パン"],
+        answer: "みせ で パン を かいます。"
+      },
+      {
+        indonesia: "Saya pergi ke taman dengan anjing.",
+        words: ["いぬ", "こうえん", "と", "へ", "いきます"],
+        answer: "いぬ と こうえん へ いきます。"
+      },
+      {
+        indonesia: "Saya minum teh di rumah.",
+        words: ["おちゃ", "のみます", "いえ", "で", "を"],
+        answer: "いえ で おちゃ を のみます。"
+      },
+      {
+        indonesia: "Saya membaca koran di pagi hari.",
+        words: ["しんぶん", "に", "あさ", "を", "よみます"],
+        answer: "あさ に しんぶん を よみます。"
+      },
+      {
+        indonesia: "Saya menonton TV di ruang tamu.",
+        words: ["テレビ", "を", "で", "リビング", "みます"],
+        answer: "リビング で テレビ を みます。"
+      },
+      {
+        indonesia: "Saya makan malam di restoran.",
+        words: ["ばんごはん", "を", "レストラン", "で", "たべます"],
+        answer: "レストラン で ばんごはん を たべます。"
+      },
+      {
+        indonesia: "Saya pergi ke stasiun dengan sepeda.",
+        words: ["じてんしゃ", "で", "へ", "えき", "いきます"],
+        answer: "じてんしゃ で えき へ いきます。"
+      },
+      {
+        indonesia: "Saya menulis email di kantor.",
+        words: ["で", "を", "かいしゃ", "メール", "かきます"],
+        answer: "かいしゃ で メール を かきます。"
+      },
+      {
+        indonesia: "Saya belajar matematika di perpustakaan.",
+        words: ["を", "すうがく", "としょかん", "で", "べんきょうします"],
+        answer: "としょかん で すうがく を べんきょうします。"
+      },
+      {
+        indonesia: "Saya bermain tenis dengan teman.",
+        words: ["します", "を", "ともだち", "と", "テニス"],
+        answer: "ともだち と テニス を します。"
+      },
+      {
+        indonesia: "Saya membeli buah di pasar.",
+        words: ["いちば", "を", "くだもの", "で", "かいます"],
+        answer: "いちば で くだもの を かいます。"
+      },
+      {
+        indonesia: "Saya pergi ke bioskop dengan saudara laki-laki.",
+        words: ["あに", "と", "えいがかん", "へ", "いきます"],
+        answer: "あに と えいがかん へ いきます。"
+      },
+      {
+        indonesia: "Saya minum jus di kafe.",
+        words: ["ジュース", "カフェ", "を", "で", "のみます"],
+        answer: "カフェ で ジュース を のみます。"
+      },
+      {
+        indonesia: "Saya membaca majalah di taman.",
+        words: ["で", "を", "こうえん", "ざっし", "よみます"],
+        answer: "こうえん で ざっし を よみます。"
+      },
+      {
+        indonesia: "Saya menonton konser di stadion.",
+        words: ["スタジアム", "を", "コンサート", "で", "みます"],
+        answer: "スタジアム で コンサート を みます。"
+      },
+      {
+        indonesia: "Saya makan sushi di restoran Jepang.",
+        words: ["で", "を", "にほんりょうり", "すし", "たべます"],
+        answer: "にほんりょうり で すし を たべます。"
+      },
+      {
+        indonesia: "Saya pergi ke museum dengan guru.",
+        words: ["せんせい", "と", "びじゅつかん", "いきます", "へ"],
+        answer: "せんせい と びじゅつかん へ いきます。"
+      },
+      {
+        indonesia: "Saya menulis laporan di perpustakaan.",
+        words: ["レポート", "を", "で", "としょかん", "かきます"],
+        answer: "としょかん で レポート を かきます。"
+      },
+      {
+        indonesia: "Saya belajar sejarah di kelas.",
+        words: ["れきし", "を", "きょうしつ", "で", "べんきょうします"],
+        answer: "きょうしつ で れきし を べんきょうします。"
+      },
+      {
+        indonesia: "Saya bermain bola dengan teman sekelas.",
+        words: ["サッカー", "を", "クラスメート", "と", "します"],
+        answer: "クラスメート と サッカー を します。"
+      },
+      {
+        indonesia: "Saya membeli sayuran di pasar.",
+        words: ["を", "やさい", "いちば", "で", "かいます"],
+        answer: "いちば で やさい を かいます。"
+      },
+      {
+        indonesia: "Saya pergi ke pantai dengan keluarga.",
+        words: ["うみ", "と", "かぞく", "へ", "いきます"],
+        answer: "かぞく と うみ へ いきます。"
+      },
+      {
+        indonesia: "Saya minum air di rumah.",
+        words: ["で", "を", "いえ", "みず", "のみます"],
+        answer: "いえ で みず を のみます。"
+      },
+      {
+        indonesia: "Saya membaca novel di kamar.",
+        words: ["よみます", "を", "へや", "で", "しょうせつ"],
+        answer: "へや で しょうせつ を よみます。"
+      },
+      {
+        indonesia: "Saya menonton drama di TV.",
+        words: ["を", "ドラマ", "テレビ", "で", "みます"],
+        answer: "テレビ で ドラマ を みます。"
+      },
+      {
+        indonesia: "Saya makan roti di kafe.",
+        words: ["パン", "カフェ", "を", "で", "たべます"],
+        answer: "カフェ で パン を たべます。"
+      },
+      {
+        indonesia: "Saya pergi ke taman dengan teman.",
+        words: ["ともだち", "へ", "こうえん", "と", "いきます"],
+        answer: "ともだち と こうえん へ いきます。"
+      },
+      {
+        indonesia: "Saya menulis puisi di taman.",
+        words: ["し", "かきます", "こうえん", "で", "を"],
+        answer: "こうえん で し を かきます。"
+      },
+      {
+        indonesia: "Saya belajar fisika di perpustakaan.",
+        words: ["としょかん", "を", "ぶつり", "で", "べんきょうします"],
+        answer: "としょかん で ぶつり を べんきょうします。"
+      },
+      {
+        indonesia: "Saya bermain catur dengan ayah.",
+        words: ["チェス", "ちち", "を", "と", "します"],
+        answer: "ちち と チェス を します。"
+      },
+      {
+        indonesia: "Saya membeli daging di pasar.",
+        words: ["にく", "を", "で", "いちば", "かいます"],
+        answer: "いちば で にく を かいます。"
+      },
+      {
+        indonesia: "Saya pergi ke gunung dengan teman.",
+        words: ["ともだち", "と", "いきます", "へ", "やま"],
+        answer: "ともだち と やま へ いきます。"
+      },
+      {
+        indonesia: "Saya minum susu di pagi hari.",
+        words: ["ミルク", "を", "あさ", "に", "のみます"],
+        answer: "あさ に ミルク を のみます。"
+      },
+      {
+        indonesia: "Saya membaca buku di kamar.",
+        words: ["ほん", "を", "で", "へや", "よみます"],
+        answer: "へや で ほん を よみます。"
+      },
+      {
+        indonesia: "Saya menonton film di bioskop.",
+        words: ["えいが", "を", "えいがかん", "で", "みます"],
+        answer: "えいがかん で えいが を みます。"
+      },
+      {
+        indonesia: "Saya makan nasi di rumah.",
+        words: ["ごはん", "を", "いえ", "で", "たべます"],
+        answer: "いえ で ごはん を たべます。"
+      },
+      {
+        indonesia: "Saya pergi ke toko buku dengan teman.",
+        words: ["ともだち", "と", "ほんや", "へ", "いきます"],
+        answer: "ともだち と ほんや へ いきます。"
+      },
+      {
+        indonesia: "Saya menulis catatan di kelas.",
+        words: ["ノート", "を", "きょうしつ", "で", "かきます"],
+        answer: "きょうしつ で ノート を かきます。"
+      },
+      {
+        indonesia: "Saya belajar kimia di laboratorium.",
+        words: ["かがく", "を", "じっけんしつ", "で", "べんきょうします"],
+        answer: "じっけんしつ で かがく を べんきょうします。"
+      },
+      {
+        indonesia: "Saya bermain kartu dengan teman.",
+        words: ["カード", "を", "ともだち", "と", "します"],
+        answer: "ともだち と カード を します。"
+      },
+      {
+        indonesia: "Saya membeli ikan di pasar.",
+        words: ["さかな", "を", "いちば", "で", "かいます"],
+        answer: "いちば で さかな を かいます。"
+      },
+      {
+        indonesia: "Saya pergi ke danau dengan keluarga.",
+        words: ["かぞく", "と", "みずうみ", "へ", "いきます"],
+        answer: "かぞく と みずうみ へ いきます。"
+      },
+      {
+        indonesia: "Saya minum teh hijau di kafe.",
+        words: ["りょくちゃ", "を", "カフェ", "で", "のみます"],
+        answer: "カフェ で りょくちゃ を のみます。"
+      },
+      {
+        indonesia: "Saya membaca komik di taman.",
+        words: ["まんが", "を", "こうえん", "で", "よみます"],
+        answer: "こうえん で まんが を よみます。"
+      },
+      {
+        indonesia: "Saya menonton pertandingan sepak bola di stadion.",
+        words: ["サッカー", "を", "スタジアム", "で", "みます"],
+        answer: "スタジアム で サッカー を みます。"
+      },
+      {
+        indonesia: "Saya makan mie di restoran.",
+        words: ["ラーメン", "を", "レストラン", "で", "たべます"],
+        answer: "レストラン で ラーメン を たべます。"
+      },
+      {
+        indonesia: "Saya pergi ke kebun binatang dengan adik.",
+        words: ["いもうと", "と", "どうぶつえん", "へ", "いきます"],
+        answer: "いもうと と どうぶつえん へ いきます。"
+      },
+      {
+        indonesia: "Saya menulis surat di kantor pos.",
+        words: ["てがみ", "を", "ゆうびんきょく", "で", "かきます"],
+        answer: "ゆうびんきょく で てがみ を かきます。"
+      },
+      {
+        indonesia: "Saya belajar biologi di laboratorium.",
+        words: ["せいぶつ", "を", "じっけんしつ", "で", "べんきょうします"],
+        answer: "じっけんしつ で せいぶつ を べんきょうします。"
+      },
+      {
+        indonesia: "Saya bermain game dengan saudara perempuan.",
+        words: ["ゲーム", "を", "いもうと", "と", "します"],
+        answer: "いもうと と ゲーム を します。"
+      }
+    ];
+
+    let currentQuestionIndex;
+    let selectedWords = [];
+
+    // Fungsi untuk mengacak array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Fungsi untuk menampilkan soal
+    function displayQuestion(question, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = `
+        <p><strong>Kalimat dalam Bahasa Indonesia:</strong> ${question.indonesia}</p>
+        <p><strong>Susun kata-kata berikut:</strong></p>
+        <div id="word-buttons">
+          ${question.words.map(word => `<button onclick="selectWord('${word}')">${word}</button>`).join('')}
+        </div>
+        <p><strong>Kalimat yang disusun:</strong></p>
+        <p id="sentence"></p>
+      `;
+    }
+
+    // Fungsi untuk memilih kata
+    function selectWord(word) {
+      selectedWords.push(word);
+      document.getElementById('sentence').innerText = selectedWords.join(' ') + '。';
+
+      // Nonaktifkan tombol yang sudah dipilih
+      const buttons = document.querySelectorAll('#word-buttons button');
+      buttons.forEach(button => {
+        if (button.innerText === word) {
+          button.disabled = true;
+        }
+      });
+    }
+
+    // Fungsi untuk memeriksa jawaban
+    function checkSentence() {
+      const userSentence = selectedWords.join(' ') + '。';
+      const correctSentence = wordQuestions[currentQuestionIndex].answer;
+
+      if (userSentence === correctSentence) {
+        document.getElementById('final-result').innerHTML = `<span class="correct-answer">Benar! 🎉</span>`;
+      } else {
+        document.getElementById('final-result').innerHTML = `<span class="wrong-answer">Salah! 😢 Jawaban yang benar adalah: ${correctSentence}</span>`;
+      }
+
+      // Reset untuk soal berikutnya
+      selectedWords = [];
+      currentQuestionIndex = Math.floor(Math.random() * wordQuestions.length); // Acak soal berikutnya
+      displayQuestion(wordQuestions[currentQuestionIndex], 'word-questions');
+    }
+
+    // Tampilkan soal pertama saat halaman dimuat
+    window.onload = () => {
+      currentQuestionIndex = Math.floor(Math.random() * wordQuestions.length); // Acak soal pertama
+      displayQuestion(wordQuestions[currentQuestionIndex], 'word-questions');
+    };
+  </script>
+</body>
+</html>

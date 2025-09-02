@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Luzuno - Belajar Bahasa Jepang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+/* ==================== VARIABEL TEMA ==================== */
+:root {
+  /* Light Theme */
+  --light-bg: #fff4f7;
+  --light-text: #4a2a33;
+  --light-card: rgba(255, 255, 255, 0.9);
+  --light-accent: #ffb7c5;
+  --level-card-bg: #ffe6eb;
+  --level-card-accent: #ffd1dc;
+  --level-card-text: #7a3b4d;
+
+  /* Dark Theme */
+  --dark-bg: #2d3436;
+  --dark-text: #dfe6e9;
+  --dark-card: rgba(45, 52, 54, 0.9);
+  --dark-accent: #6c5b7b;
+  --dark-level-card-bg: #4a2a33;
+  --dark-level-card-accent: #9f4d60;
+  --dark-level-card-text: #ffd3e0;
+
+  /* Anime Theme */
+  --anime-bg: #1a1a2e;
+  --anime-text: #ffd3e0;
+  --anime-card: rgba(26, 26, 46, 0.95);
+  --anime-accent: #e94584;
+  --anime-secondary: #8a4fff;
+}
+
+/* ==================== TEMA ==================== */
+[data-theme="light"] {
+  --bg-color: var(--light-bg);
+  --text-color: var(--light-text);
+  --card-bg: var(--light-card);
+  --accent-color: var(--light-accent);
+  --current-level-card-bg: var(--level-card-bg);
+  --current-level-card-accent: var(--level-card-accent);
+  --current-level-card-text: var(--level-card-text);
+}
+
+[data-theme="dark"] {
+  --bg-color: var(--dark-bg);
+  --text-color: var(--dark-text);
+  --card-bg: var(--dark-card);
+  --accent-color: var(--dark-accent);
+  --current-level-card-bg: var(--dark-level-card-bg);
+  --current-level-card-accent: var(--dark-level-card-accent);
+  --current-level-card-text: var(--dark-level-card-text);
+}
+
+[data-theme="anime"] {
+  --bg-color: var(--anime-bg);
+  --text-color: var(--anime-text);
+  --card-bg: var(--anime-card);
+  --accent-color: var(--anime-secondary);
+  --current-level-card-bg: #2a1a3a;
+  --current-level-card-accent: #8a4fff;
+  --current-level-card-text: #ffd3e0;
+  
+  background-image: 
+    linear-gradient(45deg, 
+      rgba(233, 69, 132, 0.1) 25%, 
+      transparent 25%,
+      transparent 75%,
+      rgba(233, 69, 132, 0.1) 75%),
+    linear-gradient(45deg, 
+      rgba(233, 69, 132, 0.1) 25%, 
+      transparent 25%,
+      transparent 75%,
+      rgba(233, 69, 132, 0.1) 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+}
+
+/* ==================== BASE STYLES ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Sawarabi Mincho', sans-serif;
+  transition: all 0.3s ease;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ==================== KOMPONEN UTAMA ==================== */
+/* Theme Toggle */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 2000;
+  background: var(--card-bg);
+  border: 2px solid var(--accent-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 15px var(--accent-color);
+}
+
+.theme-toggle i {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+}
+
+/* Karakter Anime */
+.anime-character {
+  position: fixed;
+  bottom: 0;
+  width: 150px;
+  height: 270px;
+  z-index: 999;
+  background: transparent !important;
+
+}
+
+.anime-character.left {
+  left: 0;
+  transform: scaleX(-1);
+}
+
+.anime-character.right {
+  right: 0;
+}
+
+/* Navigation */
+nav {
+  background: var(--card-bg);
+  backdrop-filter: blur(5px);
+  padding: 1rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  margin: 0 1.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  font-family: 'Kiwi Maru', serif;
+}
+
+nav a:hover {
+  background: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero Section */
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: 60px;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  font-family: 'Kiwi Maru', serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Level Cards */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem 5%;
+}
+
+.level-card {
+  background: linear-gradient(145deg, 
+    var(--current-level-card-bg) 0%, 
+    var(--current-level-card-accent) 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--current-level-card-text);
+}
+
+.level-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Blog Cards */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 5%;
+}
+
+.blog-card {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Footer */
+footer {
+  background: var(--accent-color);
+  color: white;
+  padding: 3rem 5%;
+  text-align: center;
+  margin-top: 5rem;
+}
+
+/* Button */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* ==================== KOMPONEN TAMBAHAN ==================== */
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.bottom-nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.bottom-nav a i {
+  font-size: 18px;
+}
+
+.bottom-nav a:hover {
+  color: var(--accent-color);
+}
+
+/* Popup dan Modal */
+.popup, .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content, .modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.popup-content textarea {
+  width: 100%;
+  height: 150px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.popup-content select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.popup-content button, .modal-content button {
+  padding: 10px 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-content button:hover, .modal-content button:hover {
+  background: #c0392b;
+}
+
+/* Tombol Sakura */
+.sakura-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ff9eb5, #e94584);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(233, 69, 132, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.sakura-btn::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: url('https://www.transparentpng.com/thumb/cherry-blossom/cherry-blossom-transparent-8.png') center/cover no-repeat;
+  opacity: 0.1;
+  z-index: -1;
+}
+
+.sakura-btn:hover {
+  transform: scale(1.05) rotate(-5deg);
+  box-shadow: 0 6px 20px rgba(233, 69, 132, 0.6);
+}
+
+.sakura-btn i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Animasi Sakura */
+.sakura-petal {
+  position: fixed;
+  background-image: url('https://www.transparentpng.com/thumb/cherry-blossom/cherry-blossom-transparent-8.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  animation: sakura-fall linear forwards;
+}
+
+@keyframes sakura-fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  nav {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .level-grid, .blog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-menu .dropdown-content {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .sakura-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
+/* Sidebar Styles */
+.sidebar-container {
+    position: fixed;
+    top: 60px;
+    left: 10px;
+    z-index: 1000;
+}
+
+.sidebar-trigger {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: var(--card-bg);
+    padding: 5px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: 1px solid var(--accent-color);
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+}
+
+.profile-avatar-small {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-color);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 280px;
+    height: 100%;
+    background-color: var(--card-bg);
+    box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+    z-index: 999;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    padding: 20px;
+    border-right: 2px solid var(--accent-color);
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--accent-color);
+}
+
+.close-sidebar {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 15px;
+}
+
+.sidebar-menu a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.sidebar-menu a:hover {
+    color: var(--accent-color);
+    background-color: rgba(var(--accent-color), 0.1);
+    transform: translateX(5px);
+}
+
+.sidebar-menu i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Privacy Modal Styles */
+.privacy-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1001;
+    overflow-y: auto;
+}
+
+.privacy-content {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+    border: 2px solid var(--accent-color);
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-privacy {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--accent-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.close-privacy:hover {
+    transform: rotate(90deg);
+}
+
+.privacy-text {
+    line-height: 1.6;
+    padding: 0 15px;
+}
+
+.privacy-text h2 {
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Kiwi Maru', serif;
+}
+
+.privacy-text h3 {
+    margin-top: 25px;
+    color: var(--accent-color);
+    border-bottom: 1px dashed var(--accent-color);
+    padding-bottom: 5px;
+}
+
+.privacy-text ul {
+    padding-left: 25px;
+    margin: 15px 0;
+}
+
+.privacy-text li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.privacy-text li:before {
+    content: "•";
+    color: var(--accent-color);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+.privacy-text a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.privacy-text a:hover {
+    text-decoration: underline;
+    color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+    .privacy-content {
+        width: 90%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    .sidebar {
+        width: 85%;
+        max-width: 300px;
+    }
+}
+</style>
+</head>
+<body>
+    <!-- Sidebar Trigger with Profile Only -->
+    <div class="sidebar-container">
+        <div class="sidebar-trigger" onclick="toggleSidebar()">
+            <div id="navAuth">
+                <!-- Will be filled by Firebase auth -->
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+        
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Menu</h3>
+                <button class="close-sidebar" onclick="toggleSidebar()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="Luzuno/pesan email.html"><i class="fas fa-envelope"></i> Pemberitahuan</a></li>
+                <li><a href="luzuno/tanya sensei.html"><i class="fas fa-calendar-days"></i> Event</a></li>            
+                <li><a href="https://saweria.co/Luzuno"><i class="fas fa-box"></i> Support Kami</a></li>
+                <li><a href="luzuno/perpustakaan/buku.html"><i class="fas fa-book"></i> Perpustakaan</a></li>     
+                <li><a href="diskusi.html"><i class="fas fa-comments"></i> Chat Diskusi</a></li>
+                <li><a href="game/dino/leaderboard.html"><i class="fas fa-medal"></i> Leaderboard</a></li>    
+                <li><a href="cs.html"><i class="fas fa-file-contract"></i> Terms of Service</a></li>              
+                <li><a href="#" onclick="openPrivacyModal()"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                <li><a href="kami/about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-palette"></i>
+    </div>
+
+    <!-- Karakter Anime -->
+    <div id="characterContainer">
+        <button id="soundButton" onclick="playCharacterSound()" class="voice-button">
+            <img id="characterImage" src="" class="anime-character right animate__animated animate__bounceInUp">
+        </button>
+    </div>
+    
+    <audio id="characterSound" src=""></audio>
+    
+    <nav>
+        <div id="navAuth">
+            <!-- Konten default sebelum login -->
+            <a href="login.html">Masuk</a>
+            <a href="signup.html">Daftar</a>
+        </div>
+    </nav>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="privacy-modal">
+        <div class="privacy-content">
+            <button class="close-privacy" onclick="closePrivacyModal()">×</button>
+            <h2>Privacy Policy for Luzuno</h2>
+            <div class="privacy-text">
+                <!-- Privacy policy content remains the same -->
+                <p><strong>Effective Date:</strong> 11-03-2026</p>
+                 <h3>1. Information We Collect</h3>
+                <p>We may collect the following types of information:</p>
+                <ul>
+                    <li><strong>Personal Information:</strong> When you sign up for an account, we may ask for personal details such as your name, email address, and profile picture.</li>
+                    <li><strong>Usage Data:</strong> We may collect information on how you use our website, including IP addresses, browser types, pages visited, and interaction with features on the site.</li>
+                    <li><strong>Cookies:</strong> We use cookies to improve user experience, analyze usage, and provide personalized content.</li>
+                </ul>
+
+                <h3>2. How We Use Your Information</h3>
+                <p>The information we collect is used for the following purposes:</p>
+                <ul>
+                    <li>To provide and maintain our services.</li>
+                    <li>To personalize your experience on Luzuno.</li>
+                    <li>To improve our website's functionality and user experience.</li>
+                    <li>To communicate with you, including sending updates or marketing materials (if you've opted in).</li>
+                    <li>To protect against fraudulent activity and ensure the security of our platform.</li>
+                </ul>
+
+                <h3>3. Data Sharing and Disclosure</h3>
+                <p>We do not sell your personal information to third parties. However, we may share your information in the following cases:</p>
+                <ul>
+                    <li><strong>Service Providers:</strong> We may share your information with third-party service providers who help us operate our website (e.g., hosting services, payment processors).</li>
+                    <li><strong>Legal Requirements:</strong> We may disclose your information if required by law or to protect the rights, safety, and security of Luzuno and its users.</li>
+                </ul>
+
+                <h3>4. Data Security</h3>
+                <p>We take reasonable measures to protect your personal information. However, no data transmission or storage method is 100% secure. We cannot guarantee the absolute security of your data.</p>
+
+                <h3>5. Your Rights</h3>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Access, update, or delete your personal information.</li>
+                    <li>Opt-out of receiving marketing communications by following the instructions in our emails.</li>
+                    <li>Request a copy of your data.</li>
+                </ul>
+                <p>To exercise these rights, you can contact us through our support page.</p>
+
+                <h3>6. Cookies</h3>
+                <p>We use cookies to enhance your experience. Cookies help us remember your preferences and track usage patterns. You can control your cookie preferences through your browser settings.</p>
+
+                <h3>7. Third-Party Links</h3>
+                <p>Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. Please review their privacy policies before sharing any personal information.</p>
+
+                <h3>8. Children's Privacy</h3>
+                <p>Luzuno is not intended for individuals under the age of 13. We do not knowingly collect personal information from children. If we become aware that we have inadvertently collected information from a child, we will take steps to delete it.</p>
+
+                <h3>9. Changes to This Privacy Policy</h3>
+                <p>We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the new policy on this page with an updated effective date.</p>
+
+                <h3>10. Contact Us</h3>
+                <p>If you have any questions or concerns about this Privacy Policy or our practices, please contact us at:</p>
+                <p>Email: <a href="mailto:zuno354@gmail.com">zuno354@gmail.com</a></p>
+                <p>Support Page: <a href="cs.html">customer service</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="animate__animated animate__fadeInDown">🌸 Selamat Datang di Luzuno! 🌸</h1>
+            <p class="animate__animated animate__fadeInUp">Tempat Belajar Bahasa Jepang Terbaik Menurutku</p>
+            <a href="#levels" class="btn animate__animated animate__bounceIn">Mulai Belajar</a>
+        </div>  
+    </header>
+
+    <!-- Level Section -->
+    <section id="levels" class="levels">
+        <h2>Pilih Tingkat Belajar</h2>
+        <div class="level-grid">
+            <a href="level-0/hiragana.html" class="level-card animate__animated animate__zoomIn">
+                <h3>Level Pemula</h3>
+                <p>Hiragana, Katakana, Kosakata Dasar</p>
+            </a>
+            <a href="level-n5/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
+                <h3>Level N5</h3>
+                <p>Dasar Tata Bahasa dan Kosakata</p>
+            </a>
+            <a href="level-n4/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
+                <h3>Level N4</h3>
+                <p>Tata Bahasa dan Kosakata Lanjutan</p>
+            </a>
+            <a href="level-n3/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
+                <h3>Level N3</h3>
+                <p>Persiapan JLPT N3</p>
+            </a>
+            <a href="level-n2/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
+                <h3>Level N2</h3>
+                <p>Persiapan JLPT N2</p>
+            </a>
+            <a href="level-n1/tata-bahasa.html" class="level-card animate__animated animate__zoomIn">
+                <h3>Level N1</h3>
+                <p>Persiapan JLPT N1</p>
+            </a>
+        </div>
+    </section>
+      
+    <!-- Blog Section -->
+    <section class="blog" id="blog">
+        <h2>Halaman LUZUNO</h2>
+        <div class="blog-grid">
+            <div class="blog-card animate__animated animate__fadeInLeft">
+                <h3>Tips Belajar Bahasa Jepang</h3>
+                <p>Pelajari cara efektif menguasai bahasa Jepang.</p>
+                <a href="blog/tips-belajar.html" class="btn">Baca Selengkapnya</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Perfektur dan Budaya Jepang</h3>
+                <p>Kenali budaya Perfektur-perfektur di Jepang untuk memahami bahasanya.</p>
+                <a href="blog/budaya-jepang.html" class="btn">Baca Selengkapnya</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInLeft">
+                <h3>Pembahasan khusus</h3>
+                <p>penjelasan seputar bahasa jepang (penting untuk pemula).</p>
+                <a href="blog/penjelasan.html" class="btn">Buka</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>kamus</h3>
+                <p>Cari kata yang ingin kamu ketahui disini</p>
+                <a href="blog/kamus.html" class="btn">Buka</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInLeft">
+                <h3>Renshuu</h3>
+                <p>latihan kanji bahasa jepang.</p>
+                <a href="blog/renshuu.html" class="btn">mulai</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Permainan</h3>
+                <p>Game santai.</p>
+                <a href="game/dino/index.html" class="btn">Main</a>
+            </div>
+            <div class="blog-card animate__animated animate__fadeInRight">
+                <h3>Forum</h3>
+                <p>Hanya bisa di akses jam 20.00 - 22.00</p>
+                <a href="forum/Tutup.html" class="btn">Masuk</a>
+            </div> 
+        </div>
+    </section>
+     
+    <!-- Tentang Kami -->
+    <section id="about" class="about">
+        <h2>Tentang Kami</h2>
+        <p>Luzuno adalah platform pembelajaran nihongo online yang aku tsukuru untuk membantu anata menguasai nihongo dari tingkat dasar. Kono materi pembelajaran no naka de jika machigaeta ga attara, Gomen  😺. ziochy ga tsukutta</p>
+    </section>
+
+    <!-- Kontak -->
+    <section id="contact" class="contact">
+        <h2>Kontak</h2>
+        <p>Moshi Anda memiliki shitsumon atau membutuhkan onegai, jangan ragu untuk renraku suru kami melalui email di <a href="kami/about.html">tentang kami</a>.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>🌸 るずのとともに学びましょう 🌸</p>
+        <p>&copy; 2025 Luzuno</p>
+    </footer>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="materi.html">
+            <i class="fas fa-book"></i>
+            <span>Kyousai</span>
+        </a>
+       <a href="buy.html" class="active">
+            <i class="fas fa-store"></i>
+            <span>Mise</span>
+        </a>
+        <a href="profile.html">
+            <i class="fas fa-user"></i>
+            <span>Purofiiru</span>
+        </a>
+    </div>
+
+    <!-- Profile Avatar Modal -->
+    <div id="avatarModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAvatarModal()">×</span>
+            <img id="modalAvatar" src="" alt="Profile Avatar" class="modal-avatar">
+        </div>
+    </div>
+
+    <script>
+        // Character data with sound files
+        const characters = {
+            'el': { image: 'assets/images/el.gif', sound: 'assets/images/el.mp3' },
+            'al': { image: 'assets/images/al.gif', sound: 'assets/sounds/al.mp3' },
+            'zi': { image: 'assets/images/zi.gif', sound: 'assets/sounds/zi.mp3' },
+            'ochy': { image: 'assets/images/ochy.gif', sound: 'assets/sounds/ochy.mp3' },
+            'miku': { image: 'assets/images/miku.gif', sound: 'assets/sounds/miku.mp3' },
+            'sakura': { image: 'assets/images/sakura.gif', sound: 'assets/sounds/sakura.mp3' }
+        };
+
+        // Initialize character from settings
+        function initializeCharacter() {
+            const characterImage = document.getElementById('characterImage');
+            const characterSound = document.getElementById('characterSound');
+            const characterContainer = document.getElementById('characterContainer');
+            
+            // Get saved settings
+            const savedSettings = JSON.parse(localStorage.getItem('characterSettings') || '{}');
+            const showCharacter = savedSettings.showCharacter !== false;
+            const selectedCharacter = savedSettings.selectedCharacter || 'el';
+            
+            // Set character visibility
+            characterContainer.style.display = showCharacter ? 'block' : 'none';
+            
+            if (showCharacter) {
+                // Set character image and sound
+                characterImage.src = characters[selectedCharacter].image;
+                characterSound.src = characters[selectedCharacter].sound;
+                
+                // Set character position
+                const position = savedSettings.characterPosition || 'right';
+                characterImage.className = `anime-character ${position} animate__animated animate__bounceInUp`;
+                
+                // Remove green screen effect
+                characterImage.style.mixBlendMode = 'normal';
+                characterImage.style.filter = 'none';
+            }
+        }
+
+        // Play character sound
+        function playCharacterSound() {
+            const characterSound = document.getElementById('characterSound');
+            if (characterSound.src) {
+                characterSound.currentTime = 0;
+                characterSound.play().catch(() => {
+                    document.body.addEventListener('click', () => characterSound.play(), { once: true });
+                });
+            }
+        }
+
+        // Sidebar functions
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('sidebar').classList.remove('open');
+        }
+        
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarTrigger = document.querySelector('.sidebar-trigger');
+            
+            if (!sidebar.contains(event.target) && !sidebarTrigger.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+        
+        // Close privacy modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('privacyModal');
+            if (event.target == modal) {
+                closePrivacyModal();
+            }
+        }
+        
+        // Theme functions
+        function toggleTheme() {
+            const themes = ['light', 'dark', 'anime'];
+            let currentTheme = themes.indexOf(document.documentElement.getAttribute('data-theme'));
+            currentTheme = (currentTheme + 1) % themes.length;
+            const theme = themes[currentTheme];
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+            if (theme === 'anime') addAnimeEffects();
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('.theme-toggle i');
+            const icons = {
+                'light': 'fa-sun',
+                'dark': 'fa-moon',
+                'anime': 'fa-palette'
+            };
+            icon.className = `fas ${icons[theme]}`;
+        }
+
+        function addAnimeEffects() {
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.style.cssText = `
+                    position: fixed;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    width: ${Math.random() * 3}px;
+                    height: ${Math.random() * 3}px;
+                    background: rgba(255,255,255,${Math.random()});
+                    border-radius: 50%;
+                    animation: sparkle ${Math.random() * 3 + 1}s infinite;
+                    pointer-events: none;
+                    z-index: -1;
+                `;
+                document.body.appendChild(star);
+            }
+        }
+
+        // Avatar modal functions
+        function openAvatarModal(avatarUrl) {
+            const modal = document.getElementById('avatarModal');
+            const modalImg = document.getElementById('modalAvatar');
+            modalImg.src = avatarUrl;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAvatarModal() {
+            document.getElementById('avatarModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            initializeCharacter();
+            if (savedTheme === 'anime') addAnimeEffects();
+        };
+    </script>
+
+    <!-- Firebase Auth Script -->
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from './firebase-config.js';
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            const navAuth = document.getElementById('navAuth');
+            const sidebarTrigger = document.querySelector('.sidebar-trigger');
+            
+            if (user) {
+                // Get user data from Firestore
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const userData = userDoc.data();
+                
+                // User sudah login - tampilkan avatar
+                navAuth.innerHTML = `
+                    <a href="profile.html" class="profile-avatar-small">
+                        <img src="${userData.avatar || 'https://i.imgur.com/6VBx3io.png'}" class="profile-avatar-small">
+                    </a>
+                    <a href="#" onclick="logout()">Keluar</a>
+                `;
+                
+                // Update sidebar trigger
+                sidebarTrigger.innerHTML = `
+                    <img src="${userData.avatar || 'https://i.imgur.com/6VBx3io.png'}" class="profile-avatar-small">
+                `;
+            } else {
+                // User belum login - tampilkan login/signup
+                navAuth.innerHTML = `
+                    <a href="login.html">Masuk</a>
+                    <a href="signup.html">Daftar</a>
+                `;
+                
+                // Update sidebar trigger
+                sidebarTrigger.innerHTML = `
+                    <i class="fas fa-user"></i>
+                `;
+            }
+        });
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    </script>
+
+    <!-- Firebase Initialization -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+            authDomain: "luzuno-web.firebaseapp.com",
+            projectId: "luzuno-web",
+            storageBucket: "luzuno-web.appspot.com",
+            messagingSenderId: "728661935868",
+            appId: "1:728661935868:web:859ebff3a63b1210acb979"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</body>
+</html>
+  
+  dare ni mo tomerarenai

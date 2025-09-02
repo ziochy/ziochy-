@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kosakata Dasar - Luzuno</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .category {
+      margin-bottom: 40px;
+    }
+    .category h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid #e74c3c;
+      padding-bottom: 10px;
+    }
+    .vocab-list {
+      list-style: none;
+      padding: 0;
+    }
+    .vocab-list li {
+      background-color: #ecf0f1;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .vocab-list li strong {
+      color: #e74c3c;
+    }
+    .quiz {
+      background-color: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 5px;
+    }
+    .quiz button:hover {
+      background-color: #2980b9;
+    }
+    .quiz-options {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .correct-answer {
+      color: green;
+    }
+    .wrong-answer {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">Luzuno</h1>
+      <nav class="navbar">
+        <ul>
+          <li><a href="../index.html">Beranda</a></li>
+          <li><a href="hiragana.html">Hiragana</a></li>
+          <li><a href="katakana.html">Katakana</a></li>
+          <li><a href="kosakata-dasar.html">Kosakata Dasar</a></li>
+          <li><a href="canvas.html">Latihan Menulis</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content">
+    <div class="container">
+      <h1>Kosakata Dasar Bahasa Jepang</h1>
+      <p>Berikut adalah kosakata dasar yang sering digunakan dalam percakapan sehari-hari.</p>
+
+      <!-- Salam dan Ungkapan Umum -->
+      <div class="category">
+        <h2>Salam dan Ungkapan Umum</h2>
+        <ul class="vocab-list">
+          <li><strong>おはようございます (Ohayou gozaimasu)</strong> - Selamat pagi.</li>
+          <li><strong>こんにちは (Konnichiwa)</strong> - Selamat siang/sore.</li>
+          <li><strong>こんばんは (Konbanwa)</strong> - Selamat malam.</li>
+          <li><strong>おやすみなさい (Oyasumi nasai)</strong> - Selamat tidur.</li>
+          <li><strong>ありがとう (Arigatou)</strong> - Terima kasih.</li>
+          <li><strong>ありがとうございます (Arigatou gozaimasu)</strong> - Terima kasih (lebih formal).</li>
+          <li><strong>すみません (Sumimasen)</strong> - Maaf / Permisi.</li>
+          <li><strong>ごめんなさい (Gomen nasai)</strong> - Maaf.</li>
+          <li><strong>はい (Hai)</strong> - Ya.</li>
+          <li><strong>いいえ (Iie)</strong> - Tidak.</li>
+          <li><strong>お願いします (Onegaishimasu)</strong> - Tolong / Silakan.</li>
+          <li><strong>どうぞ (Douzo)</strong> - Silakan.</li>
+          <li><strong>はじめまして (Hajimemashite)</strong> - Senang bertemu dengan Anda.</li>
+          <li><strong>よろしくお願いします (Yoroshiku onegaishimasu)</strong> - Mohon bantuannya / Salam kenal.</li>
+          <li><strong>いただきます (Itadakimasu)</strong> - Ucapan sebelum makan.</li>
+          <li><strong>ごちそうさまでした (Gochisousama deshita)</strong> - Ucapan setelah makan.</li>
+          <li><strong>いってきます (Ittekimasu)</strong> - Saya pergi dulu (keluar rumah).</li>
+          <li><strong>いってらっしゃい (Itterasshai)</strong> - Hati-hati di jalan.</li>
+          <li><strong>ただいま (Tadaima)</strong> - Saya pulang.</li>
+          <li><strong>おかえりなさい (Okaerinasai)</strong> - Selamat datang kembali.</li>
+        </ul>
+      </div>
+
+      <!-- Angka -->
+      <div class="category">
+        <h2>Angka</h2>
+        <ul class="vocab-list">
+          <li><strong>一 (いち, ichi)</strong> - 1</li>
+          <li><strong>二 (に, ni)</strong> - 2</li>
+          <li><strong>三 (さん, san)</strong> - 3</li>
+          <li><strong>四 (し/よん, shi/yon)</strong> - 4</li>
+          <li><strong>五 (ご, go)</strong> - 5</li>
+          <li><strong>六 (ろく, roku)</strong> - 6</li>
+          <li><strong>七 (しち/なな, shichi/nana)</strong> - 7</li>
+          <li><strong>八 (はち, hachi)</strong> - 8</li>
+          <li><strong>九 (きゅう/く, kyuu/ku)</strong> - 9</li>
+          <li><strong>十 (じゅう, juu)</strong> - 10</li>
+          <li><strong>百 (ひゃく, hyaku)</strong> - 100</li>
+          <li><strong>千 (せん, sen)</strong> - 1,000</li>
+          <li><strong>万 (まん, man)</strong> - 10,000</li>
+        </ul>
+      </div>
+
+      <!-- Warna -->
+      <div class="category">
+        <h2>Warna</h2>
+        <ul class="vocab-list">
+          <li><strong>赤 (あか, aka)</strong> - Merah.</li>
+          <li><strong>青 (あお, ao)</strong> - Biru.</li>
+          <li><strong>黄色 (きいろ, kiiro)</strong> - Kuning.</li>
+          <li><strong>緑 (みどり, midori)</strong> - Hijau.</li>
+          <li><strong>白 (しろ, shiro)</strong> - Putih.</li>
+          <li><strong>黒 (くろ, kuro)</strong> - Hitam.</li>
+          <li><strong>紫 (むらさき, murasaki)</strong> - Ungu.</li>
+          <li><strong>ピンク (pinku)</strong> - Pink.</li>
+          <li><strong>オレンジ (orenji)</strong> - Oranye.</li>
+          <li><strong>茶色 (ちゃいろ, chairo)</strong> - Coklat.</li>
+          <li><strong>灰色 (はいいろ, haiiro)</strong> - Abu-abu.</li>
+          <li><strong>金色 (きんいろ, kin'iro)</strong> - Emas.</li>
+          <li><strong>銀色 (ぎんいろ, gin'iro)</strong> - Perak.</li>
+        </ul>
+      </div>
+
+      <!-- Keluarga -->
+      <div class="category">
+        <h2>Keluarga</h2>
+        <ul class="vocab-list">
+          <li><strong>家族 (かぞく, kazoku)</strong> - Keluarga.</li>
+          <li><strong>父 (ちち, chichi)</strong> - Ayah (saat berbicara tentang ayah sendiri).</li>
+          <li><strong>母 (はは, haha)</strong> - Ibu (saat berbicara tentang ibu sendiri).</li>
+          <li><strong>お父さん (おとうさん, otousan)</strong> - Ayah (saat berbicara tentang ayah orang lain).</li>
+          <li><strong>お母さん (おかあさん, okaasan)</strong> - Ibu (saat berbicara tentang ibu orang lain).</li>
+          <li><strong>兄 (あに, ani)</strong> - Kakak laki-laki (saat berbicara tentang kakak sendiri).</li>
+          <li><strong>姉 (あね, ane)</strong> - Kakak perempuan (saat berbicara tentang kakak sendiri).</li>
+          <li><strong>弟 (おとうと, otouto)</strong> - Adik laki-laki.</li>
+          <li><strong>妹 (いもうと, imouto)</strong> - Adik perempuan.</li>
+          <li><strong>祖父 (そふ, sofu)</strong> - Kakek (saat berbicara tentang kakek sendiri).</li>
+          <li><strong>祖母 (そぼ, sobo)</strong> - Nenek (saat berbicara tentang nenek sendiri).</li>
+          <li><strong>おじいさん (ojiisan)</strong> - Kakek (saat berbicara tentang kakek orang lain).</li>
+          <li><strong>おばあさん (obaasan)</strong> - Nenek (saat berbicara tentang nenek orang lain).</li>
+          <li><strong>おじさん (ojisan)</strong> - Paman.</li>
+          <li><strong>おばさん (obasan)</strong> - Bibi.</li>
+        </ul>
+      </div>
+
+      <!-- Waktu -->
+      <div class="category">
+        <h2>Waktu</h2>
+        <ul class="vocab-list">
+          <li><strong>今日 (きょう, kyou)</strong> - Hari ini.</li>
+          <li><strong>明日 (あした, ashita)</strong> - Besok.</li>
+          <li><strong>昨日 (きのう, kinou)</strong> - Kemarin.</li>
+          <li><strong>朝 (あさ, asa)</strong> - Pagi.</li>
+          <li><strong>昼 (ひる, hiru)</strong> - Siang.</li>
+          <li><strong>夜 (よる, yoru)</strong> - Malam.</li>
+          <li><strong>時間 (じかん, jikan)</strong> - Waktu.</li>
+          <li><strong>分 (ふん, fun)</strong> - Menit.</li>
+          <li><strong>秒 (びょう, byou)</strong> - Detik.</li>
+          <li><strong>今 (いま, ima)</strong> - Sekarang.</li>
+          <li><strong>後で (あとで, ato de)</strong> - Nanti.</li>
+          <li><strong>前 (まえ, mae)</strong> - Sebelum.</li>
+          <li><strong>今週 (こんしゅう, konshuu)</strong> - Minggu ini.</li>
+          <li><strong>来週 (らいしゅう, raishuu)</strong> - Minggu depan.</li>
+          <li><strong>先週 (せんしゅう, senshuu)</strong> - Minggu lalu.</li>
+          <li><strong>今月 (こんげつ, kongetsu)</strong> - Bulan ini.</li>
+          <li><strong>来月 (らいげつ, raigetsu)</strong> - Bulan depan.</li>
+          <li><strong>先月 (せんげつ, sengetsu)</strong> - Bulan lalu.</li>
+          <li><strong>今年 (ことし, kotoshi)</strong> - Tahun ini.</li>
+          <li><strong>来年 (らいねん, rainen)</strong> - Tahun depan.</li>
+          <li><strong>去年 (きょねん, kyonen)</strong> - Tahun lalu.</li>
+        </ul>
+      </div>
+
+      <!-- Hari dan Bulan -->
+      <div class="category">
+        <h2>Hari dan Bulan</h2>
+        <ul class="vocab-list">
+          <li><strong>月曜日 (げつようび, getsuyoubi)</strong> - Senin.</li>
+          <li><strong>火曜日 (かようび, kayoubi)</strong> - Selasa.</li>
+          <li><strong>水曜日 (すいようび, suiyoubi)</strong> - Rabu.</li>
+          <li><strong>木曜日 (もくようび, mokuyoubi)</strong> - Kamis.</li>
+          <li><strong>金曜日 (きんようび, kinyoubi)</strong> - Jumat.</li>
+          <li><strong>土曜日 (どようび, doyoubi)</strong> - Sabtu.</li>
+          <li><strong>日曜日 (にちようび, nichiyoubi)</strong> - Minggu.</li>
+          <li><strong>一月 (いちがつ, ichigatsu)</strong> - Januari.</li>
+          <li><strong>二月 (にがつ, nigatsu)</strong> - Februari.</li>
+          <li><strong>三月 (さんがつ, sangatsu)</strong> - Maret.</li>
+          <li><strong>四月 (しがつ, shigatsu)</strong> - April.</li>
+          <li><strong>五月 (ごがつ, gogatsu)</strong> - Mei.</li>
+          <li><strong>六月 (ろくがつ, rokugatsu)</strong> - Juni.</li>
+          <li><strong>七月 (しちがつ, shichigatsu)</strong> - Juli.</li>
+          <li><strong>八月 (はちがつ, hachigatsu)</strong> - Agustus.</li>
+          <li><strong>九月 (くがつ, kugatsu)</strong> - September.</li>
+          <li><strong>十月 (じゅうがつ, juugatsu)</strong> - Oktober.</li>
+          <li><strong>十一月 (じゅういちがつ, juuichigatsu)</strong> - November.</li>
+          <li><strong>十二月 (じゅうにがつ, juunigatsu)</strong> - Desember.</li>
+        </ul>
+      </div>
+
+      <!-- Makanan dan Minuman -->
+      <div class="category">
+        <h2>Makanan dan Minuman</h2>
+        <ul class="vocab-list">
+          <li><strong>食べ物 (たべもの, tabemono)</strong> - Makanan.</li>
+          <li><strong>飲み物 (のみもの, nomimono)</strong> - Minuman.</li>
+          <li><strong>水 (みず, mizu)</strong> - Air.</li>
+          <li><strong>ご飯 (ごはん, gohan)</strong> - Nasi / Makan.</li>
+          <li><strong>パン (pan)</strong> - Roti.</li>
+          <li><strong>肉 (にく, niku)</strong> - Daging.</li>
+          <li><strong>魚 (さかな, sakana)</strong> - Ikan.</li>
+          <li><strong>野菜 (やさい, yasai)</strong> - Sayuran.</li>
+          <li><strong>果物 (くだもの, kudamono)</strong> - Buah.</li>
+          <li><strong>お茶 (おちゃ, ocha)</strong> - Teh.</li>
+          <li><strong>コーヒー (koohii)</strong> - Kopi.</li>
+          <li><strong>牛乳 (ぎゅうにゅう, gyuunyuu)</strong> - Susu sapi.</li>
+          <li><strong>ジュース (juusu)</strong> - Jus.</li>
+          <li><strong>ビール (biiru)</strong> - Bir.</li>
+          <li><strong>お酒 (おさけ, osake)</strong> - Minuman beralkohol.</li>
+          <li><strong>寿司 (すし, sushi)</strong> - Sushi.</li>
+          <li><strong>ラーメン (raamen)</strong> - Ramen.</li>
+          <li><strong>うどん (udon)</strong> - Udon.</li>
+          <li><strong>そば (soba)</strong> - Soba.</li>
+          <li><strong>味噌汁 (みそしる, misoshiru)</strong> - Sup miso.</li>
+          <li><strong>卵 (たまご, tamago)</strong> - Telur.</li>
+          <li><strong>チーズ (chiizu)</strong> - Keju.</li>
+          <li><strong>バター (bataa)</strong> - Mentega.</li>
+          <li><strong>塩 (しお, shio)</strong> - Garam.</li>
+          <li><strong>砂糖 (さとう, satou)</strong> - Gula.</li>
+          <li><strong>醤油 (しょうゆ, shouyu)</strong> - Kecap asin.</li>
+          <li><strong>デザート (dezaato)</strong> - Makanan penutup.</li>
+          <li><strong>アイスクリーム (aisukuriimu)</strong> - Es krim.</li>
+        </ul>
+      </div>
+
+      <!-- Tempat -->
+      <div class="category">
+        <h2>Tempat</h2>
+        <ul class="vocab-list">
+          <li><strong>家 (いえ, ie)</strong> - Rumah.</li>
+          <li><strong>学校 (がっこう, gakkou)</strong> - Sekolah.</li>
+          <li><strong>会社 (かいしゃ, kaisha)</strong> - Perusahaan.</li>
+          <li><strong>病院 (びょういん, byouin)</strong> - Rumah sakit.</li>
+          <li><strong>公園 (こうえん, kouen)</strong> - Taman.</li>
+          <li><strong>駅 (えき, eki)</strong> - Stasiun.</li>
+          <li><strong>空港 (くうこう, kuukou)</strong> - Bandara.</li>
+          <li><strong>銀行 (ぎんこう, ginkou)</strong> - Bank.</li>
+          <li><strong>郵便局 (ゆうびんきょく, yuubinkyoku)</strong> - Kantor pos.</li>
+          <li><strong>スーパー (suupaa)</strong> - Supermarket.</li>
+          <li><strong>レストラン (resutoran)</strong> - Restoran.</li>
+          <li><strong>カフェ (kafe)</strong> - Kafe.</li>
+          <li><strong>図書館 (としょかん, toshokan)</strong> - Perpustakaan.</li>
+          <li><strong>映画館 (えいがかん, eigakan)</strong> - Bioskop.</li>
+          <li><strong>ホテル (hoteru)</strong> - Hotel.</li>
+          <li><strong>コンビニ (konbini)</strong> - Minimarket.</li>
+          <li><strong>トイレ (toire)</strong> - Toilet.</li>
+          <li><strong>バス停 (バスてい, basutei)</strong> - Halte bus.</li>
+          <li><strong>交番 (こうばん, kouban)</strong> - Pos polisi.</li>
+          <li><strong>デパート (depaato)</strong> - Departemen store.</li>
+        </ul>
+      </div>
+
+      <!-- Transportasi -->
+      <div class="category">
+        <h2>Transportasi</h2>
+        <ul class="vocab-list">
+          <li><strong>車 (くるま, kuruma)</strong> - Mobil.</li>
+          <li><strong>電車 (でんしゃ, densha)</strong> - Kereta listrik.</li>
+          <li><strong>地下鉄 (ちかてつ, chikatetsu)</strong> - Kereta bawah tanah.</li>
+          <li><strong>バス (basu)</strong> - Bus.</li>
+          <li><strong>自転車 (じてんしゃ, jitensha)</strong> - Sepeda.</li>
+          <li><strong>バイク (baiku)</strong> - Sepeda motor.</li>
+          <li><strong>飛行機 (ひこうき, hikouki)</strong> - Pesawat terbang.</li>
+          <li><strong>タクシー (takushii)</strong> - Taksi.</li>
+          <li><strong>船 (ふね, fune)</strong> - Kapal.</li>
+          <li><strong>新幹線 (しんかんせん, shinkansen)</strong> - Kereta cepat.</li>
+          <li><strong>歩く (あるく, aruku)</strong> - Berjalan kaki.</li>
+          <li><strong>走る (はしる, hashiru)</strong> - Berlari.</li>
+          <li><strong>運転する (うんてんする, unten suru)</strong> - Mengemudi.</li>
+          <li><strong>乗る (のる, noru)</strong> - Naik (kendaraan).</li>
+          <li><strong>降りる (おりる, oriru)</strong> - Turun (dari kendaraan).</li>
+          <li><strong>切符 (きっぷ, kippu)</strong> - Tiket.</li>
+          <li><strong>駅前 (えきまえ, ekimae)</strong> - Depan stasiun.</li>
+          <li><strong>道 (みち, michi)</strong> - Jalan.</li>
+          <li><strong>信号 (しんごう, shingou)</strong> - Lampu lalu lintas.</li>
+          <li><strong>地図 (ちず, chizu)</strong> - Peta.</li>
+        </ul>
+      </div>
+
+      <!-- Benda Sehari-hari -->
+      <div class="category">
+        <h2>Benda Sehari-hari</h2>
+        <ul class="vocab-list">
+          <li><strong>机 (つくえ, tsukue)</strong> - Meja.</li>
+          <li><strong>椅子 (いす, isu)</strong> - Kursi.</li>
+          <li><strong>ベッド (beddo)</strong> - Tempat tidur.</li>
+          <li><strong>本 (ほん, hon)</strong> - Buku.</li>
+          <li><strong>ペン (pen)</strong> - Pulpen.</li>
+          <li><strong>紙 (かみ, kami)</strong> - Kertas.</li>
+          <li><strong>時計 (とけい, tokei)</strong> - Jam.</li>
+          <li><strong>携帯電話 (けいたいでんわ, keitai denwa)</strong> - Telepon genggam.</li>
+          <li><strong>パソコン (pasokon)</strong> - Komputer.</li>
+          <li><strong>テレビ (terebi)</strong> - Televisi.</li>
+          <li><strong>冷蔵庫 (れいぞうこ, reizouko)</strong> - Kulkas.</li>
+          <li><strong>洗濯機 (せんたくき, sentakuki)</strong> - Mesin cuci.</li>
+          <li><strong>エアコン (eakon)</strong> - AC.</li>
+          <li><strong>ドア (doa)</strong> - Pintu.</li>
+          <li><strong>窓 (まど, mado)</strong> - Jendela.</li>
+          <li><strong>鍵 (かぎ, kagi)</strong> - Kunci.</li>
+          <li><strong>財布 (さいふ, saifu)</strong> - Dompet.</li>
+          <li><strong>かばん (kaban)</strong> - Tas.</li>
+          <li><strong>傘 (かさ, kasa)</strong> - Payung.</li>
+          <li><strong>靴 (くつ, kutsu)</strong> - Sepatu.</li>
+        </ul>
+      </div>
+
+      <!-- Permainan Kosakata -->
+      <div class="quiz">
+        <h2>Permainan: Ingat Kosakata!</h2>
+        <p><strong>Soal:</strong> Apa arti dari kata berikut?</p>
+        <p id="question"></p>
+        <div class="quiz-options" id="options"></div>  
+        <p class="result" id="result"></p>
+        <button onclick="generateQuestion()">Soal Berikutnya</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Luzuno. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Bank Kosakata yang diperluas
+    const vocabData = [
+      // Salam dan Ungkapan Umum
+      { japanese: "おはようございます", meaning: "Selamat pagi" },
+      { japanese: "こんにちは", meaning: "Selamat siang/sore" },
+      { japanese: "こんばんは", meaning: "Selamat malam" },
+      { japanese: "おやすみなさい", meaning: "Selamat tidur" },
+      { japanese: "ありがとう", meaning: "Terima kasih" },
+      { japanese: "ありがとうございます", meaning: "Terima kasih (formal)" },
+      { japanese: "すみません", meaning: "Maaf/Permisi" },
+      { japanese: "ごめんなさい", meaning: "Maaf" },
+      { japanese: "はい", meaning: "Ya" },
+      { japanese: "いいえ", meaning: "Tidak" },
+      { japanese: "おねがいします", meaning: "Tolong/Silakan" },
+      { japanese: "どうぞ", meaning: "Silakan" },
+      { japanese: "はじめまして", meaning: "Senang bertemu Anda" },
+      { japanese: "よろしくおねがいします", meaning: "Mohon bantuannya" },
+      { japanese: "いただきます", meaning: "Ucapan sebelum makan" },
+      { japanese: "ごちそうさまでした", meaning: "Ucapan setelah makan" },
+      { japanese: "いってきます", meaning: "Saya pergi dulu" },
+      { japanese: "いってらっしゃい", meaning: "Hati-hati di jalan" },
+      { japanese: "ただいま", meaning: "Saya pulang" },
+      { japanese: "おかえりなさい", meaning: "Selamat datang kembali" },
+      
+      // Angka
+      { japanese: "いち", meaning: "Satu" },
+      { japanese: "に", meaning: "Dua" },
+      { japanese: "さん", meaning: "Tiga" },
+      { japanese: "し/よん", meaning: "Empat" },
+      { japanese: "ご", meaning: "Lima" },
+      { japanese: "ろく", meaning: "Enam" },
+      { japanese: "しち/なな", meaning: "Tujuh" },
+      { japanese: "はち", meaning: "Delapan" },
+      { japanese: "きゅう/く", meaning: "Sembilan" },
+      { japanese: "じゅう", meaning: "Sepuluh" },
+      { japanese: "ひゃく", meaning: "Seratus" },
+      { japanese: "せん", meaning: "Seribu" },
+      { japanese: "まん", meaning: "Sepuluh ribu" },
+      
+      // Warna
+      { japanese: "あか", meaning: "Merah" },
+      { japanese: "あお", meaning: "Biru" },
+      { japanese: "きいろ", meaning: "Kuning" },
+      { japanese: "みどり", meaning: "Hijau" },
+      { japanese: "しろ", meaning: "Putih" },
+      { japanese: "くろ", meaning: "Hitam" },
+      { japanese: "むらさき", meaning: "Ungu" },
+      { japanese: "ピンク", meaning: "Pink" },
+      { japanese: "オレンジ", meaning: "Oranye" },
+      { japanese: "ちゃいろ", meaning: "Coklat" },
+      { japanese: "はいいろ", meaning: "Abu-abu" },
+      { japanese: "きんいろ", meaning: "Emas" },
+      { japanese: "ぎんいろ", meaning: "Perak" },
+      
+      // Keluarga
+      { japanese: "かぞく", meaning: "Keluarga" },
+      { japanese: "ちち", meaning: "Ayah (sendiri)" },
+      { japanese: "はは", meaning: "Ibu (sendiri)" },
+      { japanese: "おとうさん", meaning: "Ayah (orang lain)" },
+      { japanese: "おかあさん", meaning: "Ibu (orang lain)" },
+      { japanese: "あに", meaning: "Kakak laki-laki" },
+      { japanese: "あね", meaning: "Kakak perempuan" },
+      { japanese: "おとうと", meaning: "Adik laki-laki" },
+      { japanese: "いもうと", meaning: "Adik perempuan" },
+      { japanese: "そふ", meaning: "Kakek (sendiri)" },
+      { japanese: "そぼ", meaning: "Nenek (sendiri)" },
+      { japanese: "おじいさん", meaning: "Kakek (orang lain)" },
+      { japanese: "おばあさん", meaning: "Nenek (orang lain)" },
+      { japanese: "おじさん", meaning: "Paman" },
+      { japanese: "おばさん", meaning: "Bibi" },
+      
+      // Waktu
+      { japanese: "きょう", meaning: "Hari ini" },
+      { japanese: "あした", meaning: "Besok" },
+      { japanese: "きのう", meaning: "Kemarin" },
+      { japanese: "あさ", meaning: "Pagi" },
+      { japanese: "ひる", meaning: "Siang" },
+      { japanese: "よる", meaning: "Malam" },
+      { japanese: "じかん", meaning: "Waktu" },
+      { japanese: "ふん", meaning: "Menit" },
+      { japanese: "びょう", meaning: "Detik" },
+      { japanese: "いま", meaning: "Sekarang" },
+      { japanese: "あとで", meaning: "Nanti" },
+      { japanese: "まえ", meaning: "Sebelum" },
+      { japanese: "こんしゅう", meaning: "Minggu ini" },
+      { japanese: "らいしゅう", meaning: "Minggu depan" },
+      { japanese: "せんしゅう", meaning: "Minggu lalu" },
+      { japanese: "こんげつ", meaning: "Bulan ini" },
+      { japanese: "らいげつ", meaning: "Bulan depan" },
+      { japanese: "せんげつ", meaning: "Bulan lalu" },
+      { japanese: "ことし", meaning: "Tahun ini" },
+      { japanese: "らいねん", meaning: "Tahun depan" },
+      { japanese: "きょねん", meaning: "Tahun lalu" },
+      
+      // Hari dan Bulan
+      { japanese: "げつようび", meaning: "Senin" },
+      { japanese: "かようび", meaning: "Selasa" },
+      { japanese: "すいようび", meaning: "Rabu" },
+      { japanese: "もくようび", meaning: "Kamis" },
+      { japanese: "きんようび", meaning: "Jumat" },
+      { japanese: "どようび", meaning: "Sabtu" },
+      { japanese: "にちようび", meaning: "Minggu" },
+      { japanese: "いちがつ", meaning: "Januari" },
+      { japanese: "にがつ", meaning: "Februari" },
+      { japanese: "さんがつ", meaning: "Maret" },
+      { japanese: "しがつ", meaning: "April" },
+      { japanese: "ごがつ", meaning: "Mei" },
+      { japanese: "ろくがつ", meaning: "Juni" },
+      { japanese: "しちがつ", meaning: "Juli" },
+      { japanese: "はちがつ", meaning: "Agustus" },
+      { japanese: "くがつ", meaning: "September" },
+      { japanese: "じゅうがつ", meaning: "Oktober" },
+      { japanese: "じゅういちがつ", meaning: "November" },
+      { japanese: "じゅうにがつ", meaning: "Desember" },
+      
+      // Makanan dan Minuman
+      { japanese: "たべもの", meaning: "Makanan" },
+      { japanese: "のみもの", meaning: "Minuman" },
+      { japanese: "みず", meaning: "Air" },
+      { japanese: "ごはん", meaning: "Nasi/Makan" },
+      { japanese: "パン", meaning: "Roti" },
+      { japanese: "にく", meaning: "Daging" },
+      { japanese: "さかな", meaning: "Ikan" },
+      { japanese: "やさい", meaning: "Sayuran" },
+      { japanese: "くだもの", meaning: "Buah" },
+      { japanese: "おちゃ", meaning: "Teh" },
+      { japanese: "コーヒー", meaning: "Kopi" },
+      { japanese: "ぎゅうにゅう", meaning: "Susu sapi" },
+      { japanese: "ジュース", meaning: "Jus" },
+      { japanese: "ビール", meaning: "Bir" },
+      { japanese: "おさけ", meaning: "Minuman beralkohol" },
+      { japanese: "すし", meaning: "Sushi" },
+      { japanese: "ラーメン", meaning: "Ramen" },
+      { japanese: "うどん", meaning: "Udon" },
+      { japanese: "そば", meaning: "Soba" },
+      { japanese: "みそしる", meaning: "Sup miso" },
+      { japanese: "たまご", meaning: "Telur" },
+      { japanese: "チーズ", meaning: "Keju" },
+      { japanese: "バター", meaning: "Mentega" },
+      { japanese: "しお", meaning: "Garam" },
+      { japanese: "さとう", meaning: "Gula" },
+      { japanese: "しょうゆ", meaning: "Kecap asin" },
+      { japanese: "デザート", meaning: "Makanan penutup" },
+      { japanese: "アイスクリーム", meaning: "Es krim" },
+      
+      // Tempat
+      { japanese: "いえ", meaning: "Rumah" },
+      { japanese: "がっこう", meaning: "Sekolah" },
+      { japanese: "かいしゃ", meaning: "Perusahaan" },
+      { japanese: "びょういん", meaning: "Rumah sakit" },
+      { japanese: "こうえん", meaning: "Taman" },
+      { japanese: "えき", meaning: "Stasiun" },
+      { japanese: "くうこう", meaning: "Bandara" },
+      { japanese: "ぎんこう", meaning: "Bank" },
+      { japanese: "ゆうびんきょく", meaning: "Kantor pos" },
+      { japanese: "スーパー", meaning: "Supermarket" },
+      { japanese: "レストラン", meaning: "Restoran" },
+      { japanese: "カフェ", meaning: "Kafe" },
+      { japanese: "としょかん", meaning: "Perpustakaan" },
+      { japanese: "えいがかん", meaning: "Bioskop" },
+      { japanese: "ホテル", meaning: "Hotel" },
+      { japanese: "コンビニ", meaning: "Minimarket" },
+      { japanese: "トイレ", meaning: "Toilet" },
+      { japanese: "バスてい", meaning: "Halte bus" },
+      { japanese: "こうばん", meaning: "Pos polisi" },
+      { japanese: "デパート", meaning: "Departemen store" },
+      
+      // Transportasi
+      { japanese: "くるま", meaning: "Mobil" },
+      { japanese: "でんしゃ", meaning: "Kereta listrik" },
+      { japanese: "ちかてつ", meaning: "Kereta bawah tanah" },
+      { japanese: "バス", meaning: "Bus" },
+      { japanese: "じてんしゃ", meaning: "Sepeda" },
+      { japanese: "バイク", meaning: "Sepeda motor" },
+      { japanese: "ひこうき", meaning: "Pesawat terbang" },
+      { japanese: "タクシー", meaning: "Taksi" },
+      { japanese: "ふね", meaning: "Kapal" },
+      { japanese: "しんかんせん", meaning: "Kereta cepat" },
+      { japanese: "あるく", meaning: "Berjalan kaki" },
+      { japanese: "はしる", meaning: "Berlari" },
+      { japanese: "うんてんする", meaning: "Mengemudi" },
+      { japanese: "のる", meaning: "Naik (kendaraan)" },
+      { japanese: "おりる", meaning: "Turun (dari kendaraan)" },
+      { japanese: "きっぷ", meaning: "Tiket" },
+      { japanese: "えきまえ", meaning: "Depan stasiun" },
+      { japanese: "みち", meaning: "Jalan" },
+      { japanese: "しんごう", meaning: "Lampu lalu lintas" },
+      { japanese: "ちず", meaning: "Peta" },
+      
+      // Benda Sehari-hari
+      { japanese: "つくえ", meaning: "Meja" },
+      { japanese: "いす", meaning: "Kursi" },
+      { japanese: "ベッド", meaning: "Tempat tidur" },
+      { japanese: "ほん", meaning: "Buku" },
+      { japanese: "ペン", meaning: "Pulpen" },
+      { japanese: "かみ", meaning: "Kertas" },
+      { japanese: "とけい", meaning: "Jam" },
+      { japanese: "けいたいでんわ", meaning: "Telepon genggam" },
+      { japanese: "パソコン", meaning: "Komputer" },
+      { japanese: "テレビ", meaning: "Televisi" },
+      { japanese: "れいぞうこ", meaning: "Kulkas" },
+      { japanese: "せんたくき", meaning: "Mesin cuci" },
+      { japanese: "エアコン", meaning: "AC" },
+      { japanese: "ドア", meaning: "Pintu" },
+      { japanese: "まど", meaning: "Jendela" },
+      { japanese: "かぎ", meaning: "Kunci" },
+      { japanese: "さいふ", meaning: "Dompet" },
+      { japanese: "かばん", meaning: "Tas" },
+      { japanese: "かさ", meaning: "Payung" },
+      { japanese: "くつ", meaning: "Sepatu" }
+    ];
+
+    let currentQuestion;
+
+    function generateQuestion() {
+      const randomIndex = Math.floor(Math.random() * vocabData.length);
+      currentQuestion = vocabData[randomIndex];
+
+      document.getElementById('question').innerText = `Kata: ${currentQuestion.japanese}`;
+
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+
+      const shuffledData = [...vocabData].sort(() => Math.random() - 0.5).slice(0, 4);
+      if (!shuffledData.includes(currentQuestion)) {
+        shuffledData[Math.floor(Math.random() * 4)] = currentQuestion;
+      }
+
+      shuffledData.forEach(item => {
+        const button = document.createElement('button');
+        button.innerText = item.meaning;
+        button.onclick = () => checkAnswer(item.meaning);
+        options.appendChild(button);
+      });
+
+      document.getElementById('result').innerText = '';
+    }
+
+    function checkAnswer(selectedMeaning) {
+      const result = document.getElementById('result');
+      if (selectedMeaning === currentQuestion.meaning) {
+        result.innerText = 'Benar! 🎉';
+        result.style.color = 'green';
+      } else {
+        result.innerText = `Salah! Jawaban yang benar adalah "${currentQuestion.meaning}".`;
+        result.style.color = 'red';
+      }
+    }
+
+    // Generate first question on page load
+    window.onload = generateQuestion;
+  </script>
+</body>
+</html>

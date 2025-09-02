@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Permainan - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES ===== */
+        :root {
+            --primary: #3a86ff; /* Modern blue */
+            --primary-dark: #2667cc;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --decoration-color: rgba(58, 134, 255, 0.05);
+            --gradient: linear-gradient(135deg, #3a86ff, #2667cc);
+        }
+
+        [data-theme="dark"] {
+            --primary: #90e0ef; /* Light blue for dark mode */
+            --primary-dark: #48cae4;
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: rgba(30, 30, 30, 0.95);
+            --decoration-color: rgba(144, 224, 239, 0.05);
+            --gradient: linear-gradient(135deg, #90e0ef, #48cae4);
+        }
+
+        /* ===== BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sawarabi Mincho', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== BACKGROUND ELEMENTS ===== */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: radial-gradient(var(--decoration-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+
+        .kanji-decoration {
+            position: fixed;
+            font-size: 8rem;
+            color: var(--decoration-color);
+            z-index: -1;
+            pointer-events: none;
+            font-weight: 900;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .kanji-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .kanji-2 { bottom: 15%; right: 8%; animation-delay: 2s; }
+        .kanji-3 { top: 30%; right: 15%; animation-delay: 4s; }
+        .kanji-4 { bottom: 25%; left: 10%; animation-delay: 6s; }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 2000;
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            padding: 8px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(58, 134, 255, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: var(--primary-dark);
+            text-decoration: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 500;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .game-menu {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 15px;
+        }
+
+        .game-menu h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .game-menu h1::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+            padding: 1rem 0;
+        }
+
+        /* ===== GAME CARDS ===== */
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(58, 134, 255, 0.1);
+        }
+
+        .game-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .game-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary-dark);
+        }
+
+        .game-title {
+            font-family: 'Kiwi Maru', serif;
+            color: var(--primary-dark);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .game-description {
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+            min-height: 40px;
+            line-height: 1.4;
+        }
+
+        /* ===== BUTTONS ===== */
+        .play-button {
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 3px 10px rgba(58, 134, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            font-size: 0.8rem;
+            border: none;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--gradient);
+            color: white;
+            padding: 2.5rem 5%;
+            text-align: center;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .footer p:first-child {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .animate-delay-1 { animation-delay: 0.2s; }
+        .animate-delay-2 { animation-delay: 0.4s; }
+        .animate-delay-3 { animation-delay: 0.6s; }
+        .animate-delay-4 { animation-delay: 0.8s; }
+
+        /* ===== HOVER EFFECTS ===== */
+        .theme-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .nav-links a::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .game-card:hover .game-icon {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+
+        .game-title::after {
+            content: "";
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 1.5px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover .game-title::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .play-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+        }
+
+        .play-button:hover::before {
+            left: 100%;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .game-menu h1 {
+                font-size: 1.8rem;
+            }
+
+            .kanji-decoration {
+                font-size: 5rem;
+            }
+
+            .game-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Decorations -->
+    <div class="kanji-decoration kanji-1">楽</div>
+    <div class="kanji-decoration kanji-2">学</div>
+    <div class="kanji-decoration kanji-3">遊</div>
+    <div class="kanji-decoration kanji-4">勉</div>
+
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-container animate__animated animate__fadeInDown">
+        <ul class="nav-links">
+            <li><a href="../../index.html">Beranda</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="game-menu">
+        <h1 class="animate__animated animate__fadeIn">🎮 Permainan</h1>
+        
+        <div class="game-grid">
+            <!-- Game Card 1 -->
+            <div class="game-card animate__animated animate__fadeInUp animate-delay-1">
+                <div class="game-icon">🀄</div>
+                <h2 class="game-title">Flashcard Kanji</h2>
+                <p class="game-description">Latih memori Anda dengan flashcard kanji yang interaktif</p>
+                <a href="../flashcard.html" class="play-button">Mainkan</a>
+            </div>
+
+            <!-- Game Card 2 -->
+            <div class="game-card animate__animated animate__fadeInUp animate-delay-2">
+                <div class="game-icon">🧩</div>
+                <h2 class="game-title">Puzzle Kata</h2>
+                <p class="game-description">Susun potongan kata menjadi kalimat Jepang yang benar</p>
+                <a href="game-puzzle-kata.html" class="play-button">Mainkan</a>
+            </div>
+
+            <!-- Game Card 3 -->
+            <div class="game-card animate__animated animate__fadeInUp animate-delay-3">
+                <div class="game-icon"> 🛹</div>
+                <h2 class="game-title">Permainan</h2>
+                <p class="game-description">Hindari rintangan dengan melompat</p>
+                <a href="dino.html" class="play-button">Mainkan</a>
+            </div>
+
+            <!-- Game Card 4 -->
+            <div class="game-card animate__animated animate__fadeInUp animate-delay-4">
+                <div class="game-icon">🎧</div>
+                <h2 class="game-title">Dengarkan & Tebak</h2>
+                <p class="game-description">Tingkatkan pendengaran Anda dengan tebak huruf Hiragana</p>
+                <a href="../lagu/lagu.html" class="play-button">Mainkan</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer animate__animated animate__fadeInUp">
+        <p>🌸 Belajar dengan Menyenangkan 🌸</p>
+        <p>&copy; 2025 Luzuno.</p>
+    </footer>
+
+    <script>
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            // Button animation
+            const toggle = document.querySelector('.theme-toggle');
+            toggle.classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                toggle.classList.remove('animate__animated', 'animate__pulse');
+            }, 500);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        // Card hover animations
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('animate__animated', 'animate__pulse');
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    card.classList.remove('animate__animated', 'animate__pulse');
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

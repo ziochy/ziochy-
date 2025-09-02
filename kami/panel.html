@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Panel - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --primary-color: #ff6b9d;
+            --danger-color: #ff4757;
+            --text-color: #2d3436;
+            --card-bg: #fff0f5;
+            --bg-color: #ffe6ee;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #8c7ae6;
+            --danger-color: #c23616;
+            --text-color: #f5f6fa;
+            --card-bg: #2d3436;
+            --bg-color: #1e272e;
+        }
+
+        [data-theme="anime"] {
+            --primary-color: #6c5ce7;
+            --danger-color: #d63031;
+            --text-color: #2d3436;
+            --card-bg: #ffffff;
+            --bg-color: #f5f6fa;
+        } 
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .admin-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .admin-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .message-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        .message-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-content {
+            flex: 1;
+            margin-right: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-meta {
+            font-size: 0.8rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.8rem;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            padding: 0.2rem;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-cogs"></i> Admin Control Panel
+            </h1>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-palette"></i>
+            </div>
+        </div>
+
+        <div id="adminContent">
+            <!-- Content will be loaded here after auth check -->
+        </div>
+
+        <div class="bottom-nav">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="../latihan.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Materi</span>
+            </a>
+            <a href="pemberitahuan.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>pemberitahuan</span>
+            </a>
+            <a href="../profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-functions-compat.js"></script>
+
+            
+                 <script>
+    // Theme toggle function
+    function toggleTheme() {
+        const themes = ['light', 'dark', 'anime'];
+        let currentTheme = themes.indexOf(document.documentElement.getAttribute('data-theme'));
+        currentTheme = (currentTheme + 1) % themes.length;
+        const theme = themes[currentTheme];
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateThemeIcon(theme);
+    }
+
+    function updateThemeIcon(theme) {
+        const icon = document.querySelector('.theme-toggle i');
+        const icons = {
+            'light': 'fa-sun',
+            'dark': 'fa-moon',
+            'anime': 'fa-palette'
+        };
+        icon.className = `fas ${icons[theme]}`;
+    }
+
+    // Load theme on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    });
+
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyA7BJUBNxvlqHUJ9u3KRcpPZDcMCbd9Qk0",
+        authDomain: "luzuno-web.firebaseapp.com",
+        projectId: "luzuno-web",
+        storageBucket: "luzuno-web.appspot.com",
+        messagingSenderId: "728661935868",
+        appId: "1:728661935868:web:859ebff3a63b1210acb979"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const functions = firebase.functions();
+
+    // Check if user is riskiziochy@gmail.com
+    auth.onAuthStateChanged(user => {
+        const adminContent = document.getElementById('adminContent');
+        
+        if (!user) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (user.email !== "riskiziochy@gmail.com") {
+            adminContent.innerHTML = `
+                <div class="admin-card">
+                    <h2 class="card-title"><i class="fas fa-ban"></i> Akses Ditolak</h2>
+                    <p>Hanya admin yang dapat mengakses halaman ini.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // User is riskiziochy@gmail.com - show admin controls
+        adminContent.innerHTML = `
+            <div class="admin-card">
+                <h2 class="card-title"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</h2>
+                <p>Selamat datang, Sensei! Anda memiliki akses penuh ke kontrol admin.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="recentMessageCount">-</div>
+                        <div class="stat-label">Pesan <2 Hari</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="oldMessageCount">-</div>
+                        <div class="stat-label">Pesan >2 Hari</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-card">
+                <h2 class="card-title"><i class="fas fa-comments"></i> Pesan Terbaru (<2 Hari)</h2>
+                <p>Kelola pesan yang lebih baru dari 2 hari.</p>
+                
+                <div class="message-list" id="recentMessages">
+                    <div class="empty-state">
+                        <i class="fas fa-mouse-pointer"></i> Klik tombol Refresh untuk memuat pesan
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                    <button id="deleteSelectedRecentBtn" class="btn btn-danger" disabled>
+                        <i class="fas fa-trash"></i> Hapus yang Dipilih
+                    </button>
+                    <button id="refreshRecentBtn" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="admin-card">
+                <h2 class="card-title"><i class="fas fa-trash-alt"></i> Pesan Lama (>2 Hari)</h2>
+                <p>Kelola dan hapus pesan yang lebih lama dari 2 hari.</p>
+                
+                <div class="message-list" id="oldMessages">
+                    <div class="empty-state">
+                        <i class="fas fa-mouse-pointer"></i> Klik tombol Refresh untuk memuat pesan
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                    <button id="deleteAllOldBtn" class="btn btn-danger" disabled>
+                        <i class="fas fa-trash"></i> Hapus Semua Pesan >2 Hari
+                    </button>
+                    <button id="refreshOldBtn" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Set up buttons
+        document.getElementById('refreshOldBtn').addEventListener('click', () => {
+            loadOldMessages();
+            // Enable delete button after loading
+            document.getElementById('deleteAllOldBtn').disabled = false;
+        });
+        
+        document.getElementById('refreshRecentBtn').addEventListener('click', () => {
+            loadRecentMessages();
+            // Enable delete button after loading
+            document.getElementById('deleteSelectedRecentBtn').disabled = false;
+        });
+        
+        document.getElementById('deleteAllOldBtn').addEventListener('click', deleteAllOldMessages);
+        document.getElementById('deleteSelectedRecentBtn').addEventListener('click', deleteSelectedRecentMessages);
+    });
+
+    // Load recent messages (less than 2 days old)
+    function loadRecentMessages() {
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        
+        const recentMessagesDiv = document.getElementById('recentMessages');
+        recentMessagesDiv.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i> Memuat pesan terbaru...
+            </div>
+        `;
+        
+        const refreshBtn = document.getElementById('refreshRecentBtn');
+        const originalText = refreshBtn.innerHTML;
+        refreshBtn.innerHTML = '<span class="spinner"></span> Memuat...';
+        refreshBtn.disabled = true;
+        
+        db.collection("messages")
+            .where("timestamp", ">=", twoDaysAgo)
+            .orderBy("timestamp", "desc")
+            .limit(50)
+            .get()
+            .then(snapshot => {
+                recentMessagesDiv.innerHTML = '';
+                
+                document.getElementById('recentMessageCount').textContent = snapshot.size;
+                
+                if (snapshot.empty) {
+                    recentMessagesDiv.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i> Tidak ada pesan terbaru
+                        </div>
+                    `;
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const message = doc.data();
+                    const messageDate = message.timestamp?.toDate();
+                    
+                    const messageItem = document.createElement('div');
+                    messageItem.className = 'message-item';
+                    messageItem.setAttribute('data-id', doc.id);
+                    
+                    messageItem.innerHTML = `
+                        <div style="display: flex; align-items: center; margin-right: 0.5rem;">
+                            <input type="checkbox" class="message-checkbox" data-id="${doc.id}">
+                        </div>
+                        <div class="message-content">
+                            <strong>${message.sender || 'Unknown'}</strong>: ${message.text || ''}
+                        </div>
+                        <div class="message-meta">
+                            <span>${messageDate ? messageDate.toLocaleString('id-ID') : 'Unknown date'}</span>
+                            <button class="delete-btn" data-id="${doc.id}" title="Hapus pesan ini">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    recentMessagesDiv.appendChild(messageItem);
+                });
+
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const messageId = btn.getAttribute('data-id');
+                        deleteSingleMessage(messageId, 'recent');
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error loading recent messages:", error);
+                recentMessagesDiv.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i> Gagal memuat pesan terbaru
+                    </div>
+                `;
+            })
+            .finally(() => {
+                refreshBtn.innerHTML = originalText;
+                refreshBtn.disabled = false;
+            });
+    }
+
+    // Load messages older than 2 days
+    function loadOldMessages() {
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        
+        const oldMessagesDiv = document.getElementById('oldMessages');
+        oldMessagesDiv.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i> Memuat pesan lama...
+            </div>
+        `;
+        
+        const refreshBtn = document.getElementById('refreshOldBtn');
+        const originalText = refreshBtn.innerHTML;
+        refreshBtn.innerHTML = '<span class="spinner"></span> Memuat...';
+        refreshBtn.disabled = true;
+        
+        db.collection("messages")
+            .where("timestamp", "<", twoDaysAgo)
+            .orderBy("timestamp", "desc")
+            .limit(50)
+            .get()
+            .then(snapshot => {
+                oldMessagesDiv.innerHTML = '';
+                
+                document.getElementById('oldMessageCount').textContent = snapshot.size;
+                
+                if (snapshot.empty) {
+                    oldMessagesDiv.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i> Tidak ada pesan lebih dari 2 hari
+                        </div>
+                    `;
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const message = doc.data();
+                    const messageDate = message.timestamp?.toDate();
+                    
+                    const messageItem = document.createElement('div');
+                    messageItem.className = 'message-item';
+                    messageItem.setAttribute('data-id', doc.id);
+                    
+                    messageItem.innerHTML = `
+                        <div class="message-content">
+                            <strong>${message.sender || 'Unknown'}</strong>: ${message.text || ''}
+                        </div>
+                        <div class="message-meta">
+                            <span>${messageDate ? messageDate.toLocaleString('id-ID') : 'Unknown date'}</span>
+                            <button class="delete-btn" data-id="${doc.id}" title="Hapus pesan ini">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    oldMessagesDiv.appendChild(messageItem);
+                });
+
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const messageId = btn.getAttribute('data-id');
+                        deleteSingleMessage(messageId, 'old');
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error loading old messages:", error);
+                oldMessagesDiv.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i> Gagal memuat pesan lama
+                    </div>
+                `;
+            })
+            .finally(() => {
+                refreshBtn.innerHTML = originalText;
+                refreshBtn.disabled = false;
+            });
+    }
+
+    // Delete a single message
+    function deleteSingleMessage(messageId, type) {
+        Swal.fire({
+            title: 'Konfirmasi Penghapusan',
+            text: 'Anda yakin ingin menghapus pesan ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d63031',
+            cancelButtonColor: '#6c5ce7',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                db.collection("messages").doc(messageId).delete()
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Pesan berhasil dihapus',
+                            confirmButtonColor: '#6c5ce7'
+                        });
+                        if (type === 'recent') {
+                            loadRecentMessages();
+                        } else {
+                            loadOldMessages();
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error deleting message:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Gagal menghapus pesan',
+                            confirmButtonColor: '#6c5ce7'
+                        });
+                    });
+            }
+        });
+    }
+
+    // Delete selected recent messages
+    function deleteSelectedRecentMessages() {
+        const checkboxes = document.querySelectorAll('#recentMessages .message-checkbox:checked');
+        
+        if (checkboxes.length === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Tidak ada pesan dipilih',
+                text: 'Silakan pilih pesan yang ingin dihapus',
+                confirmButtonColor: '#6c5ce7'
+            });
+            return;
+        }
+        
+        Swal.fire({
+            title: 'Konfirmasi Penghapusan',
+            text: `Anda yakin ingin menghapus ${checkboxes.length} pesan terpilih?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d63031',
+            cancelButtonColor: '#6c5ce7',
+            confirmButtonText: `Ya, Hapus ${checkboxes.length} Pesan`,
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const deleteBtn = document.getElementById('deleteSelectedRecentBtn');
+                const originalText = deleteBtn.innerHTML;
+                deleteBtn.innerHTML = '<span class="spinner"></span> Menghapus...';
+                deleteBtn.disabled = true;
+                
+                const batch = db.batch();
+                checkboxes.forEach(checkbox => {
+                    const messageId = checkbox.getAttribute('data-id');
+                    const docRef = db.collection("messages").doc(messageId);
+                    batch.delete(docRef);
+                });
+                
+                batch.commit()
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: `Berhasil menghapus ${checkboxes.length} pesan`,
+                            confirmButtonColor: '#6c5ce7'
+                        });
+                        loadRecentMessages();
+                    })
+                    .catch(error => {
+                        console.error("Error deleting messages:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Gagal menghapus pesan terpilih',
+                            confirmButtonColor: '#6c5ce7'
+                        });
+                    })
+                    .finally(() => {
+                        deleteBtn.innerHTML = originalText;
+                        deleteBtn.disabled = false;
+                    });
+            }
+        });
+    }
+
+    // Delete all messages older than 2 days
+    function deleteAllOldMessages() {
+        Swal.fire({
+            title: 'Konfirmasi Penghapusan',
+            text: 'Anda yakin ingin menghapus SEMUA pesan yang lebih lama dari 2 hari? Tindakan ini tidak dapat dibatalkan!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d63031',
+            cancelButtonColor: '#6c5ce7',
+            confirmButtonText: 'Ya, Hapus Semua!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const deleteBtn = document.getElementById('deleteAllOldBtn');
+                const originalText = deleteBtn.innerHTML;
+                deleteBtn.innerHTML = '<span class="spinner"></span> Menghapus...';
+                deleteBtn.disabled = true;
+                
+                const twoDaysAgo = new Date();
+                twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+                
+                // First get all old messages to count them
+                db.collection("messages")
+                    .where("timestamp", "<", twoDaysAgo)
+                    .get()
+                    .then(snapshot => {
+                        if (snapshot.empty) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Tidak ada pesan',
+                                text: 'Tidak ada pesan yang lebih dari 2 hari',
+                                confirmButtonColor: '#6c5ce7'
+                            });
+                            return;
+                        }
+                        
+                        const batch = db.batch();
+                        snapshot.forEach(doc => {
+                            batch.delete(doc.ref);
+                        });
+                        
+                        return batch.commit().then(() => {
+                            return snapshot.size;
+                        });
+                    })
+                    .then(deletedCount => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: `Berhasil menghapus ${deletedCount} pesan lama`,
+                            confirmButtonColor: '#6c5ce7'
+                        });
+                        loadOldMessages();
+                    })
+                    .catch(error => {
+                        console.error("Error deleting messages:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Gagal menghapus pesan lama',
+                            confirmButtonColor: '#6c5ce7'
+                        });
+                    })
+                    .finally(() => {
+                        deleteBtn.innerHTML = originalText;
+                        deleteBtn.disabled = false;
+                    });
+            }
+        });
+    }
+</script>
+</body>
+</html>

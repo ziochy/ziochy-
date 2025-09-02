@@ -1,0 +1,726 @@
+/* ==================== VARIABEL TEMA ==================== */
+:root {
+  /* Light Theme */
+  --light-bg: #fff4f7;
+  --light-text: #4a2a33;
+  --light-card: rgba(255, 255, 255, 0.9);
+  --light-accent: #ffb7c5;
+  --level-card-bg: #ffe6eb;
+  --level-card-accent: #ffd1dc;
+  --level-card-text: #7a3b4d;
+
+  /* Dark Theme */
+  --dark-bg: #2d3436;
+  --dark-text: #dfe6e9;
+  --dark-card: rgba(45, 52, 54, 0.9);
+  --dark-accent: #6c5b7b;
+  --dark-level-card-bg: #4a2a33;
+  --dark-level-card-accent: #9f4d60;
+  --dark-level-card-text: #ffd3e0;
+
+  /* Anime Theme */
+  --anime-bg: #1a1a2e;
+  --anime-text: #ffd3e0;
+  --anime-card: rgba(26, 26, 46, 0.95);
+  --anime-accent: #e94584;
+  --anime-secondary: #8a4fff;
+}
+
+/* ==================== TEMA ==================== */
+[data-theme="light"] {
+  --bg-color: var(--light-bg);
+  --text-color: var(--light-text);
+  --card-bg: var(--light-card);
+  --accent-color: var(--light-accent);
+  --current-level-card-bg: var(--level-card-bg);
+  --current-level-card-accent: var(--level-card-accent);
+  --current-level-card-text: var(--level-card-text);
+}
+
+[data-theme="dark"] {
+  --bg-color: var(--dark-bg);
+  --text-color: var(--dark-text);
+  --card-bg: var(--dark-card);
+  --accent-color: var(--dark-accent);
+  --current-level-card-bg: var(--dark-level-card-bg);
+  --current-level-card-accent: var(--dark-level-card-accent);
+  --current-level-card-text: var(--dark-level-card-text);
+}
+
+[data-theme="anime"] {
+  --bg-color: var(--anime-bg);
+  --text-color: var(--anime-text);
+  --card-bg: var(--anime-card);
+  --accent-color: var(--anime-secondary);
+  --current-level-card-bg: #2a1a3a;
+  --current-level-card-accent: #8a4fff;
+  --current-level-card-text: #ffd3e0;
+  
+  background-image: 
+    linear-gradient(45deg, 
+      rgba(233, 69, 132, 0.1) 25%, 
+      transparent 25%,
+      transparent 75%,
+      rgba(233, 69, 132, 0.1) 75%),
+    linear-gradient(45deg, 
+      rgba(233, 69, 132, 0.1) 25%, 
+      transparent 25%,
+      transparent 75%,
+      rgba(233, 69, 132, 0.1) 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+}
+
+/* ==================== BASE STYLES ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Sawarabi Mincho', sans-serif;
+  transition: all 0.3s ease;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ==================== KOMPONEN UTAMA ==================== */
+/* Theme Toggle */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 2000;
+  background: var(--card-bg);
+  border: 2px solid var(--accent-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 15px var(--accent-color);
+}
+
+.theme-toggle i {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+}
+
+/* Karakter Anime */
+.anime-character {
+  position: fixed;
+  bottom: -30px;
+  width: 150px;
+  height: 270px;
+  opacity: 0;
+  transition: all 1s ease;
+  z-index: 999;
+  mix-blend-mode: screen;
+  filter: brightness(1) contrast(1);
+  background: transparent !important;
+}
+
+[data-theme="anime"] .anime-character {
+  opacity: 1;
+  bottom: 0;
+}
+
+.anime-character.left {
+  left: 0;
+  transform: scaleX(-1);
+}
+
+.anime-character.right {
+  right: 0;
+}
+
+/* Navigation */
+nav {
+  background: var(--card-bg);
+  backdrop-filter: blur(5px);
+  padding: 1rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  margin: 0 1.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  font-family: 'Kiwi Maru', serif;
+}
+
+nav a:hover {
+  background: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero Section */
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: 60px;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  font-family: 'Kiwi Maru', serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Level Cards */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem 5%;
+}
+
+.level-card {
+  background: linear-gradient(145deg, 
+    var(--current-level-card-bg) 0%, 
+    var(--current-level-card-accent) 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--current-level-card-text);
+}
+
+.level-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Blog Cards */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 5%;
+}
+
+.blog-card {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Footer */
+footer {
+  background: var(--accent-color);
+  color: white;
+  padding: 3rem 5%;
+  text-align: center;
+  margin-top: 5rem;
+}
+
+/* Button */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* ==================== KOMPONEN TAMBAHAN ==================== */
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.bottom-nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.bottom-nav a i {
+  font-size: 18px;
+}
+
+.bottom-nav a:hover {
+  color: var(--accent-color);
+}
+
+/* Popup dan Modal */
+.popup, .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content, .modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.popup-content textarea {
+  width: 100%;
+  height: 150px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.popup-content select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.popup-content button, .modal-content button {
+  padding: 10px 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-content button:hover, .modal-content button:hover {
+  background: #c0392b;
+}
+
+/* Tombol Sakura */
+.sakura-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ff9eb5, #e94584);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(233, 69, 132, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.sakura-btn::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: url('https://www.transparentpng.com/thumb/cherry-blossom/cherry-blossom-transparent-8.png') center/cover no-repeat;
+  opacity: 0.1;
+  z-index: -1;
+}
+
+.sakura-btn:hover {
+  transform: scale(1.05) rotate(-5deg);
+  box-shadow: 0 6px 20px rgba(233, 69, 132, 0.6);
+}
+
+.sakura-btn i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Animasi Sakura */
+.sakura-petal {
+  position: fixed;
+  background-image: url('https://www.transparentpng.com/thumb/cherry-blossom/cherry-blossom-transparent-8.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  animation: sakura-fall linear forwards;
+}
+
+@keyframes sakura-fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  nav {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .level-grid, .blog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-menu .dropdown-content {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .sakura-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
+<style>
+    /* Privacy Modal Styles */
+    .privacy-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .privacy-content {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 5% auto;
+        padding: 25px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 800px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close-privacy {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        font-size: 28px;
+        font-weight: bold;
+        color: var(--text-color);
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .privacy-text {
+        line-height: 1.6;
+    }
+
+    .privacy-text h3 {
+        margin-top: 20px;
+        color: var(--accent-color);
+    }
+
+    .privacy-text ul {
+        padding-left: 20px;
+    }
+
+    .privacy-text li {
+        margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .privacy-content {
+            width: 90%;
+            margin: 10% auto;
+            padding: 15px;
+        }
+    }
+
+/* Hamburger Menu Styles */
+.hamburger-menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.hamburger-icon {
+    font-size: 24px;
+    color: var(--text-color);
+    background: var(--card-bg);
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: 1px solid var(--accent-color);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 280px;
+    height: 100%;
+    background-color: var(--card-bg);
+    box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+    z-index: 999;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    padding: 20px;
+    border-right: 2px solid var(--accent-color);
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--accent-color);
+}
+
+.close-sidebar {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 15px;
+}
+
+.sidebar-menu a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.sidebar-menu a:hover {
+    color: var(--accent-color);
+    background-color: rgba(var(--accent-color), 0.1);
+    transform: translateX(5px);
+}
+
+.sidebar-menu i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Privacy Modal Styles */
+.privacy-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1001;
+    overflow-y: auto;
+}
+
+.privacy-content {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+    border: 2px solid var(--accent-color);
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-privacy {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--accent-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.close-privacy:hover {
+    transform: rotate(90deg);
+}
+
+.privacy-text {
+    line-height: 1.6;
+    padding: 0 15px;
+}
+
+.privacy-text h2 {
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Kiwi Maru', serif;
+}
+
+.privacy-text h3 {
+    margin-top: 25px;
+    color: var(--accent-color);
+    border-bottom: 1px dashed var(--accent-color);
+    padding-bottom: 5px;
+}
+
+.privacy-text ul {
+    padding-left: 25px;
+    margin: 15px 0;
+}
+
+.privacy-text li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.privacy-text li:before {
+    content: "•";
+    color: var(--accent-color);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+.privacy-text a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.privacy-text a:hover {
+    text-decoration: underline;
+    color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+    .privacy-content {
+        width: 90%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    .sidebar {
+        width: 85%;
+        max-width: 300px;
+    }
+}

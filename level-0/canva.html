@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latihan Menulis Huruf Jepang</title>
+  <style>
+    :root {
+      --primary-color: #e74c3c;
+      --secondary-color: #2c3e50;
+      --light-bg: #f9f9f9;
+      --card-bg: #ffffff;
+      --text-color: #333;
+      --border-color: #ddd;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Sawarabi Mincho', sans-serif;
+    }
+
+    body {
+      background-color: var(--light-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      font-family: 'Kiwi Maru', serif;
+    }
+
+    .main-title {
+      text-align: center;
+      margin: 30px 0;
+      color: var(--secondary-color);
+      font-size: 2rem;
+    }
+
+    .writing-card {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      text-align: center;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+
+    .character-display {
+      font-size: 8rem;
+      text-align: center;
+      margin: 20px 0;
+      color: var(--secondary-color);
+      min-height: 120px;
+    }
+
+    .writing-area {
+      margin: 25px 0;
+    }
+
+    .canvas-container {
+      position: relative;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    canvas {
+      display: block;
+      background-color: white;
+      cursor: crosshair;
+      width: 100%;
+      height: 200px;
+      border-radius: 6px;
+      touch-action: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #c0392b;
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #1a252f;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .character-info {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .info-item {
+      margin-bottom: 10px;
+    }
+
+    .info-label {
+      font-weight: bold;
+      color: var(--secondary-color);
+    }
+
+    .progress-section {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .progress-title {
+      font-size: 1.3rem;
+      color: var(--secondary-color);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .progress-bar {
+      height: 20px;
+      background-color: #ecf0f1;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--secondary-color);
+    }
+
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .character-item {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .character-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .character-item.learned {
+      background-color: #e8f5e9;
+    }
+
+    .character-item span {
+      font-size: 1.8rem;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    footer {
+      background-color: var(--secondary-color);
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 40px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      text-align: center;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--secondary-color);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .character-display {
+        font-size: 6rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">Latihan Menulis Jepang</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="main-title">Latihan Menulis Hiragana & Katakana</h1>
+    
+    <div class="writing-card">
+      <h2 class="card-title" id="mode-title">Hiragana</h2>
+      <div class="character-display" id="character-display">あ</div>
+      
+      <div class="writing-area">
+        <div class="canvas-container">
+          <canvas id="writing-canvas"></canvas>
+        </div>
+        <div class="controls">
+          <button class="btn btn-outline" id="clear-btn">Hapus</button>
+          <button class="btn btn-primary" id="check-btn">Periksa</button>
+          <button class="btn btn-secondary" id="next-btn">Karakter Selanjutnya</button>
+        </div>
+      </div>
+      
+      <div class="character-info">
+        <div class="info-item">
+          <span class="info-label">Pengucapan:</span> <span id="romaji-display">a</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Contoh Kata:</span> <span id="example-display">あめ (ame - hujan)</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="progress-section">
+      <h2 class="progress-title">Kemajuan Belajar</h2>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-text">
+        <span id="progress-percent">0</span>% selesai (Telah mempelajari <span id="learned-count">0</span> dari <span id="total-count">0</span> karakter)
+      </div>
+      
+      <div class="controls" style="justify-content: center; margin-top: 20px;">
+        <button class="btn btn-outline" id="switch-mode">Ganti ke Katakana</button>
+      </div>
+      
+      <h3 style="margin-top: 20px; color: var(--secondary-color); text-align: center;">Daftar Karakter</h3>
+      <div class="character-grid" id="character-grid"></div>
+    </div>
+  </div>
+  
+  <!-- Feedback Modal -->
+  <div class="modal" id="feedback-modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 style="color: var(--primary-color); margin-bottom: 15px;" id="modal-title">Bagus!</h2>
+      <p id="modal-message">Kamu telah menulis karakter dengan benar!</p>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn btn-primary" id="modal-close-btn">Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+   
+  <li><a href="canfas.html">canvas</a></li>
+    
+  <footer>
+    <div class="container">
+      <p> Latihan Menulis Jepang. &copy; 2026 All rights reserved || LUZUNO.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Data for characters
+      const hiraganaData = [
+        { char: 'あ', romaji: 'a', example: 'あめ (ame - hujan)' },
+        { char: 'い', romaji: 'i', example: 'いぬ (inu - anjing)' },
+        { char: 'う', romaji: 'u', example: 'うみ (umi - laut)' },
+        { char: 'え', romaji: 'e', example: 'えき (eki - stasiun)' },
+        { char: 'お', romaji: 'o', example: 'おかね (okane - uang)' },
+        { char: 'か', romaji: 'ka', example: 'かばん (kaban - tas)' },
+        { char: 'き', romaji: 'ki', example: 'きいろ (kiiro - kuning)' },
+        { char: 'く', romaji: 'ku', example: 'くつ (kutsu - sepatu)' },
+        { char: 'け', romaji: 'ke', example: 'けしゴム (keshigomu - penghapus)' },
+        { char: 'こ', romaji: 'ko', example: 'こども (kodomo - anak)' },
+        { char: 'さ', romaji: 'sa', example: 'さかな (sakana - ikan)' },
+        { char: 'し', romaji: 'shi', example: 'しんぶん (shinbun - koran)' },
+        { char: 'す', romaji: 'su', example: 'すし (sushi - sushi)' },
+        { char: 'せ', romaji: 'se', example: 'せんせい (sensei - guru)' },
+        { char: 'そ', romaji: 'so', example: 'そば (soba - soba)' },
+        { char: 'た', romaji: 'ta', example: 'たこ (tako - gurita)' },
+        { char: 'ち', romaji: 'chi', example: 'ちず (chizu - peta)' },
+        { char: 'つ', romaji: 'tsu', example: 'つくえ (tsukue - meja)' },
+        { char: 'て', romaji: 'te', example: 'てがみ (tegami - surat)' },
+        { char: 'と', romaji: 'to', example: 'とけい (tokei - jam)' },
+        { char: 'な', romaji: 'na', example: 'なまえ (namae - nama)' },
+        { char: 'に', romaji: 'ni', example: 'にほん (nihon - Jepang)' },
+        { char: 'ぬ', romaji: 'nu', example: 'ぬの (nuno - kain)' },
+        { char: 'ね', romaji: 'ne', example: 'ねこ (neko - kucing)' },
+        { char: 'の', romaji: 'no', example: 'のうか (nouka - petani)' },
+        { char: 'は', romaji: 'ha', example: 'はな (hana - bunga)' },
+        { char: 'ひ', romaji: 'hi', example: 'ひこうき (hikouki - pesawat)' },
+        { char: 'ふ', romaji: 'fu', example: 'ふね (fune - kapal)' },
+        { char: 'へ', romaji: 'he', example: 'へや (heya - ruangan)' },
+        { char: 'ほ', romaji: 'ho', example: 'ほん (hon - buku)' },
+        { char: 'ま', romaji: 'ma', example: 'まど (mado - jendela)' },
+        { char: 'み', romaji: 'mi', example: 'みず (mizu - air)' },
+        { char: 'む', romaji: 'mu', example: 'むし (mushi - serangga)' },
+        { char: 'め', romaji: 'me', example: 'めがね (megane - kacamata)' },
+        { char: 'も', romaji: 'mo', example: 'もも (momo - persik)' },
+        { char: 'や', romaji: 'ya', example: 'やま (yama - gunung)' },
+        { char: 'ゆ', romaji: 'yu', example: 'ゆき (yuki - salju)' },
+        { char: 'よ', romaji: 'yo', example: 'よる (yoru - malam)' },
+        { char: 'ら', romaji: 'ra', example: 'らくだ (rakuda - unta)' },
+        { char: 'り', romaji: 'ri', example: 'りんご (ringo - apel)' },
+        { char: 'る', romaji: 'ru', example: 'るす (rusu - tidak di rumah)' },
+        { char: 'れ', romaji: 're', example: 'れんしゅう (renshuu - latihan)' },
+        { char: 'ろ', romaji: 'ro', example: 'ろうか (rouka - koridor)' },
+        { char: 'わ', romaji: 'wa', example: 'わし (washi - elang)' },
+        { char: 'を', romaji: 'wo', example: 'を (partikel objek)' },
+        { char: 'ん', romaji: 'n', example: 'にほんご (nihongo - bahasa Jepang)' }
+      ];
+
+      const katakanaData = [
+        { char: 'ア', romaji: 'a', example: 'アメリカ (amerika - Amerika)' },
+        { char: 'イ', romaji: 'i', example: 'インク (inku - tinta)' },
+        { char: 'ウ', romaji: 'u', example: 'ウイスキー (uisukii - wiski)' },
+        { char: 'エ', romaji: 'e', example: 'エレベーター (erebeetaa - elevator)' },
+        { char: 'オ', romaji: 'o', example: 'オレンジ (orenji - jeruk)' },
+        { char: 'カ', romaji: 'ka', example: 'カメラ (kamera - kamera)' },
+        { char: 'キ', romaji: 'ki', example: 'キッチン (kicchin - dapur)' },
+        { char: 'ク', romaji: 'ku', example: 'クッキー (kukkii - kue)' },
+        { char: 'ケ', romaji: 'ke', example: 'ケーキ (keeki - kue)' },
+        { char: 'コ', romaji: 'ko', example: 'コーヒー (koohii - kopi)' },
+        { char: 'サ', romaji: 'sa', example: 'サンドイッチ (sandoicchi - sandwich)' },
+        { char: 'シ', romaji: 'shi', example: 'シャワー (shawaa - shower)' },
+        { char: 'ス', romaji: 'su', example: 'スーパー (suupaa - supermarket)' },
+        { char: 'セ', romaji: 'se', example: 'セーター (seetaa - sweater)' },
+        { char: 'ソ', romaji: 'so', example: 'ソファー (sofaa - sofa)' },
+        { char: 'タ', romaji: 'ta', example: 'タクシー (takushii - taksi)' },
+        { char: 'チ', romaji: 'chi', example: 'チケット (chiketto - tiket)' },
+        { char: 'ツ', romaji: 'tsu', example: 'ツアー (tsuaa - tur)' },
+        { char: 'テ', romaji: 'te', example: 'テレビ (terebi - televisi)' },
+        { char: 'ト', romaji: 'to', example: 'トマト (tomato - tomat)' },
+        { char: 'ナ', romaji: 'na', example: 'ナイフ (naifu - pisau)' },
+        { char: 'ニ', romaji: 'ni', example: 'ニンジン (ninjin - wortel)' },
+        { char: 'ヌ', romaji: 'nu', example: 'ヌードル (nuudoru - mie)' },
+        { char: 'ネ', romaji: 'ne', example: 'ネクタイ (nekutai - dasi)' },
+        { char: 'ノ', romaji: 'no', example: 'ノート (nooto - notebook)' },
+        { char: 'ハ', romaji: 'ha', example: 'ハンバーガー (hanbaagaa - hamburger)' },
+        { char: 'ヒ', romaji: 'hi', example: 'ヒーター (hiitaa - pemanas)' },
+        { char: 'フ', romaji: 'fu', example: 'フライドポテト (furaidopoteto - kentang goreng)' },
+        { char: 'ヘ', romaji: 'he', example: 'ヘリコプター (herikoputaa - helikopter)' },
+        { char: 'ホ', romaji: 'ho', example: 'ホテル (hoteru - hotel)' },
+        { char: 'マ', romaji: 'ma', example: 'マンガ (manga - komik)' },
+        { char: 'ミ', romaji: 'mi', example: 'ミルク (miruku - susu)' },
+        { char: 'ム', romaji: 'mu', example: 'ムース (muusu - mousse)' },
+        { char: 'メ', romaji: 'me', example: 'メニュー (menyuu - menu)' },
+        { char: 'モ', romaji: 'mo', example: 'モニター (monitaa - monitor)' },
+        { char: 'ヤ', romaji: 'ya', example: 'ヤクルト (yakuruto - yakult)' },
+        { char: 'ユ', romaji: 'yu', example: 'ユーモア (yuumoa - humor)' },
+        { char: 'ヨ', romaji: 'yo', example: 'ヨーロッパ (yooroppa - Eropa)' },
+        { char: 'ラ', romaji: 'ra', example: 'ラーメン (raamen - ramen)' },
+        { char: 'リ', romaji: 'ri', example: 'リモコン (rimokon - remote control)' },
+        { char: 'ル', romaji: 'ru', example: 'ルール (ruuru - aturan)' },
+        { char: 'レ', romaji: 're', example: 'レストラン (resutoran - restoran)' },
+        { char: 'ロ', romaji: 'ro', example: 'ロボット (robotto - robot)' },
+        { char: 'ワ', romaji: 'wa', example: 'ワイン (wain - wine)' },
+        { char: 'ヲ', romaji: 'wo', example: 'ヲ (partikel objek, jarang digunakan)' },
+        { char: 'ン', romaji: 'n', example: 'ペン (pen - pena)' }
+      ];
+
+      // App state
+      let currentMode = 'hiragana';
+      let currentIndex = 0;
+      let learnedCharacters = JSON.parse(localStorage.getItem('learnedCharacters')) || {};
+      let currentCharacterSet = hiraganaData;
+      
+      // DOM elements
+      const canvas = document.getElementById('writing-canvas');
+      const ctx = canvas.getContext('2d');
+      const modeTitle = document.getElementById('mode-title');
+      const characterDisplay = document.getElementById('character-display');
+      const romajiDisplay = document.getElementById('romaji-display');
+      const exampleDisplay = document.getElementById('example-display');
+      const progressFill = document.getElementById('progress-fill');
+      const progressPercent = document.getElementById('progress-percent');
+      const learnedCount = document.getElementById('learned-count');
+      const totalCount = document.getElementById('total-count');
+      const characterGrid = document.getElementById('character-grid');
+      const switchModeBtn = document.getElementById('switch-mode');
+      const clearBtn = document.getElementById('clear-btn');
+      const checkBtn = document.getElementById('check-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const modal = document.getElementById('feedback-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalMessage = document.getElementById('modal-message');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      
+      // Initialize canvas
+      function initCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#333';
+        
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events
+        canvas.addEventListener('touchstart', handleTouchStart);
+        canvas.addEventListener('touchmove', handleTouchMove);
+        canvas.addEventListener('touchend', stopDrawing);
+        
+        function startDrawing(e) {
+          isDrawing = true;
+          [lastX, lastY] = getPosition(e);
+        }
+        
+        function draw(e) {
+          if (!isDrawing) return;
+          const [x, y] = getPosition(e);
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          [lastX, lastY] = [x, y];
+        }
+        
+        function stopDrawing() {
+          isDrawing = false;
+        }
+        
+        function handleTouchStart(e) {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const mouseEvent = new MouseEvent('mousedown', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+          });
+          canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function handleTouchMove(e) {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const mouseEvent = new MouseEvent('mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+          });
+          canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function getPosition(e) {
+          const rect = canvas.getBoundingClientRect();
+          return [
+            e.clientX - rect.left,
+            e.clientY - rect.top
+          ];
+        }
+      }
+      
+      // Clear canvas
+      function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      
+      // Display current character
+      function displayCharacter() {
+        const charData = currentCharacterSet[currentIndex];
+        characterDisplay.textContent = charData.char;
+        romajiDisplay.textContent = charData.romaji;
+        exampleDisplay.textContent = charData.example;
+        updateProgress();
+      }
+      
+      // Switch between hiragana and katakana
+      function switchMode() {
+        currentMode = currentMode === 'hiragana' ? 'katakana' : 'hiragana';
+        currentCharacterSet = currentMode === 'hiragana' ? hiraganaData : katakanaData;
+        currentIndex = 0;
+        modeTitle.textContent = currentMode === 'hiragana' ? 'Hiragana' : 'Katakana';
+        switchModeBtn.textContent = currentMode === 'hiragana' ? 'Ganti ke Katakana' : 'Ganti ke Hiragana';
+        clearCanvas();
+        displayCharacter();
+        updateCharacterGrid();
+      }
+      
+      // Go to next character
+      function nextCharacter() {
+        currentIndex = (currentIndex + 1) % currentCharacterSet.length;
+        clearCanvas();
+        displayCharacter();
+      }
+      
+      // Check the drawn character
+      function checkCharacter() {
+        const currentChar = currentCharacterSet[currentIndex].char;
+        const charKey = `${currentMode}_${currentChar}`;
+        
+        // Check if canvas has any drawing
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let hasDrawing = false;
+        
+        for (let i = 0; i < imageData.length; i += 4) {
+          if (imageData[i+3] > 0) { // Check alpha channel
+            hasDrawing = true;
+            break;
+          }
+        }
+        
+        if (!hasDrawing) {
+          showFeedback('Coba Lagi', 'Silakan tulis karakter terlebih dahulu!');
+          return;
+        }
+        
+        // Mark as learned
+        if (!learnedCharacters[charKey]) {
+          learnedCharacters[charKey] = true;
+          localStorage.setItem('learnedCharacters', JSON.stringify(learnedCharacters));
+          updateProgress();
+          updateCharacterGrid();
+        }
+        
+        showFeedback('Bagus!', `Kamu telah menulis ${currentChar} dengan benar!`);
+      }
+      
+      // Update progress display
+      function updateProgress() {
+        const total = currentCharacterSet.length;
+        const learned = Object.keys(learnedCharacters).filter(key => 
+          key.startsWith(currentMode)
+        ).length;
+        
+        const percent = Math.round((learned / total) * 100);
+        
+        progressFill.style.width = `${percent}%`;
+        progressPercent.textContent = percent;
+        learnedCount.textContent = learned;
+        totalCount.textContent = total;
+      }
+      
+      // Update character grid
+      function updateCharacterGrid() {
+        characterGrid.innerHTML = '';
+        
+        currentCharacterSet.forEach((charData, index) => {
+          const charKey = `${currentMode}_${charData.char}`;
+          const charElement = document.createElement('div');
+          
+          charElement.className = 'character-item';
+          if (learnedCharacters[charKey]) {
+            charElement.classList.add('learned');
+          }
+          
+          charElement.innerHTML = `
+            <span>${charData.char}</span>
+            <small>${charData.romaji}</small>
+          `;
+          
+          charElement.addEventListener('click', () => {
+            currentIndex = index;
+            clearCanvas();
+            displayCharacter();
+          });
+          
+          characterGrid.appendChild(charElement);
+        });
+      }
+      
+      // Show feedback modal
+      function showFeedback(title, message) {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modal.style.display = 'flex';
+      }
+      
+      // Hide feedback modal
+      function hideFeedback() {
+        modal.style.display = 'none';
+      }
+      
+      // Event listeners
+      switchModeBtn.addEventListener('click', switchMode);
+      clearBtn.addEventListener('click', clearCanvas);
+      checkBtn.addEventListener('click', checkCharacter);
+      nextBtn.addEventListener('click', nextCharacter);
+      modalCloseBtn.addEventListener('click', hideFeedback);
+      
+      // Close modal when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          hideFeedback();
+        }
+      });
+      
+      // Initialize app
+      initCanvas();
+      displayCharacter();
+      updateCharacterGrid();
+    });
+  </script>
+</body>
+</html>

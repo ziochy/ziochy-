@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+ <link rel="stylesheet" href="profil.css">
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-sun"></i>
+    </div>
+
+    <main class="profile-container">
+        <h1>Profil Saya</h1>
+        <div class="profile-info">
+            <div class="avatar-container">
+                <img src="assets/images/default-avatar.png" alt="Avatar" id="profileAvatar">
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                <button onclick="document.getElementById('avatarInput').click()" class="btn">
+                    <i class="fas fa-upload"></i> Unggah Avatar
+                </button>
+            </div>
+            <div class="profile-details">
+                <div class="form-group">
+                    <label for="username">Nama Pengguna:</label>
+                    <input type="text" id="username" placeholder="Nama Pengguna">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" disabled>
+                </div>
+
+                <h3 class="section-title">Informasi Profil</h3>
+                
+                <div class="form-group">
+                    <label for="bio">Bio Singkat:</label>
+                    <textarea id="bio" placeholder="Ceritakan sedikit tentang dirimu (maksimal 150 karakter)" maxlength="150"></textarea>
+                    <small class="char-count" id="bioCount">0/150 karakter</small>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gender">Jenis Kelamin:</label>
+                        <select id="gender">
+                            <option value="">Pilih Jenis Kelamin</option>
+                            <option value="male">Laki-laki</option>
+                            <option value="female">Perempuan</option>
+                            <option value="other">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate">Tanggal Lahir:</label>
+                        <input type="date" id="birthDate">
+                        <small class="age-display" id="ageDisplay"></small>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Lokasi:</label>
+                    <input type="text" id="location" placeholder="Kota, Negara">
+                </div>
+                
+                <div class="form-group">
+                    <label for="hobbies">Hobi/Minat:</label>
+                    <input type="text" id="hobbies" placeholder="Pisahkan dengan koma (contoh: membaca, gaming, musik)">
+                </div>
+                
+                <div class="form-group">
+                    <label>Media Sosial: cukup tulis nama akun di bawah ini</label>
+                    <div class="social-links">
+                        <input type="text" id="instagram" placeholder="Instagram" class="social-input">
+                        <input type="text" id="twitter" placeholder="Twitter" class="social-input">
+                    </div>
+                    <div class="social-links">
+                        <input type="text" id="facebook" placeholder="Facebook" class="social-input">
+                        <input type="text" id="tiktok" placeholder="TikTok" class="social-input">
+                    </div>
+                </div>
+
+                <h3 class="section-title">Pesan Singkat</h3>
+                
+                <div class="form-group">
+                    <label for="shortWords">Tambah Kata:</label>
+                    <input type="text" id="shortWords" maxlength="50" placeholder="Tulis kata favoritmu">
+                    <small class="char-count" id="wordCharCount">0/25 karakter</small>
+                    <small class="word-limit" id="wordLimit">0/3 kata</small>
+                </div>
+                
+                <div id="wordsContainer" class="words-container"></div>
+                
+                <button id="addWordBtn" onclick="addWord()" class="btn">
+                    <i class="fas fa-plus"></i> Tambah Kata
+                </button>
+                
+                <button id="saveBtn" onclick="updateProfile()" class="btn" disabled>
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+                
+                <a href="kami/panel.html" id="adminPanelBtn" class="admin-panel-btn" style="display: none;">
+                    <i class="fas fa-user-shield"></i> Admin Panel
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div class="bottom-nav">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="latihan.html">
+            <i class="fas fa-book"></i>
+            <span>Kyousai</span>
+        </a>
+        <a href="diskusi.html">
+            <i class="fas fa-comments"></i>
+            <span>Chatto</span>
+        </a>
+        <a href="profile.html" class="active">
+            <i class="fas fa-user"></i>
+            <span>Purofiiru</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script type="module">
+    // Konfigurasi
+    const MAX_WORDS = 3;
+    const MAX_CHARS = 25;
+    const MAX_BIO_CHARS = 150;
+    
+    // Inisialisasi Firebase
+    import { getAuth, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+    import { app } from './firebase-config.js';
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    // Elemen DOM
+    const saveBtn = document.getElementById('saveBtn');
+    const usernameInput = document.getElementById('username');
+    const avatarInput = document.getElementById('avatarInput');
+    const bioInput = document.getElementById('bio');
+    const genderInput = document.getElementById('gender');
+    const birthDateInput = document.getElementById('birthDate');
+    const ageDisplay = document.getElementById('ageDisplay');
+    const locationInput = document.getElementById('location');
+    const hobbiesInput = document.getElementById('hobbies');
+    const instagramInput = document.getElementById('instagram');
+    const twitterInput = document.getElementById('twitter');
+    const facebookInput = document.getElementById('facebook');
+    const tiktokInput = document.getElementById('tiktok');
+    const shortWordsInput = document.getElementById('shortWords');
+    const wordsContainer = document.getElementById('wordsContainer');
+    const wordLimitElement = document.getElementById('wordLimit');
+    const addWordBtn = document.getElementById('addWordBtn');
+    const wordCharCountElement = document.getElementById('wordCharCount');
+    const bioCountElement = document.getElementById('bioCount');
+    
+    // State
+    let originalUsername = '';
+    let originalAvatar = '';
+    let originalProfileData = {};
+    let originalWords = [];
+    let currentWords = [];
+    let hasChanges = false;
+    let hasWordChanges = false;
+
+    // Fungsi untuk toggle tema
+    function toggleTheme() {
+        const themes = ['light', 'dark', 'anime'];
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
+        const nextTheme = themes[nextIndex];
+        
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('theme', nextTheme);
+        updateThemeIcon(nextTheme);
+    }
+
+    function updateThemeIcon(theme) {
+        const icons = {
+            'light': 'fa-sun',
+            'dark': 'fa-moon',
+            'anime': 'fa-palette'
+        };
+        document.querySelector('.theme-toggle i').className = `fas ${icons[theme]}`;
+    }
+
+    // Fungsi untuk menghitung umur dari tanggal lahir
+    function calculateAge(birthDate) {
+        if (!birthDate) return null;
+        
+        const birth = new Date(birthDate);
+        const today = new Date();
+        
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        
+        return age;
+    }
+
+    // Fungsi untuk menampilkan umur
+    function updateAgeDisplay(birthDate) {
+        const age = calculateAge(birthDate);
+        if (age !== null && !isNaN(age)) {
+            ageDisplay.textContent = `Umur: ${age} tahun`;
+        } else {
+            ageDisplay.textContent = '';
+        }
+    }
+
+    // Fungsi untuk menampilkan kata-kata
+    function displayWords(words) {
+        wordsContainer.innerHTML = '';
+        currentWords = [...words];
+        
+        words.forEach((word, index) => {
+            const wordElement = document.createElement('div');
+            wordElement.className = 'word-item';
+            wordElement.innerHTML = `
+                ${word}
+                <button onclick="removeWord(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            wordsContainer.appendChild(wordElement);
+        });
+        
+        updateWordLimit(words.length);
+    }
+
+    // Update tampilan limit kata
+    function updateWordLimit(count) {
+        wordLimitElement.textContent = `${count}/${MAX_WORDS} kata`;
+        addWordBtn.disabled = count >= MAX_WORDS;
+    }
+
+    // Update tampilan hitungan karakter
+    function updateCharCount(element, countElement, max) {
+        const count = element.value.length;
+        countElement.textContent = `${count}/${max} karakter`;
+    }
+
+    // Fungsi untuk menambah kata
+    window.addWord = function() {
+        const word = shortWordsInput.value.trim();
+        
+        if (!word) {
+            Swal.fire('Error', 'Kata tidak boleh kosong!', 'error');
+            return;
+        }
+        
+        if (word.length > MAX_CHARS) {
+            Swal.fire('Error', `Maksimal ${MAX_CHARS} karakter!`, 'error');
+            return;
+        }
+        
+        if (currentWords.length >= MAX_WORDS) {
+            Swal.fire('Error', `Maksimal ${MAX_WORDS} kata!`, 'error');
+            return;
+        }
+        
+        // Tambahkan kata baru ke state lokal
+        currentWords.push(word);
+        displayWords(currentWords);
+        shortWordsInput.value = '';
+        updateCharCount(shortWordsInput, wordCharCountElement, MAX_CHARS);
+        
+        // Tandai ada perubahan kata
+        hasWordChanges = true;
+        checkForChanges();
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Kata berhasil ditambahkan (tekan Simpan untuk menyimpan perubahan)',
+            timer: 1000,
+            showConfirmButton: false
+        });
+    };
+
+    // Fungsi untuk menghapus kata
+    window.removeWord = function(index) {
+        // Hapus kata dari array state lokal
+        currentWords.splice(index, 1);
+        displayWords(currentWords);
+        
+        // Tandai ada perubahan kata
+        hasWordChanges = true;
+        checkForChanges();
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Kata berhasil dihapus (tekan Simpan untuk menyimpan perubahan)',
+            timer: 1000,
+            showConfirmButton: false
+        });
+    };
+
+    // Fungsi untuk update profil
+    window.updateProfile = async function() {
+        if (!hasChanges) return;
+
+        const user = auth.currentUser;
+        const username = usernameInput.value.trim(); // Trim whitespace
+        const avatarFile = avatarInput.files[0];
+        const bio = bioInput.value;
+        const gender = genderInput.value;
+        const birthDate = birthDateInput.value;
+        const location = locationInput.value;
+        const hobbies = hobbiesInput.value;
+        const socialMedia = {
+            instagram: instagramInput.value,
+            twitter: twitterInput.value,
+            facebook: facebookInput.value,
+            tiktok: tiktokInput.value
+        };
+
+        // Validasi username tidak kosong
+        if (!username) {
+            Swal.fire('Error', 'Nama pengguna tidak boleh kosong!', 'error');
+            return;
+        }
+
+        const { isConfirmed } = await Swal.fire({
+            title: 'Simpan Perubahan?',
+            text: 'Apakah Anda yakin ingin menyimpan semua perubahan profil?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Simpan!'
+        });
+
+        if (isConfirmed) {
+            try {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+                let avatarBase64 = null;
+
+                // Konversi avatar ke Base64 jika ada
+                if (avatarFile) {
+                    avatarBase64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = error => reject(error);
+                        reader.readAsDataURL(avatarFile);
+                    });
+                }
+
+                // Update profil di Firebase Auth
+                await updateProfile(user, {
+                    displayName: username
+                });
+
+                // Data untuk Firestore (termasuk username_lowercase)
+                const updateData = {
+                    username: username,
+                    username_lowercase: username.toLowerCase(), // Simpan versi lowercase
+                    bio: bio,
+                    gender: gender,
+                    birthDate: birthDate,
+                    location: location,
+                    hobbies: hobbies,
+                    socialMedia: socialMedia,
+                    lastUpdated: new Date().toISOString(),
+                    ...(hasWordChanges && { words: currentWords }),
+                    ...(avatarBase64 && { avatar: avatarBase64 })
+                };
+
+                // Update data di Firestore
+                await updateDoc(doc(db, "users", user.uid), updateData);
+
+                // Update tampilan
+                if (avatarBase64) {
+                    document.getElementById('profileAvatar').src = avatarBase64;
+                    originalAvatar = avatarBase64;
+                }
+
+                // Reset state
+                originalUsername = username;
+                originalProfileData = {
+                    bio: bio,
+                    gender: gender,
+                    birthDate: birthDate,
+                    location: location,
+                    hobbies: hobbies,
+                    socialMedia: socialMedia
+                };
+                originalWords = [...currentWords];
+                avatarInput.value = '';
+                hasChanges = false;
+                hasWordChanges = false;
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+
+                Swal.fire('Sukses!', 'Profil berhasil diperbarui', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+                Swal.fire('Error', 'Gagal memperbarui profil: ' + error.message, 'error');
+            }
+        }
+    };
+
+    // Fungsi untuk memeriksa perubahan
+    function checkForChanges() {
+        const currentUsername = usernameInput.value;
+        const currentBio = bioInput.value;
+        const currentGender = genderInput.value;
+        const currentBirthDate = birthDateInput.value;
+        const currentLocation = locationInput.value;
+        const currentHobbies = hobbiesInput.value;
+        const currentSocialMedia = {
+            instagram: instagramInput.value,
+            twitter: twitterInput.value,
+            facebook: facebookInput.value,
+            tiktok: tiktokInput.value
+        };
+        
+        // Periksa perubahan data biasa
+        const hasRegularChanges = (
+            currentUsername !== originalUsername ||
+            currentBio !== originalProfileData.bio ||
+            currentGender !== originalProfileData.gender ||
+            currentBirthDate !== originalProfileData.birthDate ||
+            currentLocation !== originalProfileData.location ||
+            currentHobbies !== originalProfileData.hobbies ||
+            JSON.stringify(currentSocialMedia) !== JSON.stringify(originalProfileData.socialMedia) ||
+            avatarInput.files.length > 0
+        );
+        
+        // Periksa perubahan kata-kata
+        const wordsChanged = hasWordChanges || 
+            (currentWords.length !== originalWords.length) ||
+            currentWords.some((word, i) => word !== originalWords[i]);
+        
+        hasChanges = hasRegularChanges || wordsChanged;
+        saveBtn.disabled = !hasChanges;
+    }
+
+    // Event listener untuk input
+    shortWordsInput.addEventListener('input', () => {
+        updateCharCount(shortWordsInput, wordCharCountElement, MAX_CHARS);
+    });
+    
+    bioInput.addEventListener('input', () => {
+        updateCharCount(bioInput, bioCountElement, MAX_BIO_CHARS);
+        checkForChanges();
+    });
+    
+    birthDateInput.addEventListener('change', function() {
+        updateAgeDisplay(this.value);
+        checkForChanges();
+    });
+    
+    genderInput.addEventListener('change', checkForChanges);
+    usernameInput.addEventListener('input', checkForChanges);
+    locationInput.addEventListener('input', checkForChanges);
+    hobbiesInput.addEventListener('input', checkForChanges);
+    instagramInput.addEventListener('input', checkForChanges);
+    twitterInput.addEventListener('input', checkForChanges);
+    facebookInput.addEventListener('input', checkForChanges);
+    tiktokInput.addEventListener('input', checkForChanges);
+    avatarInput.addEventListener('change', checkForChanges);
+
+    // Muat data saat halaman dimuat
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // Tampilkan tombol admin jika email sesuai
+            if (user.email === "riskiziochy@gmail.com") {
+                document.getElementById('adminPanelBtn').style.display = 'inline-flex';
+            }
+
+            // Set nilai form
+            originalUsername = user.displayName || "Pengguna";
+            usernameInput.value = originalUsername;
+            document.getElementById('email').value = user.email;
+
+            // Ambil data tambahan dari Firestore
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            if (docSnap.exists()) {
+                const userData = docSnap.data();
+                
+                // Tampilkan avatar jika ada
+                if (userData.avatar) {
+                    originalAvatar = userData.avatar;
+                    document.getElementById('profileAvatar').src = originalAvatar;
+                }
+                
+                // Tampilkan data profil
+                if (userData.bio) {
+                    bioInput.value = userData.bio;
+                    updateCharCount(bioInput, bioCountElement, MAX_BIO_CHARS);
+                }
+                
+                if (userData.gender) genderInput.value = userData.gender;
+                if (userData.birthDate) {
+                    birthDateInput.value = userData.birthDate;
+                    updateAgeDisplay(userData.birthDate);
+                }
+                if (userData.location) locationInput.value = userData.location;
+                if (userData.hobbies) hobbiesInput.value = userData.hobbies;
+                
+                if (userData.socialMedia) {
+                    const social = userData.socialMedia;
+                    if (social.instagram) instagramInput.value = social.instagram;
+                    if (social.twitter) twitterInput.value = social.twitter;
+                    if (social.facebook) facebookInput.value = social.facebook;
+                    if (social.tiktok) tiktokInput.value = social.tiktok;
+                }
+                
+                // Simpan data asli untuk perbandingan
+                originalProfileData = {
+                    bio: userData.bio || '',
+                    gender: userData.gender || '',
+                    birthDate: userData.birthDate || '',
+                    location: userData.location || '',
+                    hobbies: userData.hobbies || '',
+                    socialMedia: userData.socialMedia || {
+                        instagram: '',
+                        twitter: '',
+                        facebook: '',
+                        tiktok: ''
+                    }
+                };
+                
+                // Tampilkan kata-kata jika ada
+                if (userData.words) {
+                    originalWords = [...userData.words];
+                    displayWords(userData.words);
+                } else {
+                    originalWords = [];
+                    updateWordLimit(0);
+                }
+            }
+
+            // Load tema yang disimpan
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+</script>
+    
+</body>
+</html>

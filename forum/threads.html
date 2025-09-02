@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread - Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        /* CSS yang sudah ada */
+    /* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Warna utama */
+:root {
+    --primary-color: #6c5ce7;
+    --secondary-color: #ff7675;
+    --background-color: #f8f9fa;
+    --text-color: #2d3436;
+    --white: #ffffff;
+}
+
+/* Body Styling */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Navbar */
+nav {
+    background-color: var(--primary-color);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Container utama */
+.thread-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 30px auto;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.thread-container h1 {
+    font-size: 24px;
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Tombol */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 6px 12px; /* Ukuran lebih kecil */
+    border: none;
+    border-radius: 4px;
+    font-size: 14px; /* Font lebih kecil */
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.btn i {
+    font-size: 14px;
+}
+
+.btn:hover {
+    background: #574bdb;
+}
+
+/* Tombol Hapus */
+.btn-danger {
+    background: var(--secondary-color);
+}
+
+.btn-danger:hover {
+    background: #e74c3c;
+}
+
+/* Daftar Thread */
+.thread-list {
+    margin-top: 20px;
+}
+
+.thread-item {
+    background: var(--white);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.thread-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.thread-item h2 {
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+.thread-item p {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #636e72;
+}
+
+.thread-item small {
+    display: block;
+    color: #b2bec3;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .thread-container {
+        width: 95%;
+    }
+
+    .btn {
+        width: auto;
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="forum.html">Kembali ke Forum</a>
+        <div id="navAuth"></div>
+    </nav>
+
+    <main class="thread-container">
+        <h1 id="forumTitle"></h1>
+        <div id="createThreadButton" style="display: none;">
+            <button onclick="createThread()" class="btn">
+                <i class="fas fa-plus"></i> Buat Thread Baru
+            </button>
+        </div>
+        <div id="threadList" class="thread-list"></div>
+    </main>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, where, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { app } from '../firebase-config.js';
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Ambil ID forum dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const forumId = urlParams.get('forumId');
+
+        // Cek apakah pengguna sudah terdaftar selama 1 bulan 1 hari
+        const isUserEligible = (user) => {
+            const registrationDate = new Date(user.metadata.creationTime);
+            const currentDate = new Date();
+            const diffTime = currentDate - registrationDate;
+            const diffDays = diffTime / (1000 * 60 * 60 * 24); // Konversi ke hari
+            return diffDays >= 31; // 1 bulan 1 hari = 31 hari
+        };
+
+        // Cek apakah pengguna memiliki hak istimewa
+        const isPrivilegedUser = (user) => {
+            return user.email === 'riskiziochy@gmail.com'; // Ganti dengan email admin
+        };
+
+        // Muat thread dalam forum
+        const loadThreads = async () => {
+            const threadList = document.getElementById('threadList');
+            threadList.innerHTML = ''; // Kosongkan daftar thread
+
+            const q = query(collection(db, 'threads'), where('forumId', '==', forumId));
+            const querySnapshot = await getDocs(q);
+            const threads = [];
+
+            querySnapshot.forEach((doc) => {
+                threads.push({ id: doc.id, ...doc.data() });
+            });
+
+            // Urutkan thread berdasarkan waktu pembuatan (terbaru di atas)
+            threads.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+
+            // Tampilkan thread
+            threads.forEach((thread) => {
+                threadList.innerHTML += `
+                    <div class="thread-item">
+                        <h2>${thread.title}</h2>
+                        <p>${thread.content}</p>
+                        <small>Ditulis oleh: ${thread.authorName}</small>
+                        ${isPrivilegedUser(auth.currentUser) ? `
+                            <button onclick="deleteThread('${thread.id}')" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Hapus Thread
+                            </button>
+                        ` : ''}
+                        <a href="comments.html?threadId=${thread.id}" class="btn">
+                            <i class="fas fa-comment"></i> Lihat Komentar
+                        </a>
+                    </div>
+                `;
+            });
+        };
+
+        // Buat thread baru dengan modal
+        window.createThread = async () => {
+            const { value: title } = await Swal.fire({
+                title: 'Buat Thread Baru',
+                input: 'text',
+                inputLabel: 'Judul Thread',
+                inputPlaceholder: 'Masukkan judul thread...',
+                showCancelButton: true,
+                confirmButtonText: 'Buat',
+                cancelButtonText: 'Batal',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Judul thread tidak boleh kosong!';
+                    }
+                }
+            });
+
+            if (title) {
+                const { value: content } = await Swal.fire({
+                    title: 'Isi Thread',
+                    input: 'textarea',
+                    inputLabel: 'Isi',
+                    inputPlaceholder: 'Masukkan isi thread...',
+                    showCancelButton: true,
+                    confirmButtonText: 'Buat',
+                    cancelButtonText: 'Batal',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Isi thread tidak boleh kosong!';
+                        }
+                    }
+                });
+
+                if (content) {
+                    try {
+                        await addDoc(collection(db, 'threads'), {
+                            forumId: forumId,
+                            title: title,
+                            content: content,
+                            createdAt: serverTimestamp(),
+                            createdBy: auth.currentUser.uid,
+                            authorName: auth.currentUser.displayName || auth.currentUser.email.split('@')[0] // Ambil nama penulis
+                        });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Thread berhasil dibuat.',
+                            confirmButtonText: 'OK'
+                        });
+                        loadThreads(); // Muat ulang daftar thread
+                    } catch (error) {
+                        console.error('Error creating thread:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Gagal membuat thread. Silakan coba lagi.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }
+            }
+        };
+
+        // Hapus thread dengan modal konfirmasi
+        window.deleteThread = async (threadId) => {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Hapus Thread?',
+                text: 'Apakah Anda yakin ingin menghapus thread ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#ff4d4d',
+                cancelButtonColor: '#6c5ce7'
+            });
+
+            if (isConfirmed) {
+                try {
+                    await deleteDoc(doc(db, 'threads', threadId));
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Thread berhasil dihapus.',
+                        confirmButtonText: 'OK'
+                    });
+                    loadThreads(); // Muat ulang daftar thread
+                } catch (error) {
+                    console.error('Error deleting thread:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Gagal menghapus thread. Silakan coba lagi.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+        };
+
+        // Muat thread saat halaman dimuat
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Tampilkan tombol buat thread jika pengguna memenuhi syarat
+                if (isUserEligible(user) || isPrivilegedUser(user)) {
+                    document.getElementById('createThreadButton').style.display = 'block';
+                }
+
+                // Muat thread
+                loadThreads();
+            } else {
+                window.location.href = 'login.html'; // Redirect jika belum login
+            }
+        });
+    </script>
+</body>
+</html>
